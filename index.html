@@ -173,10 +173,10 @@ $('shareBtn').onclick=async()=>{Sound.tap();const url=document.querySelector('li
  try{await navigator.clipboard.writeText(url);ok=true}catch(e){try{const t=document.createElement('textarea');t.value=url;t.setAttribute('readonly','');t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();ok=document.execCommand('copy');t.remove()}catch(e2){}}
  toast(ok?'링크를 복사했어요! 원하는 곳에 붙여넣기 하세요':'복사하지 못했어요. 주소창의 링크를 길게 눌러 복사해 주세요')};
 /* live visitor counter (abacus.jasoncameron.dev) */
-(()=>{const API='https://abacus.jasoncameron.dev',NS='kotaeyeol-tech-engineer-ai';
+(()=>{const API='https://abacus.jasoncameron.dev',NS='kotaeyeol-tech-engineer-ai',TOTAL_BASE=1055;/* 카운터 설치 전 방문자 추정치 */
  const dayKey=()=>'today-'+new Date(Date.now()+9*36e5).toISOString().slice(0,10).replace(/-/g,'');
  const store=(t,k,v)=>{try{const s=t==='l'?localStorage:sessionStorage;if(v===undefined)return s.getItem(k);s.setItem(k,v)}catch(e){return null}};
- const show=(id,v)=>{if(typeof v!=='number')return;const el=$(id),txt=v.toLocaleString('ko-KR');if(el.textContent===txt)return;const first=el.textContent==='–';el.textContent=txt;if(!first){el.classList.add('bump');setTimeout(()=>el.classList.remove('bump'),600)}};
+ const show=(id,v)=>{if(typeof v!=='number')return;if(id==='totalCount')v+=TOTAL_BASE;const el=$(id),txt=v.toLocaleString('ko-KR');if(el.textContent===txt)return;const first=el.textContent==='–';el.textContent=txt;if(!first){el.classList.add('bump');setTimeout(()=>el.classList.remove('bump'),600)}};
  const call=async(kind,key)=>{try{const r=await fetch(`${API}/${kind}/${NS}/${key}`,{cache:'no-store'});if(r.status===404)return 0;if(!r.ok)return null;const j=await r.json();return typeof j.value==='number'?j.value:null}catch(e){return null}};
  let day=dayKey(),streams={};
  function stream(id,key){streams[id]?.close();if(!window.EventSource)return;try{const es=new EventSource(`${API}/stream/${NS}/${key}`);es.onmessage=e=>{try{show(id,JSON.parse(e.data).value)}catch(_){}};streams[id]=es}catch(e){}}
