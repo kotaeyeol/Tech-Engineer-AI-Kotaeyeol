@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>학습분석 핸드북 읽기 7편 · 같이 해 보기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF3F6; --grid:rgba(27,43,74,.07); --ink:#1B2B4A; --ink-soft:#4A5A78;
+  --line:#C9D4DE; --card:#FFFFFF; --mark:#F2C230; --teal:#2E8C83; --red:#D64545;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --pen:"Nanum Pen Script","IBM Plex Sans KR",cursive;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#121B2B; --grid:rgba(200,215,235,.06); --ink:#E6ECF5; --ink-soft:#A7B4C9;
+    --line:#2C3A52; --card:#192439; --mark:#E8B923; --teal:#4FB3A8; --red:#EE6B6B;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121B2B; --grid:rgba(200,215,235,.06); --ink:#E6ECF5; --ink-soft:#A7B4C9;
+  --line:#2C3A52; --card:#192439; --mark:#E8B923; --teal:#4FB3A8; --red:#EE6B6B;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans);
+  font-size:17px; line-height:1.7;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:880px; margin:0 auto; padding:0 20px}
+h1,h2,h3{line-height:1.3; margin:0}
+h2{font-size:1.6rem; font-weight:700; margin-bottom:.4rem}
+p{margin:.4rem 0 1rem}
+.lead{color:var(--ink-soft); max-width:62ch}
+.pen{font-family:var(--pen); font-size:1.5rem; color:var(--teal); line-height:1.2}
+section{padding:56px 0; border-top:1px dashed var(--line)}
+button{font:inherit; color:inherit; cursor:pointer}
+button:focus-visible,.chip:focus-visible{outline:3px solid var(--mark); outline-offset:2px}
+
+body{word-break:keep-all; overflow-wrap:break-word; line-break:strict}
+h1,h2,h3,.lead,p,b,span,small{text-wrap:pretty}
+header{padding:48px 0 28px}
+.series{font-size:.95rem; color:var(--ink-soft); margin-bottom:12px}
+h1{font-size:clamp(2rem,6vw,3rem); font-weight:700; letter-spacing:-.02em; max-width:16ch}
+.card{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:20px}
+.btn{border:1.5px solid var(--ink); background:transparent; border-radius:4px; padding:9px 16px; font-weight:500}
+.btn:hover{background:var(--mark); color:#1B2B4A; border-color:var(--mark)}
+.btn.on{background:var(--ink); color:var(--paper)}
+.btn.good{background:var(--teal); border-color:var(--teal); color:#fff}
+.btn.bad{background:var(--red); border-color:var(--red); color:#fff}
+.btn:disabled{opacity:.4; cursor:default}
+.row{display:flex; gap:8px; flex-wrap:wrap}
+.how{display:flex; gap:6px; flex-wrap:wrap; margin:4px 0 14px; padding:0; list-style:none; font-size:.9rem}
+.how li{background:var(--card); border:1px solid var(--line); border-radius:999px; padding:3px 12px}
+.how li::before{content:attr(data-n); font-weight:700; margin-right:6px; color:var(--teal)}
+.hide{display:none}
+.step{font-weight:700; margin:18px 0 8px}
+/* keyword block */
+.kw{border-left:4px solid var(--ink); padding:4px 0 4px 14px; margin:10px 0}
+.kw .k{font-size:1.15rem; font-weight:700; display:block}
+.kw .m{display:block; color:var(--ink-soft)}
+.kw .e{display:block; font-size:.92rem; margin-top:4px}
+.kw .e::before{content:"예) "; font-weight:700; color:var(--teal)}
+.kw.good{border-color:var(--teal)} .kw.bad{border-color:var(--red)} .kw.mid{border-color:#B8860B}
+.q{font-family:var(--pen); font-size:1.45rem; color:var(--teal); line-height:1.25}
+/* words */
+.words{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.wcard{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:14px}
+.wcard .k{font-size:1.1rem; font-weight:700; display:block}
+.wcard .m{display:block; color:var(--ink-soft); font-size:.92rem; margin:2px 0 8px}
+.wcard .e{display:block; font-size:.88rem; border-top:1px dashed var(--line); padding-top:8px}
+.wcard .e::before{content:"예) "; font-weight:700; color:var(--teal)}
+/* dart explainer */
+.dart{display:grid; grid-template-columns:200px 1fr; gap:20px; align-items:center}
+.dart svg{width:100%; max-width:200px}
+.legend p{margin:6px 0}
+.dot{display:inline-block; width:14px; height:14px; border-radius:50%; vertical-align:-2px; margin-right:6px}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
+.two div{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:12px}
+.two b{font-size:1.05rem}
+.two span{display:block; color:var(--ink-soft); font-size:.9rem}
+.minis{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px}
+.toolgrid,.guessgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px}
+.tbtn{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; text-align:center; background:var(--card); border:1.5px solid var(--line); border-radius:6px; padding:12px 8px; min-height:92px}
+.tbtn:hover{border-color:var(--ink)}
+.tbtn .ic{font-size:1.5rem; line-height:1}
+.tbtn b{font-size:.95rem}
+.tbtn small{color:var(--ink-soft); font-size:.8rem}
+.tbtn.on{border-color:var(--ink); background:color-mix(in srgb,var(--mark) 16%,transparent)}
+.tbtn.good{border-color:var(--teal); background:color-mix(in srgb,var(--teal) 14%,transparent)}
+.tbtn.bad{border-color:var(--red); background:color-mix(in srgb,var(--red) 12%,transparent)}
+.tbtn:disabled{cursor:default}
+.tbtn svg{width:54px; height:54px}
+.ctrl{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.ctrl .btn{padding:9px 6px}
+.locked{opacity:.45}
+.mini{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:10px; text-align:center}
+.mini.on{border-color:var(--ink); background:color-mix(in srgb,var(--mark) 14%,transparent)}
+.mini svg{width:112px; height:112px}
+.mini .badges{margin-top:4px}
+.mini span{display:block; font-size:.88rem; font-weight:500}
+.badge{display:inline-block; font-size:.8rem; border-radius:999px; padding:1px 9px; margin:2px 2px 0 0; border:1px solid}
+.badge.o{color:var(--teal); border-color:var(--teal)} .badge.tri{color:#B8860B; border-color:#B8860B} .badge.x{color:var(--red); border-color:var(--red)}
+/* tools */
+.tgwrap{display:grid; grid-template-columns:230px 1fr; gap:20px; align-items:start}
+svg.tg{width:100%; max-width:230px; display:block}
+/* scatter */
+.chartbox{overflow-x:auto}
+svg.sc{width:100%; min-width:460px; height:auto; display:block}
+.sc text{font-family:var(--sans); font-size:12px; fill:var(--ink-soft)}
+.sc circle{transition:cx .9s ease, fill .4s}
+/* growth */
+.gpair{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.gstu{border:1px solid var(--line); border-radius:6px; padding:12px}
+.gstu b{display:block; margin-bottom:8px}
+.bar{position:relative; height:28px; background:color-mix(in srgb,var(--line) 50%,transparent); border-radius:4px; margin:6px 0; overflow:hidden}
+.bar i{position:absolute; left:0; top:0; bottom:0; border-radius:4px; transition:width .7s ease}
+.bar span{position:absolute; left:8px; top:3px; font-size:.85rem; font-weight:700; color:#1B2B4A}
+.bar.pre i{background:#C9D4DE} .bar.post i{background:var(--mark)}
+.grow{font-weight:700; color:var(--teal); min-height:1.5em}
+/* explanations */
+.datacard{border:1.5px dashed var(--ink); border-radius:6px; padding:12px 14px; margin:14px 0 10px; font-weight:500}
+.exps{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.exp{text-align:left; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:10px 12px}
+.exp.seen{border-color:var(--teal); background:color-mix(in srgb,var(--teal) 10%,transparent)}
+.exp.seen::after{content:" ✓ 말이 돼요"; color:var(--teal); font-size:.85rem; font-weight:700}
+.counter{margin-top:10px; font-weight:700}
+.result{margin-top:12px}
+footer{padding:36px 0 56px; border-top:1px dashed var(--line); font-size:.88rem; color:var(--ink-soft)}
+footer a{color:var(--teal)}
+@media (max-width:760px){.words,.minis,.toolgrid,.guessgrid{grid-template-columns:1fr 1fr}.dart,.tgwrap{grid-template-columns:1fr}.dart svg,svg.tg{margin:0 auto}.gpair,.exps,.two{grid-template-columns:1fr} body{font-size:16px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ep6 */
+:root{--hl-link:#FFCFE0; --hl-feel:#FFDDB0; --hl-word:#BDEBDD; --hl-len:#FFE89A; --hl-sent:#D6DEFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hl-link:rgba(255,120,165,.36); --hl-feel:rgba(255,160,80,.40); --hl-word:rgba(80,210,170,.34); --hl-len:rgba(255,214,77,.38); --hl-sent:rgba(130,160,255,.36)}}
+:root[data-theme="dark"]{--hl-link:rgba(255,120,165,.36); --hl-feel:rgba(255,160,80,.40); --hl-word:rgba(80,210,170,.34); --hl-len:rgba(255,214,77,.38); --hl-sent:rgba(130,160,255,.36)}
+.btn.good:disabled,.btn.bad:disabled{opacity:1}
+.big{margin:14px 0 6px; padding:16px 18px; border-radius:10px; background:#1B2B4A; color:#fff}
+.big .t{display:block; font-size:clamp(1.25rem,3.6vw,1.6rem); font-weight:700; line-height:1.35}
+.big .t em{font-style:normal; color:var(--mark)}
+.big .s{display:block; margin-top:6px; color:#C9D4DE; font-size:.95rem}
+.guide{margin:0 0 14px; padding:12px 14px; border:1.5px dashed var(--line); border-radius:8px; background:var(--card)}
+.guide>b{display:block; margin-bottom:4px}
+.guide ol{margin:0; padding-left:1.2rem}
+.guide li{margin:3px 0}
+.analogy{margin:10px 0 14px; padding:12px 14px; border-radius:8px; background:color-mix(in srgb,var(--mark) 16%,transparent); font-size:.98rem; line-height:1.6}
+.analogy>b{display:block; margin-bottom:2px}
+.resetrow{display:flex; justify-content:flex-end; margin-top:12px}
+.reset{border:1.5px solid var(--line); background:var(--card); border-radius:999px; padding:7px 16px; font-weight:500; color:var(--ink-soft)}
+.reset:hover{border-color:var(--ink); color:var(--ink)}
+.words5{display:grid; grid-template-columns:repeat(5,1fr); gap:8px}
+.words5 .wcard{padding:12px}
+.words5 .sw{display:block; height:8px; border-radius:4px; margin-bottom:8px}
+.note{font-size:.86rem; color:var(--ink-soft); margin:8px 0 0}
+
+:root{--m-scr:#4F6FCB; --m-mic:#C94C76; --m-cam:#2E8C83}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--m-scr:#8FA8F0; --m-mic:#F08BAE; --m-cam:#5FC2B6}}
+:root[data-theme="dark"]{--m-scr:#8FA8F0; --m-mic:#F08BAE; --m-cam:#5FC2B6}
+.words3{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.note{font-size:.86rem; color:var(--ink-soft); margin:8px 0 0}
+.out{margin-top:12px}
+
+/* lamp */
+.lampwrap{display:grid; grid-template-columns:150px 1fr; gap:16px; align-items:center; margin:12px 0}
+.lampwrap svg{width:100%; max-width:150px}
+.lamp-bg{fill:color-mix(in srgb,var(--ink) 88%,transparent)}
+.lamp-text{font-family:var(--sans); font-size:12px; font-weight:700}
+
+/* ① sensors */
+.sensors{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.sbtn{background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:10px 8px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:2px}
+.sbtn .ic{font-size:1.5rem; line-height:1}
+.sbtn b{font-size:.98rem}
+.sbtn small{color:var(--ink-soft); font-size:.8rem; line-height:1.35}
+.sbtn .sw{font-size:.75rem; font-weight:700; border-radius:999px; padding:1px 9px; margin-top:4px; border:1px solid var(--line); color:var(--ink-soft)}
+.sbtn.on{border-width:2.5px}
+.sbtn.on .sw{color:#fff}
+.sbtn[data-m="scr"].on{border-color:var(--m-scr)} .sbtn[data-m="scr"].on .sw{background:var(--m-scr); border-color:var(--m-scr)}
+.sbtn[data-m="mic"].on{border-color:var(--m-mic)} .sbtn[data-m="mic"].on .sw{background:var(--m-mic); border-color:var(--m-mic)}
+.sbtn[data-m="cam"].on{border-color:var(--m-cam)} .sbtn[data-m="cam"].on .sw{background:var(--m-cam); border-color:var(--m-cam)}
+.sbtn:disabled{opacity:.45; cursor:default}
+.kids{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px}
+.kid{background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:6px; position:relative}
+.kid .nm{font-weight:700; font-size:1.05rem}
+.kid .scene{font-family:var(--pen); font-size:1.2rem; color:var(--ink-soft); line-height:1.2; min-height:2.6em}
+.kid .mb{display:grid; grid-template-columns:22px 1fr 30px; gap:6px; align-items:center; font-size:.78rem}
+.kid .mb .tr{height:10px; border-radius:5px; background:color-mix(in srgb,var(--line) 55%,transparent); overflow:hidden}
+.kid .mb .tr i{display:block; height:100%; border-radius:5px; transition:width .5s ease}
+.kid .mb.off{opacity:.25}
+.kid .mb b{text-align:right; font-variant-numeric:tabular-nums}
+.kid .est{border-top:1px dashed var(--line); padding-top:6px; display:flex; justify-content:space-between; align-items:baseline}
+.kid .est span{font-size:.8rem; color:var(--ink-soft)}
+.kid .est b{font-size:1.4rem; font-variant-numeric:tabular-nums}
+.kid.low{border-color:var(--red); background:color-mix(in srgb,var(--red) 6%,var(--card))}
+.kid.low::after{content:"참여 낮음?"; position:absolute; top:-10px; right:10px; background:var(--red); color:#fff; font-size:.72rem; font-weight:700; border-radius:999px; padding:1px 8px}
+.kid.pick{outline:3px solid var(--mark); outline-offset:2px}
+button.kid{text-align:left}
+button.kid:hover{border-color:var(--ink)}
+
+/* ② mapping tree */
+.tree{display:grid; grid-template-columns:120px 1fr 1fr 1fr; gap:6px; align-items:stretch; margin-bottom:14px}
+.tree .hd{font-size:.78rem; font-weight:700; color:var(--ink-soft); text-align:center}
+.tree .root{grid-row:span 4; background:#1B2B4A; color:#fff; border-radius:8px; display:grid; place-items:center; text-align:center; font-weight:700; padding:8px; line-height:1.35}
+.tree .root small{display:block; font-weight:400; font-size:.78rem; color:#C9D4DE}
+.tree .cell{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:6px 8px; font-size:.86rem; line-height:1.4; min-height:42px; display:flex; align-items:center}
+.tree .cell.q{color:var(--ink-soft); justify-content:center; border-style:dashed}
+.tree .cell.ok{border-color:var(--teal); background:color-mix(in srgb,var(--teal) 9%,var(--card))}
+.maps{display:grid; gap:10px}
+.mrow{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; display:grid; gap:8px}
+.mrow .bh{font-weight:700}
+.mrow .bh i{font-style:normal; font-size:.78rem; color:var(--teal); margin-right:6px}
+.mrow .opts{display:grid; grid-template-columns:repeat(3,1fr); gap:6px}
+.mrow .opts .btn{padding:7px 6px; font-size:.9rem; text-align:center}
+.mrow .why{font-size:.88rem; color:var(--ink-soft); border-top:1px dashed var(--line); padding-top:6px}
+
+/* ③ presentation */
+.pres{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:start}
+.ctl{display:grid; gap:12px}
+.ctl label{display:grid; gap:4px; font-size:.92rem}
+.ctl label b{display:flex; justify-content:space-between}
+.ctl label b span{font-variant-numeric:tabular-nums; color:var(--teal)}
+.ctl input[type=range]{width:100%; accent-color:var(--teal)}
+.tog{display:grid; grid-template-columns:1fr 1fr; gap:6px}
+.stage{background:color-mix(in srgb,var(--paper) 60%,var(--card)); border:1px solid var(--line); border-radius:8px; padding:8px}
+.stage svg{width:100%; height:auto; display:block}
+.report{background:var(--card); border:1.5px solid var(--ink); border-radius:8px; padding:12px 14px; margin-top:10px}
+.report .tt{display:flex; justify-content:space-between; align-items:baseline; font-weight:700; border-bottom:1px dashed var(--line); padding-bottom:6px; margin-bottom:6px}
+.report .tt b{font-size:1.5rem; font-variant-numeric:tabular-nums}
+.rrow{display:grid; grid-template-columns:1fr 54px; gap:8px; align-items:center; font-size:.9rem; padding:4px 0}
+.rrow .nm{display:block}
+.rrow small{display:block; color:var(--ink-soft); font-size:.8rem}
+.rrow .sc{font-weight:700; text-align:right; font-variant-numeric:tabular-nums}
+.rrow .sc.lo{color:var(--red)} .rrow .sc.hi{color:var(--teal)}
+.chain{font-size:.78rem; color:var(--ink-soft)}
+.trap{margin-top:12px}
+
+/* ④ */
+.qcard{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-bottom:10px}
+.qcard .qq{font-weight:700; margin-bottom:8px}
+.opts3{display:grid; grid-template-columns:repeat(3,1fr); gap:6px}
+.opts3 .btn,.opts2 .btn{text-align:left; font-size:.92rem; padding:8px 10px}
+.opts2{display:grid; grid-template-columns:1fr 1fr; gap:6px}
+.ans6{margin-top:8px; font-size:.92rem; border-radius:6px; padding:8px 10px; background:color-mix(in srgb,var(--mark) 14%,transparent)}
+
+@media (max-width:760px){
+  .words3{grid-template-columns:1fr}
+  .lampwrap{grid-template-columns:96px 1fr}
+  .kids{grid-template-columns:1fr 1fr}
+  .tree{grid-template-columns:78px 1fr 1fr 1fr; font-size:.8rem}
+  .tree .cell{font-size:.76rem; padding:5px 6px}
+  .mrow .opts{grid-template-columns:1fr}
+  .pres{grid-template-columns:1fr}
+  .opts3{grid-template-columns:1fr}
+  .opts2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="series">학습분석 핸드북 읽기 7편 · 같이 해 보기</div>
+  <h1>가로등 밑만 찾고 있지 않나요?</h1>
+  <div class="kw"><span class="k">다중모드 학습분석 (MmLA)</span><span class="m">화면 기록뿐 아니라 영상, 음성, 몸짓, 시선처럼 여러 데이터를 함께 써서 배움을 읽는 방법</span><span class="e">모둠활동을 카메라와 마이크로 기록해 협업을 살펴보기</span></div>
+  <ul class="how"><li data-n="①">감지기를 켜며 참여 재 보기</li><li data-n="②">배움에서 데이터로 내려가기</li><li data-n="③">발표 피드백 시스템</li><li data-n="④">언제 알려 주고, 어디까지 찍을까</li></ul>
+</header>
+
+<section>
+  <h2>0. 세 낱말부터</h2>
+  <div class="words3">
+    <div class="wcard"><span class="k">모드</span><span class="m">뜻을 주고받는 방식</span><span class="e">말, 글, 표정, 몸짓, 시선</span></div>
+    <div class="wcard"><span class="k">매체</span><span class="m">모드를 담는 그릇</span><span class="e">영상 하나에 표정·자세·손동작이 함께 담김</span></div>
+    <div class="wcard"><span class="k">학습 구인</span><span class="m">알고 싶지만 눈에 직접 안 보이는 배움</span><span class="e">참여, 협업 능력, 발표 실력</span></div>
+  </div>
+  <div class="lampwrap">
+    <svg viewBox="0 0 150 170" role="img" aria-label="가로등 아래에서만 열쇠를 찾는 그림">
+      <rect class="lamp-bg" x="0" y="0" width="150" height="170" rx="10"/>
+      <polygon points="58,40 92,40 130,150 20,150" fill="#F2C230" opacity=".35"/>
+      <rect x="72" y="18" width="6" height="140" fill="#C9D4DE"/>
+      <rect x="56" y="30" width="38" height="12" rx="4" fill="#F2C230"/>
+      <text x="75" y="140" text-anchor="middle" class="lamp-text" fill="#1B2B4A">화면 기록</text>
+      <text x="20" y="80" class="lamp-text" fill="#8C9AB3">대화</text>
+      <text x="108" y="70" class="lamp-text" fill="#8C9AB3">손</text>
+      <text x="118" y="104" class="lamp-text" fill="#8C9AB3">시선</text>
+      <circle cx="18" cy="120" r="5" fill="#F2C230"/><text x="10" y="112" class="lamp-text" fill="#F2C230" font-size="10">열쇠</text>
+    </svg>
+    <div class="big" style="margin:0"><span class="t"><em>가로등 효과</em>: 답이 있는 곳이 아니라, 밝은 곳만 찾는다</span><span class="s">열쇠는 어두운 데 떨어뜨렸는데 가로등 밑만 뒤지는 것처럼, 학습분석도 구하기 쉬운 화면 기록만 보기 쉬워요.</span></div>
+  </div>
+</section>
+
+<section id="s1">
+  <h2>① 감지기를 하나씩 켜며 '참여'를 재 보세요</h2>
+  <div class="big"><span class="t">한 가지 데이터로는 <em>참여가 낮아 보이는</em> 학생이, 여러 데이터로는 다르게 보인다</span></div>
+  <div class="guide"><b>이렇게 해 보세요</b><ol>
+    <li>4명이 태블릿 한 대로 모둠 과제를 했어요. 지금은 <b>🖥️ 화면 기록</b>만 켜져 있어요.</li>
+    <li>먼저 "참여가 가장 낮은 학생"을 <b>눌러서</b> 골라요.</li>
+    <li>그다음 <b>🎙️ 마이크</b>, <b>📷 카메라</b>를 차례로 켜고 점수가 어떻게 바뀌는지 보세요.</li></ol></div>
+  <div class="card">
+    <div class="sensors" id="sensors"></div>
+    <div class="kids" id="kids1"></div>
+    <p class="note">추정 참여 = 켜진 감지기 점수의 평균이에요. 실제 시스템은 훨씬 복잡하게 합쳐요(융합).</p>
+    <div id="out1" class="out" aria-live="polite"></div>
+    <div class="resetrow"><button class="reset" id="reset1">↺ 처음으로</button></div>
+  </div>
+</section>
+
+<section id="s2">
+  <h2>② 배움에서 데이터로, 나뭇가지처럼 내려가기</h2>
+  <div class="big"><span class="t">"무슨 데이터가 있지?"가 아니라 <em>"그 배움은 어떤 행동으로 드러나지?"</em>에서 출발</span><span class="s">6장은 이 순서(도식화)가 가로등 효과를 막는 열쇠라고 말해요.</span></div>
+  <div class="guide"><b>이렇게 해 보세요</b><ol>
+    <li>알고 싶은 배움은 <b>모둠의 협업 능력</b>이에요. 네 가지 행동으로 나눠 두었어요.</li>
+    <li>각 행동을 확인하려면 <b>어떤 데이터 흔적</b>이 필요한지 골라요.</li>
+    <li>맞히면 위의 나뭇가지 그림이 한 줄씩 채워져요.</li></ol></div>
+  <div class="card">
+    <div class="tree" id="tree"></div>
+    <div class="maps" id="maps"></div>
+    <div id="out2" class="out" aria-live="polite"></div>
+    <div class="resetrow"><button class="reset" id="reset2">↺ 처음으로</button></div>
+  </div>
+</section>
+
+<section id="s3">
+  <h2>③ 발표 연습 피드백 시스템을 직접 움직여 보세요</h2>
+  <div class="big"><span class="t">웹캠 하나, 마이크 하나로도 <em>행동을 잘 쪼개면</em> 충분하다</span><span class="s">6장의 실제 사례: '기본 발표 기술'을 네 가지 행동으로 나누고, 각각을 데이터 하나로 확인했어요.</span></div>
+  <div class="guide"><b>이렇게 해 보세요</b><ol>
+    <li>왼쪽 조절 막대로 발표자의 모습을 바꿔 보세요. 그림과 보고서가 바로 바뀌어요.</li>
+    <li>보고서의 각 줄 아래 작은 글씨로 <b>데이터 → 분석 → 행동</b> 연결이 보여요.</li>
+    <li>마지막으로 <b>⚠️ 메모를 보며 발표</b>를 눌러 기계가 잘못 읽는 순간을 확인해요.</li></ol></div>
+  <div class="card">
+    <div class="pres">
+      <div class="ctl">
+        <label for="r_gaze"><b>청중 바라보기 <span id="v_gaze"></span></b><input type="range" id="r_gaze" min="0" max="100" step="5"></label>
+        <div><b style="font-size:.92rem">자세</b><div class="tog" id="t_pose" style="margin-top:4px"><button class="btn" data-v="open">🙆 팔을 편 열린 자세</button><button class="btn" data-v="closed">🙅 팔짱 낀 닫힌 자세</button></div></div>
+        <label for="r_vol"><b>목소리 크기 <span id="v_vol"></span></b><input type="range" id="r_vol" min="0" max="100" step="5"></label>
+        <label for="r_fill"><b>"음…", "어…" 추임새 (1분당) <span id="v_fill"></span></b><input type="range" id="r_fill" min="0" max="12" step="1"></label>
+        <button class="btn" id="trap">⚠️ 메모를 보며 발표</button>
+      </div>
+      <div>
+        <div class="stage"><svg id="stage" viewBox="0 0 320 200" role="img" aria-label="발표자 그림"></svg></div>
+        <div class="report" id="report"></div>
+      </div>
+    </div>
+    <div id="out3" class="out" aria-live="polite"></div>
+    <div class="resetrow"><button class="reset" id="reset3">↺ 처음으로</button></div>
+  </div>
+</section>
+
+<section id="s4">
+  <h2>④ 언제 알려 주고, 어디까지 찍을까?</h2>
+  <div class="big"><span class="t">무엇을 아느냐만큼 <em>언제, 어떻게, 누구를 위해</em> 쓰느냐가 중요하다</span></div>
+  <div class="guide"><b>이렇게 해 보세요</b><ol>
+    <li>세 가지 상황에서 가장 알맞다고 생각하는 답을 골라요.</li>
+    <li>고르면 6장이 말하는 이유가 나와요. 다시 눌러 바꿀 수도 있어요.</li></ol></div>
+  <div class="card" id="q4"></div>
+  <div id="out4" class="out" aria-live="polite"></div>
+  <div class="resetrow"><button class="reset" id="reset4">↺ 처음으로</button></div>
+</section>
+
+<section>
+  <h2>오늘의 정리</h2>
+  <div class="card">
+    <div class="kw good"><span class="k">밝은 곳만 보지 않기</span><span class="m">화면 기록 하나로는 참여가 낮아 보이는 학생이 생겨요</span></div>
+    <div class="kw good"><span class="k">한 데이터도 혼자서는 약하다</span><span class="m">말이 많다고 참여가 높은 것도 아니에요. 여러 단서를 맞춰 봐요(삼각 검증)</span></div>
+    <div class="kw good"><span class="k">배움 → 행동 → 분석 → 데이터</span><span class="m">데이터가 아니라 알고 싶은 배움에서 출발해요(도식화)</span></div>
+    <div class="kw good"><span class="k">기계의 판단은 사람과 맞춰 보기</span><span class="m">메모를 보는 것도 '청중 외면'으로 읽힐 수 있어요</span></div>
+    <div class="kw good"><span class="k">현장 데이터는 학생에게 돌아가게</span><span class="m">언제 알려 줄지, 누구를 위해 찍는지부터 정해요</span></div>
+    <p class="q">배움은 화면 밖에서도 일어난다. 가로등 밖을 비추되, 알고 싶은 배움에서 출발할 것.</p>
+  </div>
+</section>
+
+<footer>
+  <p>이 페이지는 『학습분석 핸드북』 6장을 읽고 개인 학습 목적으로 만든 자료이며, 원문을 대신하지 않습니다. 학생 이름과 점수는 설명을 위해 만든 가상의 예시입니다.</p>
+  <p>원문: Ochoa, X. (2022). Multimodal learning analytics: Rationale, process, examples, and direction. In <i>Handbook of Learning Analytics</i> (2nd ed.). SoLAR. DOI: 10.18608/hla22.006 · <a href="https://www.solaresearch.org/publications/hla-22/" target="_blank" rel="noopener">SoLAR 공식 페이지</a><br>
+  번역본: 한국교육학술정보원 (2023). 『학습분석 핸드북』. 연구자료 IEI 2023-02.</p>
+  <p>공학하는 기술쌤</p>
+</footer>
+</div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const kw=(c,k,m)=>'<div class="kw '+c+'" style="margin-top:12px"><span class="k">'+k+'</span>'+(m?'<span class="m">'+m+'</span>':'')+'</div>';
+
+/* ---------- ① ---------- */
+const SENS=[
+ {m:'scr',ic:'🖥️',n:'화면 기록',s:'태블릿을 누른 횟수'},
+ {m:'mic',ic:'🎙️',n:'마이크',s:'말한 시간'},
+ {m:'cam',ic:'📷',n:'카메라',s:'과제를 보는 시선·손'}
+];
+const KIDS=[
+ {n:'민서',sc:'태블릿을 계속 들고 입력했어요',v:{scr:90,mic:35,cam:55}},
+ {n:'하준',sc:'태블릿은 안 만졌지만 결정적인 아이디어를 냈어요',v:{scr:5,mic:70,cam:85}},
+ {n:'유나',sc:'골고루 조금씩 했어요',v:{scr:55,mic:55,cam:60}},
+ {n:'태오',sc:'말은 많이 했지만 주로 다른 이야기였어요',v:{scr:40,mic:90,cam:15}}
+];
+let on1={scr:true,mic:false,cam:false},pick1=null;
+function est(k){const ms=Object.keys(on1).filter(m=>on1[m]);return Math.round(ms.reduce((a,m)=>a+k.v[m],0)/ms.length)}
+function render1(){
+  $('sensors').innerHTML='';
+  SENS.forEach(S=>{const b=document.createElement('button');b.className='sbtn'+(on1[S.m]?' on':'');b.dataset.m=S.m;
+    b.innerHTML='<span class="ic">'+S.ic+'</span><b>'+S.n+'</b><small>'+S.s+'</small><span class="sw">'+(on1[S.m]?'켜짐':'꺼짐')+'</span>';
+    b.disabled=!pick1&&S.m!=='scr';
+    b.onclick=()=>{if(S.m==='scr'&&Object.values(on1).filter(Boolean).length===1&&on1.scr)return;on1[S.m]=!on1[S.m];render1()};
+    $('sensors').appendChild(b)});
+  const es=KIDS.map(est),mn=Math.min(...es);
+  $('kids1').innerHTML='';
+  KIDS.forEach((k,i)=>{const b=document.createElement('button');b.className='kid'+(es[i]===mn?' low':'')+(pick1===i?' pick':'');
+    b.innerHTML='<span class="nm">'+k.n+'</span><span class="scene">'+k.sc+'</span>'+
+      SENS.map(S=>'<div class="mb'+(on1[S.m]?'':' off')+'"><span>'+S.ic+'</span><span class="tr"><i style="width:'+(on1[S.m]?k.v[S.m]:0)+'%;background:var(--m-'+S.m+')"></i></span><b>'+(on1[S.m]?k.v[S.m]:'–')+'</b></div>').join('')+
+      '<div class="est"><span>추정 참여</span><b>'+es[i]+'</b></div>';
+    b.onclick=()=>{if(pick1===null){pick1=i;render1()}};
+    $('kids1').appendChild(b)});
+  const out=$('out1');
+  if(pick1===null){out.innerHTML='<p class="note">👆 학생 카드를 눌러 "참여가 가장 낮은 학생"을 골라 주세요. 지금은 화면 기록만 보고 있어요.</p>';return}
+  let h='<p style="margin:0"><b>내가 고른 학생: '+KIDS[pick1].n+'</b> · 이제 위에서 🎙️ 마이크와 📷 카메라를 켜 보세요.</p>';
+  if(on1.mic&&!on1.cam)h+=kw('mid','마이크를 켜니 하준이가 올라왔어요','그런데 이번엔 태오가 가장 높아요. 말을 많이 했다고 참여가 높은 걸까요? 카메라도 켜 보세요.');
+  if(on1.cam&&!on1.mic)h+=kw('mid','카메라를 켜니 하준이가 가장 높아요','화면을 안 만졌을 뿐, 과제를 계속 보고 있었어요. 마이크도 켜 보세요.');
+  if(on1.mic&&on1.cam&&on1.scr){
+    h+=kw('good','세 감지기를 모두 켜면 가장 낮은 학생은 태오예요','화면 기록만 봤을 때 가장 낮던 하준이는 오히려 높은 편이에요.');
+    h+=kw('bad','그래도 "태오 = 참여 안 함"은 아직 판정이 아니에요','말은 많았지만 다른 이야기였다는 건 교사가 본 장면이에요. 데이터가 여럿이어도 맥락은 사람이 맞춰 봐야 해요.');
+    h+='<div class="analogy" style="margin-top:12px"><b>💡 삼각 검증</b>한 가지 데이터는 혼자서는 약한 단서예요. 화면, 말, 시선처럼 서로 다르지만 관련 있는 단서를 맞춰 볼 때 "다가가 볼까?"를 더 자신 있게 정할 수 있어요.</div>';
+  }
+  out.innerHTML=h;
+}
+$('reset1').onclick=()=>{on1={scr:true,mic:false,cam:false};pick1=null;render1()};
+render1();
+
+/* ---------- ② ---------- */
+const MAP=[
+ {b:'자기 생각을 말한다',sub:'참여',o:['말한 시간 (마이크)','태블릿 클릭 수 (화면)','앉은 자리 (사진)'],a:0,an:'말한 시간이 0보다 길다',w:'말로 생각을 내는 행동이니 마이크의 "누가, 얼마나 말했나"가 흔적이에요.'},
+ {b:'친구 말을 귀 기울여 듣는다',sub:'적극적 경청',o:['말한 시간 (마이크)','말하는 친구 쪽을 보는 시선 (카메라)','과제 제출 시각 (LMS)'],a:1,an:'시선이 말하는 사람을 향한다',w:'듣는 행동은 소리가 아니라 시선에서 드러나요. 그래서 듣는 학생은 마이크로는 안 보여요.'},
+ {b:'함께 고친다',sub:'참여',o:['같은 도면 위의 여러 손 (카메라)','모둠 점수 (성적표)','접속 시간 (LMS)'],a:0,an:'두 사람 이상의 손이 같은 곳에 있다',w:'함께 고치는 순간은 손 위치 영상에서 잡혀요. 6장의 협력 문제해결 사례에서도 손 위치를 썼어요.'},
+ {b:'서로 번갈아 말한다',sub:'적극적 경청',o:['말한 사람이 바뀌는 순서 (마이크)','글자 수 (보고서)','태블릿 화면 밝기'],a:0,an:'말하는 사람이 고르게 바뀐다',w:'누가 언제 말을 이어받는지(번갈아 하기)는 음성에서 말하는 사람이 바뀌는 지점을 찾아 알아내요.'}
+];
+let ans2={};
+function render2(){
+  let t='<div class="hd">학습 구인</div><div class="hd">행동 표식</div><div class="hd">분석 방법</div><div class="hd">데이터 흔적</div>';
+  t+='<div class="root">협업 능력<small>참여 + 적극적 경청</small></div>';
+  MAP.forEach((m,i)=>{const ok=ans2[i]===m.a;
+    t+='<div class="cell ok">'+m.b+'</div><div class="cell'+(ok?' ok':' q')+'">'+(ok?m.an:'?')+'</div><div class="cell'+(ok?' ok':' q')+'">'+(ok?m.o[m.a]:'?')+'</div>'});
+  $('tree').innerHTML=t.replace('<div class="root">','<div class="root" style="grid-column:1;grid-row:2 / span 4">');
+  // fix grid: place header row then rows
+  const cells=[...$('tree').children];
+  cells.forEach((c,i)=>{if(i>=5){const r=Math.floor((i-5)/3);const col=(i-5)%3;c.style.gridRow=(r+2);c.style.gridColumn=(col+2)}});
+  $('maps').innerHTML='';
+  MAP.forEach((m,i)=>{const d=document.createElement('div');d.className='mrow';const p=ans2[i];
+    d.innerHTML='<div class="bh"><i>'+m.sub+'</i>'+m.b+'</div><div class="opts">'+m.o.map((o,j)=>{let c='btn';if(p===j)c+=(j===m.a?' good':' bad');return '<button class="'+c+'" data-i="'+i+'" data-j="'+j+'">'+o+'</button>'}).join('')+'</div>'+
+      (p!==undefined?'<div class="why">'+(p===m.a?'⭕ '+m.w:'다시 골라 보세요. 이 행동이 일어날 때 <b>무엇이 기록될까요?</b>')+'</div>':'');
+    $('maps').appendChild(d)});
+  $('maps').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{ans2[b.dataset.i]=+b.dataset.j;render2()});
+  const n=MAP.filter((m,i)=>ans2[i]===m.a).length;
+  $('out2').innerHTML=n===4?kw('good','나뭇가지가 완성됐어요!','필요한 데이터가 LMS가 아니라 마이크와 카메라라는 걸 배움에서 출발했기 때문에 알 수 있었어요.')+
+    '<div class="analogy" style="margin-top:12px"><b>🔁 실행 단계는 이 나뭇가지를 거꾸로</b>기록(마이크·카메라) → 특징 추출(말한 시간, 시선 방향) → 분석과 융합(두 학생의 시선이 같은 곳에서 만난다) → 행동 탐지와 구인 추정(경청 수준) 순서로 다시 올라가요.</div>'
+    :'<p class="note">채운 가지 '+n+' / 4</p>';
+}
+$('reset2').onclick=()=>{ans2={};render2()};
+render2();
+
+/* ---------- ③ ---------- */
+const D3={gaze:40,pose:'closed',vol:35,fill:7,trap:false};
+let st3=Object.assign({},D3);
+const NS='http://www.w3.org/2000/svg';
+function drawStage(){
+  const s=$('stage');const g=st3.trap?20:st3.gaze;const look=g>=50;
+  const open=st3.pose==='open';
+  s.innerHTML=
+   '<rect x="0" y="0" width="320" height="200" fill="none"/>'+
+   // audience screen
+   '<rect x="190" y="30" width="118" height="78" rx="6" fill="color-mix(in srgb,var(--line) 70%,transparent)" stroke="var(--ink-soft)"/>'+
+   [0,1,2].map(i=>'<circle cx="'+(214+i*35)+'" cy="62" r="9" fill="var(--ink-soft)"/><rect x="'+(204+i*35)+'" y="73" width="20" height="18" rx="6" fill="var(--ink-soft)"/>').join('')+
+   '<text x="249" y="122" text-anchor="middle" font-size="11" fill="var(--ink-soft)" font-family="sans-serif">청중 영상 + 웹캠</text>'+
+   '<circle cx="249" cy="38" r="4" fill="var(--red)"/>'+
+   // presenter
+   '<g transform="translate(80,40)">'+
+   '<circle cx="0" cy="18" r="17" fill="var(--card)" stroke="var(--ink)" stroke-width="2.5"/>'+
+   (st3.trap?'<circle cx="-5" cy="24" r="2.2" fill="var(--ink)"/><circle cx="5" cy="24" r="2.2" fill="var(--ink)"/>':
+     (look?'<circle cx="6" cy="16" r="2.2" fill="var(--ink)"/><circle cx="14" cy="16" r="2.2" fill="var(--ink)"/>':'<circle cx="-12" cy="16" r="2.2" fill="var(--ink)"/><circle cx="-4" cy="16" r="2.2" fill="var(--ink)"/>'))+
+   '<line x1="0" y1="35" x2="0" y2="95" stroke="var(--ink)" stroke-width="3"/>'+
+   (open?'<line x1="0" y1="50" x2="-34" y2="30" stroke="var(--ink)" stroke-width="3"/><line x1="0" y1="50" x2="36" y2="32" stroke="var(--ink)" stroke-width="3"/>'
+        :'<path d="M0 52 L-18 62 L14 64" fill="none" stroke="var(--ink)" stroke-width="3"/><path d="M0 52 L18 62 L-14 66" fill="none" stroke="var(--ink)" stroke-width="3"/>')+
+   '<line x1="0" y1="95" x2="-16" y2="135" stroke="var(--ink)" stroke-width="3"/><line x1="0" y1="95" x2="16" y2="135" stroke="var(--ink)" stroke-width="3"/>'+
+   (st3.trap?'<rect x="-14" y="62" width="22" height="16" rx="2" fill="var(--mark)" stroke="var(--ink)"/>':'')+
+   // voice waves
+   Array.from({length:Math.max(1,Math.round(st3.vol/25))},(_,i)=>'<path d="M'+(26+i*9)+' 6 q8 12 0 24" fill="none" stroke="var(--teal)" stroke-width="2.2" opacity="'+(0.9-i*0.15)+'"/>').join('')+
+   (st3.fill>3?'<text x="-60" y="2" font-size="13" fill="var(--red)" font-family="sans-serif" font-weight="700">음… 어…</text>':'')+
+   '</g>'+
+   (look&&!st3.trap?'<line x1="100" y1="58" x2="240" y2="40" stroke="var(--mark)" stroke-width="2" stroke-dasharray="4 3"/>':'');
+}
+function score(){
+  const g=st3.trap?20:st3.gaze;
+  const sG=Math.round(g/100*25), sP=st3.pose==='open'?25:8, sV=Math.round(Math.min(st3.vol,80)/80*25), sF=Math.max(0,25-st3.fill*3);
+  return {g,sG,sP,sV,sF,T:sG+sP+sV+sF};
+}
+function render3(){
+  $('r_gaze').value=st3.gaze;$('r_vol').value=st3.vol;$('r_fill').value=st3.fill;
+  $('v_gaze').textContent=st3.gaze+'% 시간';$('v_vol').textContent=st3.vol<40?'작음':(st3.vol<70?'보통':'큼');$('v_fill').textContent=st3.fill+'번';
+  document.querySelectorAll('#t_pose .btn').forEach(b=>b.classList.toggle('on',b.dataset.v===st3.pose));
+  $('trap').classList.toggle('on',st3.trap);$('trap').textContent=st3.trap?'↩ 메모 내려놓기':'⚠️ 메모를 보며 발표';
+  drawStage();
+  const s=score();const cls=v=>v>=19?'hi':(v<=10?'lo':'');
+  const row=(n,v,ch,tip)=>'<div class="rrow"><div><span class="nm">'+n+'</span><small class="chain">'+ch+'</small>'+(tip?'<small>'+tip+'</small>':'')+'</div><span class="sc '+cls(v)+'">'+v+'/25</span></div>';
+  $('report').innerHTML='<div class="tt"><span>📋 발표 피드백 보고서</span><b>'+s.T+'점</b></div>'+
+    row('👀 청중 바라보기',s.sG,'웹캠 → 머리 방향 → 카메라 쪽을 본 시간 '+s.g+'%',s.sG<13?'청중 쪽을 더 자주 봐요':'')+
+    row('🙆 열린 자세',s.sP,'웹캠 → 뼈대 위치 → 팔이 몸 옆에 열려 있음',s.sP<13?'팔짱을 풀어 보세요':'')+
+    row('🔊 큰 목소리',s.sV,'마이크 → 음량 → 기준값을 넘는가',s.sV<13?'조금 더 크게 말해요':'')+
+    row('🤐 추임새 줄이기',s.sF,'마이크 → 목소리 특징 → "음…"이 이어지는 구간',s.sF<13?'"음…" 대신 잠깐 멈춰도 괜찮아요':'');
+  const out=$('out3');
+  if(st3.trap){out.innerHTML=kw('bad','메모를 봤을 뿐인데 "청중 외면"이 됐어요','웹캠은 고개 숙인 것만 보고, 메모를 보며 정리하는 중인지는 몰라요. 그래서 6장은 기계의 판단이 사람 평가와 얼마나 일치하는지 꼭 확인하라고 해요.')+
+    '<div class="analogy" style="margin-top:12px"><b>💡 이 시스템이 단순했던 이유</b>행동 하나를 데이터 하나로만 확인했어요(시선 → 머리 방향). 그래서 한 데이터의 실수가 그대로 점수에 들어가요. 행동을 잘 쪼갠 대신, 데이터를 정확하게 뽑는 게 더 중요해졌어요.</div>';}
+  else if(s.T>=85)out.innerHTML=kw('good','좋은 발표 자세예요!','실제 시스템도 행동별 점수와 함께 잘한 장면, 아쉬운 장면의 영상을 보여 줬어요.');
+  else out.innerHTML='<p class="note">조절 막대를 움직여 80점을 넘겨 보세요. 그다음 ⚠️ 메모를 보며 발표를 눌러 보세요.</p>';
+}
+['gaze','vol','fill'].forEach(k=>$('r_'+k).addEventListener('input',e=>{st3[k]=+e.target.value;render3()}));
+document.querySelectorAll('#t_pose .btn').forEach(b=>b.onclick=()=>{st3.pose=b.dataset.v;render3()});
+$('trap').onclick=()=>{st3.trap=!st3.trap;render3()};
+$('reset3').onclick=()=>{st3=Object.assign({},D3);render3()};
+render3();
+
+/* ---------- ④ ---------- */
+const Q4=[
+ {q:'모둠 하나가 막혀서 어려워하고 있다는 신호가 잡혔어요. 언제, 어떻게 알려 줄까요?',o:['활동이 끝난 뒤 교사에게 보고서로','활동 중에 교사만 보는 작은 신호등으로','활동 중에 학생마다 폰에 협력 점수를 띄워서'],a:1,
+  w:['끝난 뒤에 알면 이미 도울 수 있는 때를 놓쳐요. 돌아보기용으로는 좋지만, 개입하기에는 늦어요.','6장이 소개한 방식이에요. 교사가 한눈에 알아보고 바로 다가갈 수 있고, 학생들의 활동은 방해하지 않아요.','활동 중에 폰 화면을 보게 하면 오히려 협력에서 주의가 흩어질 수 있다고 6장은 경고해요.']},
+ {q:'발표 수업 영상을 찍으려 해요. 가장 알맞은 쓰임은?',o:['학생이 자기 발표를 돌아보는 데만 쓰고 학기 말에 지운다','학생 동의 없이 수업 개선 연구 자료로 모아 둔다','관리자에게 교사 수업 평가 자료로 제출한다'],a:0,
+  w:['현장에서 모은 데이터는 관찰받은 학생의 이익을 위해 쓰여야 한다는 6장의 방향과 맞아요. 쓰임과 지우는 시점을 미리 알리면 더 좋아요.','연구라면 실험실처럼 동의를 받고 목적을 밝힌 상태에서 해야 해요. 동의 없는 수집은 강한 저항을 부를 수 있어요.','학생을 위한 데이터가 다른 사람의 평가 도구가 되면 감시로 느껴지기 쉬워요. 13장에서 본 교사의 걱정과도 이어져요.']},
+ {q:'모둠 협업을 보고 싶은데, 우리 학교에는 LMS 접속 기록만 있어요. 어떻게 할까요?',o:['있는 데이터니까 접속 기록으로 협업 점수를 낸다','협업이 어떤 행동으로 드러나는지부터 정하고, 필요하면 관찰 메모를 더한다','감지기가 없으니 협업은 볼 수 없다고 포기한다'],a:1,
+  w:['바로 가로등 효과예요. 구하기 쉽다는 이유만으로 쓰면 협업을 잘못 읽을 수 있어요.','도식화의 출발점이에요. 교사의 관찰 메모, 작업 사진, 활동지도 훌륭한 데이터 흔적이 될 수 있어요.','감지기가 없어도 교사는 이미 여러 감각으로 보는 감지기예요. 행동을 정하면 볼 방법이 생겨요.']}
+];
+let ans4={};
+function render4(){
+  $('q4').innerHTML='';
+  Q4.forEach((Q,i)=>{const d=document.createElement('div');d.className='qcard';const p=ans4[i];
+    d.innerHTML='<div class="qq">'+(i+1)+'. '+Q.q+'</div><div class="opts3">'+Q.o.map((o,j)=>{let c='btn';if(p===j)c+=(j===Q.a?' good':' bad');return '<button class="'+c+'" data-i="'+i+'" data-j="'+j+'">'+o+'</button>'}).join('')+'</div>'+
+      (p!==undefined?'<div class="ans6">'+(p===Q.a?'⭕ ':'🤔 ')+Q.w[p]+(p!==Q.a?' <b>다른 답도 눌러 보세요.</b>':'')+'</div>':'');
+    $('q4').appendChild(d)});
+  $('q4').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{ans4[b.dataset.i]=+b.dataset.j;render4()});
+  const n=Q4.filter((Q,i)=>ans4[i]===Q.a).length;
+  $('out4').innerHTML=n===3?kw('good','세 가지 모두 골랐어요!','무엇을, 언제, 어떻게 알려 줄지, 그리고 그 데이터가 누구를 위한 것인지가 다중모드 학습분석을 교실로 가져오는 기준이에요.'):'';
+}
+$('reset4').onclick=()=>{ans4={};render4()};
+render4();
+})();
+</script>
+</body>
+</html>
