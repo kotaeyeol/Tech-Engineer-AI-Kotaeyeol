@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>쌍둥이 건물 만들기: 디지털 트윈 3단계 체험</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#E8EDF0; --panel:#FFFFFF; --ink:#1B2631; --muted:#5A6A77; --line:#CBD5DC; --chip:#F1F4F6;
+  --navy:#0A1F33; --cyan:#62D2F0; --cmd:#FF9F43; --safety:#F2B705; --danger:#D9363E; --ok:#2A9D72; --amber:#C27F00;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F151B; --panel:#17212A; --ink:#E4EBF0; --muted:#94A4B1; --line:#2A3743; --chip:#1E2A35;
+    --danger:#F0626A; --ok:#45C08F; --amber:#E8A72A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F151B; --panel:#17212A; --ink:#E4EBF0; --muted:#94A4B1; --line:#2A3743; --chip:#1E2A35;
+  --danger:#F0626A; --ok:#45C08F; --amber:#E8A72A;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.6;font-size:15px;word-break:keep-all;overflow-wrap:break-word;line-break:strict}
+h1,h2,.def,.q,.verdict{text-wrap:balance}
+p,li,.fb,.brief,.crit{text-wrap:pretty}
+button,.banner,#toast,.inset .cap{word-break:keep-all;overflow-wrap:break-word}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.disp{font-family:'Do Hyeon','Noto Sans KR',sans-serif;font-weight:400;letter-spacing:.01em}
+
+.wrap{max-width:1320px;margin:0 auto;padding:14px 16px 28px}
+header.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;margin-bottom:12px}
+.brand h1{margin:0;font-size:clamp(26px,3.6vw,38px);line-height:1}
+.brand p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.levels{display:flex;gap:6px;flex-wrap:wrap}
+.lv{border-radius:10px;background:var(--chip);padding:5px 12px;font-size:13px;color:var(--muted);line-height:1.3;border:2px solid transparent}
+.lv b{display:block;font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:16px;color:var(--ink)}
+.lv.on{border-color:var(--ink)}
+.lv.lock b{color:var(--muted)}
+.tools{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.ghost{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-size:13.5px}
+.ghost[aria-pressed="false"]{opacity:.55}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(320px,1fr);gap:16px;align-items:start}
+@media (max-width:960px){.grid{grid-template-columns:1fr}}
+
+.stage{position:relative;border-radius:16px;overflow:hidden;background:var(--navy);aspect-ratio:16/11;box-shadow:0 0 0 1px var(--line);user-select:none;-webkit-user-select:none}
+@media (max-width:600px){.stage{aspect-ratio:4/4.6}}
+#tw{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+#tw:active{cursor:grabbing}
+.twinTag{position:absolute;left:12px;top:12px;color:#DDF6FD;pointer-events:none;max-width:45%}
+.twinTag b{display:block;font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:22px;line-height:1.1}
+.twinTag span{font-size:12.5px;opacity:.9}
+.twinTag i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--dot,#8899A6);margin-right:6px}
+.twinTag i.live{animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+.banner{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);background:rgba(10,31,51,.92);border:1px solid rgba(98,210,240,.6);color:#E8F7FC;border-radius:8px;padding:6px 14px;font-size:14px;font-weight:700;pointer-events:none;max-width:70%;text-align:center}
+.banner:empty{display:none}
+.banner.hot{border-color:#FF6B6B;color:#FFD6D8}
+.banner.cmd{border-color:var(--cmd);color:#FFE2C2}
+.scale{position:absolute;right:12px;bottom:12px;font-size:11.5px;color:#CFEFF8;pointer-events:none;text-align:right}
+.scale .g{width:150px;height:7px;border-radius:4px;background:linear-gradient(90deg,#45C08F 0 50%,#E8A72A 62%,#F0626A 85%,#FF2D3D);margin:3px 0 2px auto}
+.scale .t{display:flex;justify-content:space-between;width:150px;margin-left:auto;opacity:.8}
+.scale[hidden]{display:none}
+.links{position:absolute;left:12px;bottom:12px;font-size:12px;color:#CFEFF8;pointer-events:none;display:flex;gap:12px}
+.links span::before{content:"";display:inline-block;width:18px;height:3px;border-radius:2px;background:var(--c);margin-right:5px;vertical-align:3px}
+.links span[hidden]{display:none}
+
+.inset{position:absolute;right:12px;top:12px;width:33%;max-width:330px;min-width:170px;border-radius:10px;overflow:hidden;border:2px solid rgba(255,255,255,.85);box-shadow:0 8px 24px rgba(0,0,0,.35);background:#000}
+.inset .bar{display:flex;justify-content:space-between;align-items:center;background:#E9EEF1;color:#1B2631;font-size:11.5px;font-weight:700;padding:3px 8px}
+.inset .bar em{font-style:normal;color:#D9363E}
+#rc{display:block;width:100%;aspect-ratio:4/3}
+.inset .cap{position:absolute;left:0;right:0;bottom:0;background:rgba(10,31,51,.85);color:#fff;font-size:11.5px;padding:3px 8px;text-align:center}
+.inset .cap:empty{display:none}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.fl{position:absolute;transform:translate(0,-50%);background:rgba(10,31,51,.84);color:#E8F7FC;border-left:4px solid var(--c);border-radius:4px;padding:1px 7px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.fl small{font-weight:400;opacity:.8;margin-left:4px}
+.fl.hub{border-left-color:#62D2F0;font-weight:500;font-size:11.5px;transform:translate(-50%,-170%)}
+.fl[hidden]{display:none}
+#links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+.console{background:var(--panel);border-radius:16px;box-shadow:0 0 0 1px var(--line);padding:16px}
+.conn{display:grid;grid-template-columns:1fr 70px 1fr;align-items:center;gap:6px;background:var(--chip);border-radius:12px;padding:8px 10px;margin-bottom:14px;font-size:13px;text-align:center}
+.conn b{display:block;font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:17px}
+.conn svg{width:70px;height:34px;display:block}
+.kicker{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin:0}
+.console h2{font-size:26px;margin:0 0 6px;line-height:1.15}
+.console p{margin:0 0 10px}
+.q{font-weight:700;margin:12px 0 8px}
+.opts{display:grid;gap:6px}
+.opts button{border:2px solid transparent;border-radius:10px;padding:10px 12px;text-align:left;background:var(--chip);font-size:14.5px;line-height:1.35}
+.opts button:disabled{cursor:default}
+.opts button.right{border-color:var(--ok)}
+.opts button.wrong{border-color:var(--danger);opacity:.7}
+.opts button small{display:block;color:var(--muted);font-size:12px}
+.fb{border-radius:10px;padding:10px 12px;margin:10px 0;font-size:14.5px;background:var(--chip);border-left:4px solid var(--cyan)}
+.fb.good{border-left-color:var(--ok)}
+.fb.bad{border-left-color:var(--danger)}
+.go{width:100%;border:0;border-radius:12px;background:var(--safety);color:#1B2631;font-weight:700;font-size:16px;padding:12px;margin-top:6px}
+.go:disabled{opacity:.45;cursor:not-allowed}
+.go.cmd{background:var(--cmd)}
+.go.alt{background:var(--chip);color:var(--ink)}
+.ev{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.ev button{border:0;border-radius:10px;padding:10px 8px;background:var(--chip);font-weight:700;font-size:14px;line-height:1.3}
+.ev button small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.ev button.done{box-shadow:inset 0 0 0 2px var(--ok)}
+.ev button:disabled{opacity:.45;cursor:not-allowed}
+.locked{width:100%;border:2px dashed var(--line);background:none;border-radius:12px;padding:10px;color:var(--muted);font-weight:700;margin:4px 0 6px}
+.feed{background:#0A1F33;color:#BDF2FF;border-radius:10px;padding:8px 10px;font-size:12.5px;min-height:84px;max-height:150px;overflow:auto;font-variant-numeric:tabular-nums;margin-top:8px}
+.feed div{padding:1px 0}
+.feed .r{color:#E8F7FC}
+.feed .s{color:#FFE7A3}
+.feed .t{color:#BDF2FF}
+.feed .c{color:#FFC48A}
+.sl{display:grid;grid-template-columns:86px 1fr 74px;gap:8px;align-items:center;font-size:14px;margin:8px 0}
+.sl output{font-weight:700;text-align:right}
+.sl input{width:100%;accent-color:#2A8FB0}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.acts button{background:var(--chip);border:2px solid transparent;border-radius:10px;padding:8px;text-align:left;font-size:13.5px;font-weight:700;line-height:1.3}
+.acts button small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.acts button[aria-pressed="true"]{border-color:var(--cmd);background:color-mix(in srgb,var(--cmd) 14%,var(--chip))}
+.acts button:disabled{opacity:.5;cursor:not-allowed}
+.rbar{display:grid;grid-template-columns:34px 1fr 48px;gap:8px;align-items:center;font-size:13px;margin:3px 0}
+.rbar .track{height:10px;background:var(--chip);border-radius:5px;position:relative;overflow:hidden}
+.rbar .track i{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+.rbar .track::after{content:"";position:absolute;left:calc(85/120*100%);top:0;bottom:0;border-left:2px dashed var(--danger)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.crit{font-size:12.5px;color:var(--muted);margin-top:6px}
+
+.overlay{position:fixed;inset:0;background:rgba(9,20,32,.74);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
+.overlay[hidden]{display:none}
+.card{background:var(--panel);color:var(--ink);border-radius:18px;max-width:760px;width:100%;max-height:calc(100% - 20px);overflow:auto;padding:24px 24px 20px}
+.card h2{font-size:clamp(28px,5vw,38px);margin:0 0 10px;line-height:1.1}
+.card p{margin:0 0 10px;max-width:66ch}
+.card .btns{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+.card .btns button{border:0;border-radius:10px;padding:11px 18px;font-weight:700}
+.card .btns .ok{background:var(--safety);color:#1B2631;margin-left:auto}
+.card .btns .back{background:var(--chip)}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.three div{background:var(--chip);border-radius:12px;padding:12px;font-size:13.5px}
+.three b{display:block;font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:21px;line-height:1.15}
+.three .ar{font-family:'Do Hyeon',sans-serif;font-size:18px;color:var(--muted);margin:4px 0}
+.three .ar em{font-style:normal;color:var(--ink)}
+@media (max-width:620px){.three{grid-template-columns:1fr}}
+.def{font-size:17px;font-weight:700;border-left:5px solid var(--cyan);padding:6px 0 6px 12px;margin:12px 0}
+.quiz{margin:8px 0}
+.quiz .item{background:var(--chip);border-radius:12px;padding:10px 12px;margin:6px 0}
+.quiz .item p{margin:0 0 6px;font-weight:700}
+.quiz .item .ch{display:flex;gap:6px;flex-wrap:wrap}
+.quiz .item .ch button{border:2px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 10px;font-size:13.5px}
+.quiz .item .ch button.right{border-color:var(--ok);font-weight:700}
+.quiz .item .ch button.wrong{border-color:var(--danger)}
+.quiz .item .ex{font-size:13px;color:var(--muted);margin-top:6px}
+.qs{margin:8px 0 0;padding-left:20px}
+.qs li{margin:6px 0}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1 class="disp">쌍둥이 건물 만들기</h1>
+      <p>단계별로 겪으며 알아보는 디지털 트윈</p>
+    </div>
+    <div class="levels" id="levels"><div class="lv on ">레벨 1<b>모양 따라하기</b></div><div class="lv  lock">레벨 2<b>🔒 ???</b></div><div class="lv  lock">레벨 3<b>🔒 ???</b></div></div>
+    <div class="tools">
+      <button class="ghost" id="bgmBtn" type="button" aria-pressed="true">🎵 배경음</button>
+      <button class="ghost" id="sfxBtn" type="button" aria-pressed="true">🔊 효과음</button>
+      <button class="ghost" id="restartBtn" type="button">처음부터</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section class="stage" id="stage" aria-label="가상 건물 3D 화면">
+      <canvas id="tw" aria-label="가상 건물 3D 모형. 드래그로 돌려 볼 수 있어요" width="1112" height="765"></canvas>
+      <div id="labels"></div>
+      <svg id="links"></svg>
+      <div class="twinTag"><b id="twinName">가상 건물</b><span><i id="twinDot" style="--dot: #8899A6;"></i><span id="twinState">현실과 연결 안 됨</span></span></div>
+      <div class="banner" id="banner"></div>
+      <div class="inset">
+        <div class="bar"><span>현실 건물 CCTV</span><em id="rec" style="opacity: 0.3;">● REC</em></div>
+        <canvas id="rc" width="320" height="240"></canvas>
+        <div class="cap" id="realCap"></div>
+      </div>
+      <div class="links"><span id="lkData" style="--c:#62D2F0" hidden="">데이터 (현실 → 가상)</span><span id="lkCmd" style="--c:#FF9F43" hidden="">지시 (가상 → 현실)</span></div>
+      <div class="scale" id="scale" hidden="">층별 위험도<div class="g"></div><div class="t"><span>0</span><span>60</span><span>85</span><span>100+</span></div></div>
+    </section>
+    <section class="console" id="console"><div class="conn"><div><b>현실 건물</b>CCTV</div><svg viewBox="0 0 70 34"><line x1="8" y1="17" x2="62" y2="17" stroke="#8899A6" stroke-width="2" stroke-dasharray="3 4"></line><text x="35" y="12" font-size="14" text-anchor="middle" fill="#D9363E">✕</text></svg><div><b>가상 건물</b>3D 화면</div></div><p class="kicker">시작하기 전에</p><h2 class="disp">내비게이션은 어떻게 알까?</h2>
+    <p>운전 중에 내비가 "앞쪽 도로가 막혀요. 다른 길로 안내할게요"라고 말해요. 내비는 앞길이 막힌 걸 어떻게 알았을까요?</p>
+    <div class="opts"><button type="button" data-a="0" class="">지도에 원래 막히는 길이 표시되어 있어서</button><button type="button" data-a="1" class="">다른 차들이 보내는 위치·속도 데이터를 실시간으로 받아서</button><button type="button" data-a="2" class="">운전자가 직접 입력해서</button></div>
+    </section>
+  </div>
+</div>
+
+<div class="overlay" id="ov" hidden=""><div class="card" role="dialog" aria-modal="true" id="ovCard"><p class="kicker">기술 · 건설 기술과 디지털 트윈</p><h2 class="disp">쌍둥이 건물 만들기</h2>
+  <p>여러분은 오늘 건물 관제실의 신입 관제사예요. 큰 화면에는 컴퓨터 속 <b>가상 건물</b>이, 오른쪽 위 작은 창에는 <b>현실 건물의 CCTV</b>가 보여요.</p>
+  <p>가상 건물은 처음엔 아주 단순해요. 문제를 하나씩 겪으면서, 가상 건물에 어떤 능력이 필요한지 직접 찾아 레벨을 올려 보세요.</p>
+  <p style="color:var(--muted);font-size:14px">3D 화면은 마우스로 끌어서 돌리고, 휠로 확대할 수 있어요. 🎵 배경음과 🔊 효과음이 나와요.</p>
+  <div class="btns"><button class="ok" type="button" id="begin">시작하기</button></div></div></div>
+<div id="toast" role="status"></div>
+<script>
+const AU=(()=>{
+  let ac=null,sfxG=null,bgmG=null,nb=null,sfxOn=true,bgmOn=true,mood='calm',next=0,step=0,lastSlide=0;
+  function init(){
+    if(ac)return;
+    const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+    ac=new C();
+    sfxG=ac.createGain();sfxG.gain.value=.55;sfxG.connect(ac.destination);
+    bgmG=ac.createGain();bgmG.gain.value=.0001;bgmG.connect(ac.destination);
+    nb=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);
+    const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    next=ac.currentTime+.15;
+    setInterval(sched,60);
+    level();
+  }
+  function level(){if(!ac)return;const v=bgmOn?.42:.0001;bgmG.gain.cancelScheduledValues(ac.currentTime);bgmG.gain.setTargetAtTime(v,ac.currentTime,.4);}
+  const mf=m=>440*Math.pow(2,(m-69)/12);
+  function tone(f,dur,o={}){
+    const {type='sine',vol=.3,at=0,slide=null,attack=.005,dest=sfxG}=o;
+    const t=ac.currentTime+at,osc=ac.createOscillator(),g=ac.createGain();
+    osc.type=type;osc.frequency.setValueAtTime(f,t);
+    if(slide)osc.frequency.exponentialRampToValueAtTime(slide,t+dur);
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+attack);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    osc.connect(g).connect(dest);osc.start(t);osc.stop(t+dur+.05);
+  }
+  function noise(dur,o={}){
+    const {vol=.3,at=0,type='bandpass',freq=1000,q=1,attack=.005,slide=null,dest=sfxG}=o;
+    const t=ac.currentTime+at,s=ac.createBufferSource();s.buffer=nb;s.loop=true;
+    const f=ac.createBiquadFilter();f.type=type;f.frequency.setValueAtTime(freq,t);
+    if(slide)f.frequency.exponentialRampToValueAtTime(slide,t+dur);f.Q.value=q;
+    const g=ac.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+attack);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    s.connect(f).connect(g).connect(dest);s.start(t,Math.random());s.stop(t+dur+.05);
+  }
+  /* ---------- 배경음 ---------- */
+  const CALM=[[57,60,64,67],[53,57,60,64],[48,55,59,64],[55,59,62,66]];
+  const TENSE=[[50,53,57],[46,50,53],[43,50,55],[45,49,52]];
+  function pad(f,t,dur,vol){
+    [0,7].forEach(det=>{
+      const o=ac.createOscillator(),g=ac.createGain(),lp=ac.createBiquadFilter();
+      o.type='triangle';o.frequency.value=f;o.detune.value=det;lp.type='lowpass';lp.frequency.value=900;
+      g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.9);g.gain.setValueAtTime(vol,t+dur-.6);g.gain.exponentialRampToValueAtTime(.0001,t+dur+.4);
+      o.connect(lp).connect(g).connect(bgmG);o.start(t);o.stop(t+dur+.5);
+    });
+  }
+  function pluck(f,t,vol){const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+.45);o.connect(g).connect(bgmG);o.start(t);o.stop(t+.5);}
+  function bass(f,t,dur,vol){const o=ac.createOscillator(),g=ac.createGain(),lp=ac.createBiquadFilter();o.type='sawtooth';o.frequency.value=f;lp.type='lowpass';lp.frequency.value=320;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(lp).connect(g).connect(bgmG);o.start(t);o.stop(t+dur+.05);}
+  function hat(t,vol){const s=ac.createBufferSource();s.buffer=nb;const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=7000;const g=ac.createGain();g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+.05);s.connect(f).connect(g).connect(bgmG);s.start(t,Math.random());s.stop(t+.06);}
+  function kick(t,vol){const o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(42,t+.18);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+.22);o.connect(g).connect(bgmG);o.start(t);o.stop(t+.25);}
+  function sched(){
+    if(!ac)return;
+    while(next<ac.currentTime+.25){
+      const calm=mood==='calm',tempo=calm?74:120,e=60/tempo/2;
+      if(bgmOn){
+        const prog=calm?CALM:TENSE,ch=prog[Math.floor(step/16)%prog.length];
+        if(step%16===0)ch.forEach(n=>pad(mf(n),next,e*16,calm?.045:.03));
+        if(calm){
+          if(step%2===0)pluck(mf(ch[(step/2)%ch.length]+12),next,step%8===0?.05:.03);
+          if(step%16===10)pluck(mf(ch[1]+24),next,.02);
+        }else{
+          bass(mf(ch[0]-12),next,e*.9,.09);
+          if(step%2===1)hat(next,.035);
+          if(step%4===0)kick(next,.16);
+          if(step%3===0)pluck(mf(ch[step%ch.length]+12),next,.03);
+        }
+      }
+      next+=e;step++;
+    }
+  }
+  /* ---------- 효과음 ---------- */
+  const P={
+    click(){tone(900,.05,{type:'square',vol:.06});},
+    tab(){noise(.35,{vol:.18,freq:500,slide:2500,q:2});tone(660,.08,{vol:.08,at:.15});},
+    page(){tone(520,.07,{vol:.11});tone(780,.1,{vol:.11,at:.06});},
+    slide(){const n=performance.now();if(n-lastSlide<45)return;lastSlide=n;tone(1400+Math.random()*300,.025,{type:'triangle',vol:.05});},
+    toggleOn(){tone(600,.07,{type:'square',vol:.08});tone(900,.1,{type:'square',vol:.08,at:.07});},
+    toggleOff(){tone(700,.07,{type:'square',vol:.07});tone(450,.1,{type:'square',vol:.07,at:.07});},
+    run(){tone(220,.7,{type:'sawtooth',vol:.08,slide:880,attack:.05});noise(.7,{vol:.15,freq:400,slide:4000,q:1.5});[523,784,1047].forEach((f,i)=>tone(f,.2,{type:'triangle',vol:.13,at:.6+i*.08}));},
+    ping(i=0){const f=[880,988,1109,1175,1319,1480][i%6];tone(f,.14,{vol:.1});tone(f*2,.08,{vol:.04,at:.01});},
+    scan(){tone(400,.5,{vol:.08,slide:1600});tone(800,.5,{vol:.04,slide:3200,at:.05});},
+    stream(){for(let i=0;i<22;i++)tone(1400+Math.random()*2200,.03,{type:'square',vol:.03,at:i*.06});noise(1.3,{vol:.05,freq:2500,q:6});},
+    whoosh(){noise(.9,{vol:.25,freq:300,slide:3000,q:1.2,attack:.2});},
+    creak(){const t=ac.currentTime,o=ac.createOscillator(),l=ac.createOscillator(),lg=ac.createGain(),f=ac.createBiquadFilter(),g=ac.createGain();o.type='sawtooth';o.frequency.value=70;l.frequency.value=7;lg.gain.value=18;l.connect(lg).connect(o.frequency);f.type='bandpass';f.frequency.value=420;f.Q.value=7;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.15);g.gain.exponentialRampToValueAtTime(.0001,t+1.3);o.connect(f).connect(g).connect(sfxG);o.start(t);l.start(t);o.stop(t+1.4);l.stop(t+1.4);},
+    crack(){noise(.1,{vol:.4,freq:3200,q:1});noise(.3,{vol:.18,at:.05,type:'lowpass',freq:600});},
+    glass(){for(let i=0;i<9;i++)tone(3000+Math.random()*3500,.18,{type:'triangle',vol:.05,at:Math.random()*.35});noise(.5,{vol:.2,type:'highpass',freq:4000});},
+    siren(){const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(620,t);for(let k=0;k<3;k++){o.frequency.linearRampToValueAtTime(920,t+k*.6+.3);o.frequency.linearRampToValueAtTime(620,t+k*.6+.6);}g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.12,t+.05);g.gain.setValueAtTime(.12,t+1.7);g.gain.exponentialRampToValueAtTime(.0001,t+1.85);o.connect(g).connect(sfxG);o.start(t);o.stop(t+1.9);},
+    quake(){noise(2.6,{vol:.6,type:'lowpass',freq:170,q:1,attack:.08});tone(38,2.5,{vol:.4,attack:.1});for(let i=0;i<7;i++)noise(.08,{vol:.16,at:.2+i*.3+Math.random()*.1,freq:1500,q:2});},
+    wind(){noise(3.4,{vol:.34,freq:380,slide:1400,q:.8,attack:.8});noise(3,{vol:.09,type:'highpass',freq:3200,attack:.3,at:.3});},
+    crowd(){tone(784,.4,{vol:.14});tone(622,.6,{vol:.14,at:.35});for(let i=0;i<18;i++)noise(.22,{vol:.035,at:.7+Math.random()*1.5,freq:450+Math.random()*900,q:9});},
+    aging(){for(let i=0;i<16;i++){const at=1.7*Math.pow(i/16,.7);tone(1700,.03,{type:'triangle',vol:.06,at});if(i%4===0)noise(.12,{vol:.12,at,freq:2500,q:1});}tone(523,.6,{vol:.1,at:1.75});},
+    collapse(){noise(2.4,{vol:.6,type:'lowpass',freq:320,slide:70,attack:.02});tone(90,2,{type:'sawtooth',vol:.2,slide:30});for(let i=0;i<10;i++)noise(.1,{vol:.2,at:.15+Math.random()*1.5,freq:800+Math.random()*2500,q:3});},
+    notify(){tone(988,.12,{vol:.12});tone(1319,.2,{vol:.12,at:.12});},
+    tickT(){tone(1000,.04,{type:'square',vol:.05});},
+    tickU(){tone(1500,.06,{type:'square',vol:.09});},
+    correct(){[784,988,1175,1568].forEach((f,i)=>tone(f,.22,{type:'triangle',vol:.14,at:i*.07}));},
+    over(){tone(660,.15,{type:'triangle',vol:.12});tone(560,.25,{type:'triangle',vol:.12,at:.15});},
+    wrong(){tone(180,.25,{type:'square',vol:.1});tone(140,.35,{type:'square',vol:.1,at:.25});},
+    timeout(){tone(400,.5,{type:'sawtooth',vol:.08,slide:120});},
+    star(i=0){tone(1319*Math.pow(1.26,i),.25,{type:'triangle',vol:.12});tone(2637*Math.pow(1.26,i),.18,{vol:.05,at:.03});},
+    pass(){[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i===5?.7:.17,{type:'triangle',vol:.16,at:i*.13}));},
+    fail(){[392,349,311,262].forEach((f,i)=>tone(f,.42,{type:'triangle',vol:.14,at:i*.28}));},
+    error(){tone(160,.2,{type:'square',vol:.09});},
+    hub(){tone(1760,.04,{vol:.025});},
+    unlock(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.3,{type:'triangle',vol:.15,at:i*.09}));noise(1.2,{vol:.12,freq:800,slide:6000,q:1,at:.1,attack:.3});tone(2093,.8,{vol:.06,at:.5});},
+    lock(){tone(300,.08,{type:'square',vol:.1});tone(220,.15,{type:'square',vol:.1,at:.08});noise(.05,{vol:.2,freq:2000,q:3,at:.02});},
+    pop(i=0){tone(500+((i*97)%700),.07,{vol:.09,slide:900+((i*97)%700)});},
+    cmd(){[0,.12,.24].forEach((a,i)=>tone(1200-i*200,.08,{type:'square',vol:.07,at:a}));tone(300,.6,{type:'sawtooth',vol:.05,slide:150,at:.3});noise(.6,{vol:.1,freq:3000,slide:500,q:2,at:.3});},
+    hammer(){for(let i=0;i<6;i++){noise(.05,{vol:.35,at:i*.18,freq:2400,q:4});tone(250+Math.random()*80,.06,{type:'square',vol:.07,at:i*.18});}noise(.7,{vol:.12,at:1.1,freq:900,q:6});}
+  };
+  return{
+    init,
+    play(n,arg){if(!ac||!sfxOn)return;if(ac.state==='suspended')ac.resume();try{P[n]&&P[n](arg);}catch(e){}},
+    mood(m){mood=m;},
+    toggleSfx(){sfxOn=!sfxOn;return sfxOn;},
+    toggleBgm(){bgmOn=!bgmOn;level();return bgmOn;}
+  };
+})();
+['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,()=>AU.init(),{once:true}));
+
+</script>
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const ri=(a,b)=>Math.floor(rnd(a,b+1));
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ease=p=>p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function toast(m,snd){AU.play(snd||'error');const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),2000);}
+
+/* ---------------- 구조 계산 (교육용 단순 모델) ---------------- */
+const BASE_AGE=15;
+function analyze(sc,rf){
+  rf=rf||{};
+  const fAge=Math.max(.45,1-.008*sc.age);
+  const cap=100*fAge*(rf.seismic?1.35:1);
+  const eq=sc.mag>4?Math.pow(sc.mag-4,1.6)*14*(rf.damper?.6:1):0;
+  const wd=Math.pow(sc.wind/10,2)*2.2*(rf.facade?.6:1)*(rf.damper?.8:1);
+  return [0,1,2,3,4].map(i=>{
+    const closed=(rf.closeTop&&i>=3)||rf.evac;
+    const live=closed?0:sc.occ/100*18*(1+(4-i)*.08),e=eq*(1-i*.12),w=wd*(.6+i*.15);
+    return (25+live+e+w)/cap*100;
+  });
+}
+const maxOf=a=>Math.max(...a);
+const worstOf=a=>a.indexOf(maxOf(a));
+const levelOf=r=>r<60?0:r<85?1:r<100?2:3;
+function riskRGB(r){
+  const st=[[0,[69,192,143]],[55,[69,192,143]],[72,[232,167,42]],[90,[240,98,106]],[105,[255,45,61]]];
+  for(let k=1;k<st.length;k++){if(r<=st[k][0]){const [a,ca]=st[k-1],[b,cb]=st[k],p=clamp((r-a)/(b-a),0,1);return ca.map((v,j)=>v+(cb[j]-v)*p);}}
+  return st[st.length-1][1];
+}
+const rgbCss=c=>`rgb(${c.map(Math.round).join(',')})`;
+
+/* ---------------- 상태 ---------------- */
+// 현실(진짜 상태)
+const REAL={age:BASE_AGE,occ:100,wind:0,mag:0,quake:0,rf:{},evac:false,damage:0,agingAnim:0,yearFrom:2026,yearTo:2026,clockAnim:0,crack:0,brace:0};
+// 가상 건물 표시
+const D={level:1,target:[50,50,50,50,50],disp:[50,50,50,50,50],k:3,quake:0,wind:0,occ:100,active:new Set(),sensorsOn:0,hubOn:0,rf:{},simMode:false,dataFlow:0,cmdFlow:0};
+const G={step:'p1',level:1,tried:new Set(),answered:null,simRf:{},simWind:55,simRes:null,simRunning:false,sentRes:null,quakeRes:null,feed:[],quizDone:{}};
+
+function liveRisk(){return analyze({age:REAL.age,occ:REAL.occ,wind:REAL.wind,mag:REAL.mag},{...REAL.rf,evac:REAL.evac});}
+function syncTwinToReal(k){D.target=liveRisk();D.k=k||2.5;D.rf={...REAL.rf};D.simMode=false;}
+
+/* ---------------- 3D 가상 건물 ---------------- */
+const FH=3.2,BW=10,BD=7,HUB=new THREE.Vector3(0,22.5,0);
+const XS=[-4.6,-1.55,1.55,4.6],ZS=[-3.1,3.1];
+let renderer,scene,camera,world,building,roof,hub,hubCore,damperBox;
+const floors=[],sensors=[],packets=[],streaks=[],rings=[];
+const cam={theta:.75,phi:1.12,r:50,target:new THREE.Vector3(0,9,0),idle:0,drag:false,lx:0,ly:0};
+const SCOL={strain:0xF2B705,accel:0xFF8C42,people:0x9B7BFF,wind:0x7EE081,seismo:0xFF5D73};
+function ringTex(){if(ringTex.t)return ringTex.t;const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.strokeStyle='#fff';x.lineWidth=5;x.beginPath();x.arc(32,32,26,0,7);x.stroke();return ringTex.t=new THREE.CanvasTexture(c);}
+
+function initThree(){
+  renderer=new THREE.WebGLRenderer({canvas:$('#tw'),antialias:true});
+  renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+  scene=new THREE.Scene();scene.background=new THREE.Color(0x0A1F33);scene.fog=new THREE.Fog(0x0A1F33,70,150);
+  camera=new THREE.PerspectiveCamera(38,1,.1,400);
+  scene.add(new THREE.HemisphereLight(0xcff4ff,0x0A1F33,.9));
+  const dl=new THREE.DirectionalLight(0xffffff,.7);dl.position.set(25,40,20);scene.add(dl);
+  world=new THREE.Group();scene.add(world);
+  const grid=new THREE.GridHelper(90,45,0x62D2F0,0x1C4566);grid.material.transparent=true;grid.material.opacity=.4;world.add(grid);
+  const ground=new THREE.Mesh(new THREE.CircleGeometry(46,48),new THREE.MeshBasicMaterial({color:0x0C2740}));ground.rotation.x=-Math.PI/2;ground.position.y=-.03;world.add(ground);
+  building=new THREE.Group();world.add(building);
+  const fnd=new THREE.Mesh(new THREE.BoxGeometry(BW+1.4,.6,BD+1.4),new THREE.MeshStandardMaterial({color:0x5F7486,roughness:.8}));fnd.position.y=-.3;building.add(fnd);
+
+  const colGeo=new THREE.BoxGeometry(.5,FH-.3,.5),slabGeo=new THREE.BoxGeometry(BW+.4,.3,BD+.4),glassGeo=new THREE.BoxGeometry(BW-.1,FH-.32,BD-.1),edgeGeo=new THREE.EdgesGeometry(new THREE.BoxGeometry(BW,FH,BD));
+  const pGeo=new THREE.BoxGeometry(.3,.62,.3),PC=[0xE9534F,0x3A7BD5,0xF2B705,0x3FA37A,0xEDEDED,0x8E5BD6];
+  for(let i=0;i<5;i++){
+    const g=new THREE.Group();g.position.y=i*FH;building.add(g);
+    const colMat=new THREE.MeshStandardMaterial({color:0x9FB3C2,roughness:.55,metalness:.1});
+    const slabMat=new THREE.MeshStandardMaterial({color:0xB7C7D3,roughness:.6,metalness:.05});
+    const cols=[];
+    XS.forEach(x=>ZS.forEach(z=>{const m=new THREE.Mesh(colGeo,colMat);m.position.set(x,(FH-.3)/2,z);g.add(m);cols.push(m);}));
+    const slab=new THREE.Mesh(slabGeo,slabMat);slab.position.y=FH-.15;g.add(slab);
+    const glass=new THREE.Mesh(glassGeo,new THREE.MeshStandardMaterial({color:0x62D2F0,transparent:true,opacity:.07,depthWrite:false}));glass.position.y=(FH-.3)/2;g.add(glass);
+    const edgeMat=new THREE.LineBasicMaterial({color:0x62D2F0,transparent:true,opacity:.75});
+    const edges=new THREE.LineSegments(edgeGeo,edgeMat);edges.position.y=FH/2;g.add(edges);
+    // 외벽 보강 X자 가새
+    const bp=[];
+    [BD/2+.32,-BD/2-.32].forEach(z=>{[[-BW/2,0,-.2,FH-.3],[-.2,0,-BW/2,FH-.3],[.2,0,BW/2,FH-.3],[BW/2,0,.2,FH-.3]].forEach(([x1,y1,x2,y2])=>{bp.push(new THREE.Vector3(x1,y1,z),new THREE.Vector3(x2,y2,z));});});
+    const braces=new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(bp),new THREE.LineBasicMaterial({color:0xFF9F43}));braces.visible=false;g.add(braces);
+    // 출입 통제 표시
+    const tapeMat=new THREE.MeshBasicMaterial({color:0xF2B705});
+    const tape=new THREE.Mesh(new THREE.BoxGeometry(BW+.6,.25,.05),tapeMat);tape.position.set(0,FH*.5,BD/2+.4);tape.visible=false;g.add(tape);
+    const cracks=[];
+    for(let k=0;k<4;k++){
+      const x=XS[k],z=ZS[k%2]+(ZS[k%2]>0?.27:-.27),pts=[];
+      for(let j=0;j<6;j++)pts.push(new THREE.Vector3(x+rnd(-.17,.17),.35+j*.45,z));
+      const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xFF3045}));ln.visible=false;g.add(ln);cracks.push(ln);
+    }
+    const people=[];
+    for(let k=0;k<16;k++){const m=new THREE.Mesh(pGeo,new THREE.MeshStandardMaterial({color:PC[k%PC.length]}));m.position.set(rnd(-4,4),.31,rnd(-2.5,2.5));m.visible=false;m.userData.ph=Math.random()*6;g.add(m);people.push(m);}
+    floors.push({g,colMat,slabMat,edgeMat,cracks,people,cols,braces,tape});
+    addSensor(g,new THREE.Vector3(-4.6,1.3,3.42),'strain');
+    addSensor(g,new THREE.Vector3(1.55,FH-.62,3.48),'accel');
+    addSensor(g,new THREE.Vector3(3.1,.9,3.48),'people');
+  }
+  roof=new THREE.Group();roof.position.y=5*FH;building.add(roof);
+  const pe=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(BW+.4,.6,BD+.4)),new THREE.LineBasicMaterial({color:0x62D2F0,transparent:true,opacity:.7}));pe.position.y=.3;roof.add(pe);
+  const tank=new THREE.Mesh(new THREE.BoxGeometry(2,1.4,1.6),new THREE.MeshStandardMaterial({color:0x8C9AA6}));tank.position.set(-2.5,.7,-1);roof.add(tank);
+  damperBox=new THREE.Mesh(new THREE.BoxGeometry(2.2,1.2,2.2),new THREE.MeshStandardMaterial({color:0xFF9F43}));damperBox.position.set(1,.6,.8);damperBox.visible=false;roof.add(damperBox);
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,2.4,8),new THREE.MeshStandardMaterial({color:0xC0CCD6}));pole.position.set(3.4,1.2,-1.8);roof.add(pole);
+  addSensor(roof,new THREE.Vector3(3.4,2.5,-1.8),'wind');
+  addSensor(building,new THREE.Vector3(BW/2+.4,.15,BD/2+.4),'seismo');
+
+  hub=new THREE.Group();hub.position.copy(HUB);scene.add(hub);
+  hub.add(new THREE.Mesh(new THREE.IcosahedronGeometry(1.5,1),new THREE.MeshBasicMaterial({color:0x62D2F0,wireframe:true,transparent:true,opacity:.75})));
+  hubCore=new THREE.Mesh(new THREE.SphereGeometry(.6,16,12),new THREE.MeshBasicMaterial({color:0xBDF2FF}));hub.add(hubCore);
+  hub.scale.setScalar(.001);hub.visible=false;
+
+  const pg=new THREE.SphereGeometry(.15,8,6);
+  for(let k=0;k<80;k++){const m=new THREE.Mesh(pg,new THREE.MeshBasicMaterial({color:0xBDF2FF}));m.visible=false;scene.add(m);packets.push({m,on:false,p:0,dur:1,a:new THREE.Vector3(),c:new THREE.Vector3()});}
+  for(let k=0;k<44;k++){
+    const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0),new THREE.Vector3(3.5,0,0)]),new THREE.LineBasicMaterial({color:0xE8F7FC,transparent:true,opacity:.55}));
+    ln.position.set(rnd(-40,40),rnd(1,22),rnd(-9,9));ln.visible=false;scene.add(ln);streaks.push(ln);
+  }
+  for(let k=0;k<6;k++){
+    const m=new THREE.Mesh(new THREE.RingGeometry(.92,1,64),new THREE.MeshBasicMaterial({color:0xFF8A8F,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false}));
+    m.rotation.x=-Math.PI/2;m.position.y=.05;m.userData.p=1;world.add(m);rings.push(m);
+  }
+  resizeThree();
+}
+function addSensor(parent,pos,type){
+  const mesh=new THREE.Mesh(new THREE.SphereGeometry(.24,12,10),new THREE.MeshBasicMaterial({color:SCOL[type]}));
+  mesh.position.copy(pos);mesh.scale.setScalar(.001);mesh.visible=false;parent.add(mesh);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:ringTex(),color:SCOL[type],transparent:true,depthWrite:false,opacity:0}));
+  sp.position.copy(pos);parent.add(sp);
+  sensors.push({mesh,sp,type,ph:Math.random(),acc:Math.random(),pop:0});
+}
+function resizeThree(){
+  const st=$('#stage'),w=st.clientWidth,h=st.clientHeight;if(!w||!h||!renderer)return;
+  renderer.setSize(w,h,false);
+  const s=w>600?w*.26:0;
+  camera.aspect=(w+s)/h;camera.setViewOffset(w+s,h,s,0,w,h);camera.updateProjectionMatrix();
+  cam.r=w/h<1?64:50;
+}
+(function(){
+  const c=$('#tw');
+  c.addEventListener('pointerdown',e=>{cam.drag=true;cam.lx=e.clientX;cam.ly=e.clientY;c.setPointerCapture(e.pointerId);});
+  c.addEventListener('pointermove',e=>{if(!cam.drag)return;cam.theta-=(e.clientX-cam.lx)*.006;cam.phi=clamp(cam.phi-(e.clientY-cam.ly)*.004,.45,1.45);cam.lx=e.clientX;cam.ly=e.clientY;cam.idle=0;});
+  c.addEventListener('pointerup',()=>{cam.drag=false;});
+  c.addEventListener('wheel',e=>{e.preventDefault();cam.r=clamp(cam.r+e.deltaY*.03,28,90);cam.idle=0;},{passive:false});
+})();
+function spawnPacket(s){
+  const pk=packets.find(p=>!p.on);if(!pk)return;
+  s.mesh.getWorldPosition(pk.a);
+  pk.c.copy(pk.a).add(HUB).multiplyScalar(.5);pk.c.y+=5;pk.c.x+=(pk.a.x>0?4:-4);
+  pk.on=true;pk.p=0;pk.dur=rnd(.9,1.4);pk.m.visible=true;
+}
+const tmpV=new THREE.Vector3();
+let hubPulse=0;
+function updateThree(dt,t){
+  const q=D.quake,w=D.wind,lv=D.level;
+  if(!cam.drag){cam.idle+=dt;if(cam.idle>4000)cam.theta+=dt*.00006;}
+  const sp=Math.sin(cam.phi);
+  camera.position.set(cam.target.x+cam.r*sp*Math.sin(cam.theta),cam.target.y+cam.r*Math.cos(cam.phi),cam.target.z+cam.r*sp*Math.cos(cam.theta));
+  camera.lookAt(cam.target);
+  const qm=reduceMotion?.3:1;
+  world.position.x=q*.7*qm*(Math.sin(t*.013)+.5*Math.sin(t*.031));
+  world.position.z=q*.35*qm*Math.sin(t*.021);
+  const topQ=q*1.6*qm*Math.sin(t*.009+.5);
+  const lean=Math.pow(w/60,2)*1.4+(w/60)*.3*qm*Math.sin(t*.004);
+  const rf=D.rf;
+  for(let i=0;i<5;i++){
+    const f=floors[i],sh=Math.pow((i+1)/5,1.2);
+    f.g.position.set((topQ+lean)*sh,i*FH,0);f.g.rotation.z=-(topQ+lean)*.012*sh;
+    D.disp[i]+=(D.target[i]-D.disp[i])*Math.min(1,dt/1000*D.k);
+    const r=D.disp[i];
+    if(lv<2){f.colMat.color.setHex(0x9FB3C2);f.slabMat.color.setHex(0xB7C7D3);f.edgeMat.color.setHex(0x62D2F0);f.cracks.forEach(c=>c.visible=false);}
+    else{
+      const c=riskRGB(r);
+      f.colMat.color.setRGB(c[0]/255,c[1]/255,c[2]/255);
+      f.slabMat.color.setRGB((c[0]*.55+183*.45)/255,(c[1]*.55+199*.45)/255,(c[2]*.55+211*.45)/255);
+      f.edgeMat.color.setHex(r>=100&&Math.floor(t/300)%2?0xFF3045:0x62D2F0);
+      const cn=r>=100?4:r>=85?2:r>=72?1:0;f.cracks.forEach((ln,k)=>ln.visible=k<cn);
+    }
+    const pc=lv<2?0:((rf.closeTop&&i>=3)||rf.evac)?0:Math.round(D.occ/200*16);
+    f.people.forEach((m,k)=>{m.visible=k<pc;if(m.visible){m.userData.ph+=dt*.002;m.position.x+=Math.sin(m.userData.ph)*.004;}});
+    f.braces.visible=!!rf.facade;
+    f.tape.visible=!!((rf.closeTop&&i>=3)||rf.evac);
+    f.cols.forEach(cm=>{cm.scale.x=cm.scale.z=rf.seismic?1.45:1;});
+  }
+  damperBox.visible=!!rf.damper;
+  const top=floors[4].g;roof.position.set(top.position.x,5*FH,0);roof.rotation.z=top.rotation.z;
+
+  sensors.forEach((s,k)=>{
+    const on=k<D.sensorsOn;
+    if(on&&s.pop<1)s.pop=Math.min(1,s.pop+dt/350);
+    if(!on)s.pop=0;
+    s.mesh.visible=s.pop>0;
+    const popS=s.pop<1?Math.sin(s.pop*Math.PI*.75)*1.3:1;
+    const act=on&&D.active.has(s.type);
+    const per=act?.55:2.6,p=((t/1000)/per+s.ph)%1;
+    s.sp.scale.setScalar(.5+p*(act?2.4:1.4));
+    s.sp.material.opacity=on?(1-p)*(act?.95:.4):0;
+    s.mesh.scale.setScalar(Math.max(.001,popS*(act?1.35+.2*Math.sin(t*.02):1)));
+    if(on&&D.hubOn>.5){s.acc+=dt/1000*(act?12:.3);if(s.acc>1){s.acc=0;spawnPacket(s);}}
+  });
+  packets.forEach(pk=>{
+    if(!pk.on)return;
+    pk.p+=dt/1000/pk.dur;
+    if(pk.p>=1){pk.on=false;pk.m.visible=false;hubPulse=1;return;}
+    const u=pk.p,a=pk.a,c=pk.c;
+    pk.m.position.set((1-u)*(1-u)*a.x+2*(1-u)*u*c.x+u*u*HUB.x,(1-u)*(1-u)*a.y+2*(1-u)*u*c.y+u*u*HUB.y,(1-u)*(1-u)*a.z+2*(1-u)*u*c.z+u*u*HUB.z);
+  });
+  if(D.hubOn>0){hub.visible=true;const hs=hub.scale.x+(D.hubOn-hub.scale.x)*Math.min(1,dt/300);hub.scale.setScalar(Math.max(.001,hs));}
+  hub.rotation.y+=dt*.0006;hub.rotation.x+=dt*.0002;
+  hubPulse=Math.max(0,hubPulse-dt/300);hubCore.scale.setScalar(1+hubPulse*.5);
+  const ns=Math.round(clamp(w/60,0,1)*streaks.length);
+  streaks.forEach((ln,k)=>{ln.visible=k<ns;if(!ln.visible)return;ln.position.x+=dt*(.01+w*.0009);if(ln.position.x>42){ln.position.x=-42;ln.position.y=rnd(1,22);ln.position.z=rnd(-9,9);}});
+  rings.forEach(m=>{
+    m.userData.p+=dt/1600;
+    if(m.userData.p>=1&&q>.05&&Math.random()<.04)m.userData.p=0;
+    const p=m.userData.p;
+    if(p<1){m.scale.setScalar(1+p*28);m.material.opacity=(1-p)*.7*Math.min(1,q*2);}else m.material.opacity=0;
+  });
+  renderer.render(scene,camera);
+  updateLabels();
+}
+const labelEls=[];
+function initLabels(){
+  const box=$('#labels');
+  for(let i=0;i<5;i++){const d=document.createElement('div');d.className='fl';box.appendChild(d);labelEls.push(d);}
+  const h=document.createElement('div');h.className='fl hub';h.textContent='트윈 분석 엔진';h.hidden=true;box.appendChild(h);labelEls.push(h);
+}
+function project(v){const st=$('#stage');tmpV.copy(v).project(camera);return{x:(tmpV.x+1)/2*st.clientWidth,y:(1-tmpV.y)/2*st.clientHeight};}
+function updateLabels(){
+  for(let i=0;i<5;i++){
+    const v=new THREE.Vector3(BW/2+.6,FH/2,0).applyMatrix4(floors[i].g.matrixWorld);
+    const p=project(v),el=labelEls[i];
+    el.style.left=p.x+'px';el.style.top=p.y+'px';
+    let txt,col;
+    if(D.level<2){txt=`${i+1}층 ?<small>데이터 없음</small>`;col='#8899A6';}
+    else{const r=D.disp[i];col=rgbCss(riskRGB(r));txt=`${i+1}층 ${Math.round(r)}%<small>${D.simMode?'예측 ':''}${r>=100?'붕괴 위험':r>=85?'위험':r>=60?'주의':'안전'}</small>`;}
+    if(el._t!==txt){el._t=txt;el.innerHTML=txt;}
+    el.style.setProperty('--c',col);
+  }
+  const hl=labelEls[5];hl.hidden=D.hubOn<.5;
+  if(!hl.hidden){const hp=project(HUB);hl.style.left=hp.x+'px';hl.style.top=hp.y+'px';}
+}
+
+/* ---------------- 현실 CCTV ---------------- */
+const rc=$('#rc'),rx=rc.getContext('2d');
+const RW=320,RH=240;
+const hash=(a,b,c)=>{let x=(a*73856093)^(b*19349663)^(c*83492791);x=(x^(x>>>13))*1274126177;return Math.abs(x^(x>>>16));};
+const rPeople=[];
+function drawReal(t,dt){
+  const x=rx;x.save();
+  const sh=REAL.quake*4;
+  if(sh>.1)x.translate(rnd(-sh,sh),rnd(-sh*.5,sh*.5));
+  const storm=REAL.wind>18;
+  const g=x.createLinearGradient(0,0,0,RH);
+  if(storm){g.addColorStop(0,'#4F5C67');g.addColorStop(1,'#8E9AA3');}else{g.addColorStop(0,'#7FC0E3');g.addColorStop(1,'#DDF0F8');}
+  x.fillStyle=g;x.fillRect(-10,-10,RW+20,RH+20);
+  if(!storm){x.fillStyle='#FFF8DD';x.beginPath();x.arc(270,34,13,0,7);x.fill();}
+  x.fillStyle=storm?'#76848D':'#AFC6D3';
+  for(let k=0;k<10;k++){const bh=40+hash(k,3,7)%60;x.fillRect(k*34-6,200-bh,26,bh);}
+  x.fillStyle='#8C9499';x.fillRect(-10,200,RW+20,50);
+  x.fillStyle='#6F8556';x.fillRect(-10,196,RW+20,6);
+  [[30,196],[290,196]].forEach(([tx,ty],k)=>{
+    const bend=(REAL.wind/60)*16*(1+.3*Math.sin(t*.008+k));
+    x.strokeStyle='#5B4636';x.lineWidth=4;x.beginPath();x.moveTo(tx,ty);x.quadraticCurveTo(tx,ty-20,tx+bend,ty-34);x.stroke();
+    x.fillStyle=storm?'#4E6E4C':'#5E9356';x.beginPath();x.arc(tx+bend*1.1,ty-42,14,0,7);x.fill();
+  });
+  const bx=105,bw=110,fh=30,base=200,rf=REAL.rf;
+  const stains=clamp((REAL.age-25)/40,0,1);
+  for(let i=0;i<5;i++){
+    const y=base-(i+1)*fh;
+    x.fillStyle=`rgb(${201-stains*40},${207-stains*40},${211-stains*38})`;x.fillRect(bx,y,bw,fh);
+    x.fillStyle='#9AA3A8';x.fillRect(bx,y+fh-2,bw,2);
+    const closed=(rf.closeTop&&i>=3)||REAL.evac;
+    const occ=closed?0:REAL.occ>150?9:REAL.occ>110?7:5;
+    for(let c=0;c<4;c++){
+      if(i===0&&(c===1||c===2))continue;
+      const wx=bx+8+c*26,wy=y+6,lit=hash(i,c,Math.floor(t/4000))%10<occ;
+      const broken=REAL.damage>0&&i>=5-REAL.damage&&hash(i,c,1)%3!==0;
+      x.fillStyle=broken?'#2B3540':lit?'#FFE7A3':'#6E95B0';x.fillRect(wx,wy,17,15);
+      if(broken){x.strokeStyle='#C9D3DA';x.lineWidth=1;x.beginPath();x.moveTo(wx+2,wy+2);x.lineTo(wx+9,wy+8);x.lineTo(wx+15,wy+3);x.moveTo(wx+9,wy+8);x.lineTo(wx+7,wy+14);x.stroke();}
+      if(stains>.2){x.fillStyle=`rgba(60,55,50,${stains*.35})`;x.fillRect(wx+4,wy+15,3,8*stains);}
+    }
+    if(rf.facade){x.strokeStyle='#E07B1A';x.lineWidth=2;x.beginPath();x.moveTo(bx,y);x.lineTo(bx+bw/2,y+fh);x.lineTo(bx+bw,y);x.moveTo(bx,y+fh);x.lineTo(bx+bw/2,y);x.lineTo(bx+bw,y+fh);x.stroke();}
+    if(closed&&!REAL.evac){x.fillStyle='#F2B705';x.fillRect(bx-4,y+fh*.42,bw+8,5);x.fillStyle='#1B2631';for(let k=0;k<8;k++)x.fillRect(bx-4+k*15,y+fh*.42,7,5);}
+    if(REAL.crack>0||REAL.damage>0){
+      const cn=REAL.damage>0&&i>=5-REAL.damage?2:REAL.crack&&i===0?1:0;
+      x.strokeStyle='#2B2F33';x.lineWidth=1;
+      for(let k=0;k<cn;k++){const sx=bx+10+hash(i,k,9)%90;x.beginPath();x.moveTo(sx,y+2);x.lineTo(sx+4,y+10);x.lineTo(sx-2,y+18);x.lineTo(sx+3,y+fh-3);x.stroke();}
+    }
+  }
+  if(rf.seismic){x.fillStyle='#5E686E';[bx-4,bx+bw].forEach(px=>x.fillRect(px,base-5*fh,4,5*fh));}
+  x.fillStyle='#3E5566';x.fillRect(bx+bw/2-12,base-22,24,22);
+  x.fillStyle='#B3BABE';x.fillRect(bx-3,base-5*fh-5,bw+6,5);
+  x.fillStyle='#8C9AA6';x.fillRect(bx+12,base-5*fh-15,22,10);
+  if(rf.damper){x.fillStyle='#E07B1A';x.fillRect(bx+55,base-5*fh-17,26,12);}
+  x.strokeStyle='#5E686E';x.lineWidth=1.5;x.beginPath();x.moveTo(bx+92,base-5*fh-5);x.lineTo(bx+92,base-5*fh-22);x.stroke();
+  // 사람
+  const want=REAL.evac?26:Math.round(REAL.occ/200*22);
+  while(rPeople.length<want)rPeople.push({x:REAL.evac?bx+bw/2:rnd(10,310),d:Math.random()<.5?1:-1,v:rnd(.012,.03),c:['#E9534F','#3A7BD5','#F2B705','#3FA37A','#2B3540'][ri(0,4)],ph:rnd(0,6)});
+  while(rPeople.length>want)rPeople.pop();
+  rPeople.forEach(p=>{
+    p.x+=p.d*p.v*dt*(REAL.evac?2.2:1);p.ph+=dt*.012;
+    if(REAL.evac){if(p.x<4||p.x>316){p.x=bx+bw/2;}}else if(p.x<4||p.x>316)p.d*=-1;
+    x.fillStyle=p.c;x.fillRect(p.x-1.5,base-9,3,6);x.fillStyle='#2B2F33';x.beginPath();x.arc(p.x,base-11,2,0,7);x.fill();
+    const l=Math.sin(p.ph)*1.6;x.strokeStyle='#2B2F33';x.lineWidth=1;x.beginPath();x.moveTo(p.x,base-3);x.lineTo(p.x+l,base);x.moveTo(p.x,base-3);x.lineTo(p.x-l,base);x.stroke();
+  });
+  if(storm){
+    x.strokeStyle='rgba(235,245,255,.45)';x.lineWidth=1;x.beginPath();
+    const sl=REAL.wind/60*10;
+    for(let k=0;k<70;k++){const px=(k*97.3+t*.4)%340-10,py=(k*53.7+t*.8)%RH;x.moveTo(px,py);x.lineTo(px-4-sl,py+10);}
+    x.stroke();
+  }
+  x.restore();
+  if(REAL.agingAnim>0){
+    const p=1-REAL.agingAnim,yr=Math.round(REAL.yearFrom+(REAL.yearTo-REAL.yearFrom)*ease(Math.min(1,p*1.2)));
+    x.fillStyle='rgba(10,31,51,.78)';x.fillRect(0,0,RW,RH);
+    x.fillStyle='#fff';x.fillRect(110,70,100,90);x.fillStyle='#D9363E';x.fillRect(110,70,100,24);
+    x.fillStyle='#fff';x.font="700 14px 'Noto Sans KR'";x.textAlign='center';x.fillText('시간 흐름',160,87);
+    x.fillStyle='#1B2631';x.font="40px 'Do Hyeon'";x.fillText(String(yr),160,140);
+  }
+  if(REAL.clockAnim>0){
+    const p=1-REAL.clockAnim;
+    x.fillStyle='rgba(10,31,51,.78)';x.fillRect(0,0,RW,RH);
+    x.strokeStyle='#fff';x.lineWidth=4;x.beginPath();x.arc(160,110,40,0,7);x.stroke();
+    const a=p*Math.PI*2*3-Math.PI/2;x.beginPath();x.moveTo(160,110);x.lineTo(160+Math.cos(a)*30,110+Math.sin(a)*30);x.stroke();
+    x.fillStyle='#fff';x.font="700 15px 'Noto Sans KR'";x.textAlign='center';x.fillText('3시간 후...',160,178);
+  }
+  x.fillStyle='rgba(0,0,0,.05)';for(let y=0;y<RH;y+=3)x.fillRect(0,y,RW,1);
+  x.fillStyle='rgba(255,255,255,.9)';x.font="12px 'Noto Sans KR'";x.textAlign='right';
+  x.fillText(new Date().toLocaleTimeString('ko-KR',{hour12:false}),RW-8,RH-10);
+  x.textAlign='left';x.fillText(`준공 ${Math.round(REAL.age)}년차`,8,RH-10);
+  $('#rec').style.opacity=Math.floor(t/600)%2?1:.3;
+}
+
+/* ---------------- 연결선 (데이터: 현실→가상 / 지시: 가상→현실) ---------------- */
+function drawLinks(t){
+  const svg=$('#links');
+  if(D.dataFlow<=0&&D.cmdFlow<=0){if(svg._on){svg.innerHTML='';svg._on=false;}return;}
+  const st=$('#stage').getBoundingClientRect(),ins=document.querySelector('.inset').getBoundingClientRect();
+  const sx=ins.left-st.left+ins.width*.25,sy=ins.bottom-st.top;
+  const tp=D.hubOn>.5?project(HUB):project(new THREE.Vector3(0,10,0));
+  let h='';
+  if(D.dataFlow>0){
+    const a=Math.min(1,D.dataFlow),n=D.dataFlow>1?6:3,ph=(t%900)/900;
+    h+=`<path d="M${sx},${sy} Q${(sx+tp.x)/2},${(sy+tp.y)/2+50} ${tp.x},${tp.y}" stroke="#62D2F0" stroke-opacity="${.35+.5*a}" stroke-width="2" stroke-dasharray="6 6" fill="none" stroke-dashoffset="${-t*.05}"/>`;
+    for(let k=0;k<n;k++){const u=(ph+k/n)%1;const px=(1-u)*(1-u)*sx+2*(1-u)*u*((sx+tp.x)/2)+u*u*tp.x,py=(1-u)*(1-u)*sy+2*(1-u)*u*((sy+tp.y)/2+50)+u*u*tp.y;h+=`<circle cx="${px}" cy="${py}" r="${D.dataFlow>1?4.5:3}" fill="#BDF2FF" fill-opacity="${a}"/>`;}
+  }
+  if(D.cmdFlow>0){
+    const ex=ins.left-st.left,ey=ins.top-st.top+ins.height*.45,ph=(t%800)/800;
+    h+=`<path d="M${tp.x},${tp.y} Q${(ex+tp.x)/2},${Math.min(ey,tp.y)-40} ${ex},${ey}" stroke="#FF9F43" stroke-width="2.5" stroke-dasharray="8 6" fill="none" stroke-dashoffset="${t*.06}"/>`;
+    for(let k=0;k<5;k++){const u=(ph+k/5)%1;const cx=(ex+tp.x)/2,cy=Math.min(ey,tp.y)-40;const px=(1-u)*(1-u)*tp.x+2*(1-u)*u*cx+u*u*ex,py=(1-u)*(1-u)*tp.y+2*(1-u)*u*cy+u*u*ey;h+=`<rect x="${px-4}" y="${py-4}" width="8" height="8" fill="#FFC48A" transform="rotate(45 ${px} ${py})"/>`;}
+  }
+  svg.innerHTML=h;svg._on=true;
+}
+
+/* ---------------- 공통 UI ---------------- */
+const LV=[
+  {n:1,short:'모양 따라하기',sub:'3D 모형'},
+  {n:2,short:'현실 따라하기',sub:'데이터 연결'},
+  {n:3,short:'미리 보고 지시하기',sub:'양방향 연결'}
+];
+function renderTop(){
+  $('#levels').innerHTML=LV.map(l=>{
+    const lock=l.n>G.level;
+    return `<div class="lv ${l.n===G.level?'on':''} ${lock?'lock':''}">레벨 ${l.n}<b>${lock?'🔒 ???':l.short}</b></div>`;
+  }).join('');
+  const st={1:['가상 건물','현실과 연결 안 됨','#8899A6',false],2:['가상 건물','현실 데이터 수신 중','#62D2F0',true],3:['가상 건물','데이터 수신 + 현실로 지시 가능','#FF9F43',true]}[G.level];
+  $('#twinName').textContent=st[0];$('#twinState').textContent=st[1];
+  $('#twinDot').style.setProperty('--dot',st[2]);$('#twinDot').classList.toggle('live',st[3]);
+  $('#lkData').hidden=G.level<2;$('#lkCmd').hidden=G.level<3;$('#scale').hidden=G.level<2;
+}
+function connBox(){
+  const l=G.level;
+  const arrow=l===1?`<svg viewBox="0 0 70 34"><line x1="8" y1="17" x2="62" y2="17" stroke="#8899A6" stroke-width="2" stroke-dasharray="3 4"/><text x="35" y="12" font-size="14" text-anchor="middle" fill="#D9363E">✕</text></svg>`
+   :l===2?`<svg viewBox="0 0 70 34"><line x1="6" y1="17" x2="58" y2="17" stroke="#62D2F0" stroke-width="3"/><path d="M58 11 L66 17 L58 23" fill="#62D2F0"/></svg>`
+   :`<svg viewBox="0 0 70 34"><line x1="6" y1="11" x2="58" y2="11" stroke="#62D2F0" stroke-width="3"/><path d="M58 5 L66 11 L58 17" fill="#62D2F0"/><line x1="12" y1="24" x2="64" y2="24" stroke="#FF9F43" stroke-width="3"/><path d="M12 18 L4 24 L12 30" fill="#FF9F43"/></svg>`;
+  return `<div class="conn"><div><b>현실 건물</b>CCTV</div>${arrow}<div><b>가상 건물</b>3D 화면</div></div>`;
+}
+function setBanner(t,cls){const b=$('#banner');b.textContent=t||'';b.className='banner'+(cls?' '+cls:'');}
+function setCap(t){$('#realCap').textContent=t||'';}
+function feed(text,cls){G.feed.push([text,cls]);if(G.feed.length>40)G.feed.shift();const f=$('#feed');if(f){const d=document.createElement('div');d.className=cls||'';d.textContent=text;f.appendChild(d);f.scrollTop=f.scrollHeight;}}
+function feedHTML(){return `<div class="feed" id="feed" aria-live="polite">${G.feed.map(([t,c])=>`<div class="${c||''}">${t}</div>`).join('')}</div>`;}
+function afterRender(){const f=$('#feed');if(f)f.scrollTop=f.scrollHeight;}
+function bind(id,fn){const el=$(id);if(el)el.onclick=fn;}
+function optsHTML(list,picked,correct,name){
+  return `<div class="opts">${list.map((o,k)=>{
+    let cls='';if(picked!==null){if(k===correct)cls='right';else if(k===picked)cls='wrong';}
+    return `<button type="button" data-${name}="${k}" class="${cls}" ${picked!==null?'disabled':''}>${o}</button>`;}).join('')}</div>`;
+}
+
+/* ================= 단계 ================= */
+const STEP={};
+function go(step){G.step=step;G.answered=null;render();}
+function render(){renderTop();$('#console').innerHTML=connBox()+STEP[G.step].html();STEP[G.step].bind&&STEP[G.step].bind();afterRender();}
+
+/* ----- 도입: 내비게이션 ----- */
+STEP.p1={
+  html(){
+    const ans=G.answered;
+    return `<p class="kicker">시작하기 전에</p><h2 class="disp">내비게이션은 어떻게 알까?</h2>
+    <p>운전 중에 내비가 "앞쪽 도로가 막혀요. 다른 길로 안내할게요"라고 말해요. 내비는 앞길이 막힌 걸 어떻게 알았을까요?</p>
+    ${optsHTML(['지도에 원래 막히는 길이 표시되어 있어서','다른 차들이 보내는 위치·속도 데이터를 실시간으로 받아서','운전자가 직접 입력해서'],ans,1,'a')}
+    ${ans!==null?`<div class="fb ${ans===1?'good':''}">${ans===1?'맞아요! ':''}내비는 수많은 차가 보내는 <b>실시간 데이터</b>로 지도 위 도로 상황을 계속 고쳐요. 그리고 앞으로 걸릴 시간을 <b>미리 계산</b>해서, 우리에게 다른 길로 가라고 <b>알려줘요</b>.<br><br>오늘은 내비처럼 똑똑한 <b>건물의 쌍둥이</b>를 한 단계씩 만들어 볼 거예요.</div>
+    <button type="button" class="go" id="next">건물 관제실로 가기</button>`:''}`;
+  },
+  bind(){
+    document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{G.answered=+b.dataset.a;AU.play(G.answered===1?'correct':'over');render();});
+    bind('#next',()=>{AU.play('page');go('l1a');});
+  }
+};
+
+/* ----- 레벨 1 ----- */
+STEP.l1a={
+  html(){
+    return `<p class="kicker">레벨 1</p><h2 class="disp">모양이 똑같은 가상 건물</h2>
+    <p>설계도를 바탕으로 현실 건물과 <b>모양이 똑같은</b> 3D 가상 건물을 만들었어요. 3D 화면을 마우스로 끌어서 이리저리 돌려 보세요.</p>
+    <p>오른쪽 위 작은 창은 현실 건물을 비추는 CCTV예요.</p>
+    <button type="button" class="go" id="next">관제 시작</button>`;
+  },
+  bind(){bind('#next',async()=>{
+    $('#next').disabled=true;AU.play('click');
+    await wait(500);
+    AU.mood('tense');AU.play('siren');setBanner('현실 건물에 지진 발생!','hot');setCap('현실: 지진 발생 중');
+    REAL.quake=.8;REAL.mag=5.2;setTimeout(()=>AU.play('quake'),300);
+    await wait(2600);REAL.quake=0;REAL.mag=0;REAL.crack=1;AU.play('crack');setCap('');
+    setBanner('가상 건물은 아무 변화가 없어요');AU.mood('calm');
+    go('l1b');
+  });}
+};
+STEP.l1b={
+  html(){
+    const a=G.answered;
+    return `<p class="kicker">레벨 1</p><h2 class="disp">3층은 안전할까?</h2>
+    <p>방금 현실 건물에 지진이 있었어요. CCTV에는 1층 벽에 작은 금이 보여요. 그런데 가상 건물은 꿈쩍도 하지 않았죠.</p>
+    <p class="q">3D 가상 건물을 보고 판단해 주세요. 지금 3층은 안전할까요?</p>
+    ${optsHTML(['안전해요','위험해요','가상 건물만 봐서는 알 수 없어요'],a,2,'a')}
+    ${a!==null?`<div class="fb ${a===2?'good':'bad'}">${a===2?'정확해요.':'사실 이건 맞힐 수가 없는 문제였어요.'} 가상 건물은 모양만 같을 뿐, 현실 건물에서 무슨 일이 일어났는지 <b>전혀 모르고 있어요</b>. 화면 속 층마다 "?"가 붙어 있죠.</div>
+    <button type="button" class="go" id="next">그럼 무엇이 필요할까?</button>`:''}`;
+  },
+  bind(){
+    document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{G.answered=+b.dataset.a;AU.play(G.answered===2?'correct':'wrong');setBanner('');render();});
+    bind('#next',()=>{AU.play('page');go('l1c');});
+  }
+};
+STEP.l1c={
+  html(){
+    const a=G.answered;
+    return `<p class="kicker">레벨 1 → 2</p><h2 class="disp">가상 건물에 무엇을 더할까?</h2>
+    <p class="q">가상 건물이 현실 건물의 상태를 알려면 무엇이 필요할까요?</p>
+    ${optsHTML(['더 정교하고 예쁜 3D 모델','현실 건물에서 실시간으로 오는 데이터','더 큰 모니터와 좋은 컴퓨터'],a,1,'a')}
+    ${a!==null&&a!==1?`<div class="fb bad">${a===0?'모양이 아무리 똑같아도 현실에서 무슨 일이 일어나는지는 알 수 없어요.':'화면이 커져도 보여줄 정보가 없으면 소용없어요.'} 내비게이션은 무엇을 받아서 길 상황을 알았는지 떠올려 보세요.</div>
+    <button type="button" class="go alt" id="retry">다시 고르기</button>`:''}`;
+  },
+  bind(){
+    document.querySelectorAll('[data-a]').forEach(b=>b.onclick=async()=>{
+      G.answered=+b.dataset.a;
+      if(G.answered!==1){AU.play('wrong');render();return;}
+      AU.play('correct');render();await wait(600);unlockL2();
+    });
+    bind('#retry',()=>{AU.play('page');G.answered=null;render();});
+  }
+};
+async function unlockL2(){
+  AU.play('unlock');setBanner('레벨 2 열림: 센서 연결 중','');
+  G.level=2;D.level=1;renderTop();
+  for(let k=0;k<sensors.length;k++){D.sensorsOn=k+1;AU.play('pop',k);await wait(110);}
+  D.dataFlow=1.6;AU.play('stream');
+  await wait(900);
+  D.level=2;syncTwinToReal(2.5);D.dataFlow=1;
+  setBanner('현실 데이터가 가상 건물로 들어와요');
+  go('l2a');
+}
+
+/* ----- 레벨 2 ----- */
+const L2EV={
+  crowd:{n:'👥 행사로 사람 몰리기',d:'인원 2배',apply(){REAL.occ=200;},sens:['people','strain'],lines:()=>[['인원 계수기',`건물 안 ${Math.round(REAL.occ*6.2)}명 (평소의 ${REAL.occ}%)`],['1층 변형률계',`${Math.round(200+liveRisk()[0]*6)} με`]],real:'사람들이 몰려들어요',snd:'crowd'},
+  wind:{n:'🌬 강한 바람 불기',d:'초속 35m',apply(){REAL.wind=35;},sens:['wind','accel','strain'],lines:()=>[['옥상 풍속계','초속 35m'],['5층 가속도계',`흔들림 ${Math.round(35*5*.35)}mm`]],real:'강한 바람이 불어요',snd:'wind'},
+  age:{n:'⏳ 20년 흐르기',d:'건물이 낡아요',apply(){REAL.yearFrom=2026;REAL.yearTo=2046;REAL.agingAnim=1;REAL.age=BASE_AGE+20;},sens:['strain'],lines:()=>[['1층 변형률계',`${Math.round(200+liveRisk()[0]*6)} με (시간이 지나며 증가)`],['콘크리트 상태 센서','강도 저하 감지']],real:'20년이 흘렀어요',snd:'aging'}
+};
+let l2busy=false;
+async function l2Event(key){
+  if(l2busy)return;l2busy=true;render();
+  const e=L2EV[key];G.tried.add(key);
+  AU.play(e.snd);e.apply();setCap('현실: '+e.real);
+  feed(`[현실] ${e.real}`,'r');
+  await wait(1200);
+  D.active=new Set(e.sens);AU.play('scan');setBanner('센서가 변화를 측정 중');
+  const ls=e.lines();
+  for(let k=0;k<ls.length;k++){feed(`[센서] ${ls[k][0]}: ${ls[k][1]}`,'s');AU.play('ping',k);await wait(450);}
+  D.dataFlow=2;AU.play('stream');setBanner('데이터를 가상 건물로 보내는 중');
+  await wait(1100);
+  const before=D.target.slice();
+  syncTwinToReal(2);if(key==='wind')D.wind=REAL.wind;if(key==='crowd')D.occ=REAL.occ;
+  AU.play('whoosh');setBanner('가상 건물이 현실과 똑같이 변했어요');
+  const w=worstOf(D.target);
+  feed(`[가상] ${w+1}층 위험도 ${Math.round(before[w])}% → ${Math.round(D.target[w])}%`,'t');
+  await wait(1200);D.active=new Set();D.dataFlow=1;setBanner('');
+  l2busy=false;render();
+}
+function l2Reset(){
+  if(l2busy)return;AU.play('page');
+  REAL.occ=100;REAL.wind=0;REAL.age=BASE_AGE;setCap('');
+  syncTwinToReal(3);D.wind=0;D.occ=100;feed('[현실] 모든 것이 원래대로 돌아왔어요','r');render();
+}
+STEP.l2a={
+  html(){
+    const r3=Math.round(liveRisk()[2]);
+    const n=G.tried.size;
+    return `<p class="kicker">레벨 2</p><h2 class="disp">현실을 따라 하는 가상 건물</h2>
+    <p>센서 17개를 연결했어요. 이제 현실 건물의 데이터가 가상 건물로 들어와요. 아까 그 3층은 사실 <b>${r3}%</b>로 안전했어요.</p>
+    <p class="q">현실 건물에 변화를 주고, CCTV와 가상 건물이 어떻게 변하는지 지켜보세요. (2가지 이상)</p>
+    <div class="ev">${Object.entries(L2EV).map(([k,e])=>`<button type="button" data-e="${k}" class="${G.tried.has(k)?'done':''}" ${l2busy?'disabled':''}>${e.n}<small>${e.d}</small></button>`).join('')}
+    <button type="button" id="reset" ${l2busy?'disabled':''}>↺ 원래대로<small>모든 변화 되돌리기</small></button></div>
+    ${feedHTML()}
+    ${n>=2?`<div class="fb">현실이 바뀌면 <b>현실 → 센서 → 데이터 전송 → 가상 건물</b> 순서로 따라 바뀌었죠. 가상 건물이 이제 현실의 <b>그림자</b>처럼 움직여요.</div>`:''}
+    <button type="button" class="go" id="next" ${n<2||l2busy?'disabled':''}>${n<2?`변화를 ${2-n}가지 더 줘 보세요`:'다음 상황으로'}</button>`;
+  },
+  bind(){
+    document.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>l2Event(b.dataset.e));
+    bind('#reset',l2Reset);
+    bind('#next',()=>{
+      REAL.occ=100;REAL.wind=0;REAL.age=BASE_AGE;setCap('');syncTwinToReal(3);D.wind=0;D.occ=100;
+      AU.play('notify');go('l2b');
+    });
+  }
+};
+STEP.l2b={
+  html(){
+    const a=G.answered,r5=Math.round(liveRisk()[4]);
+    return `<p class="kicker">레벨 2</p><h2 class="disp">태풍이 온대요</h2>
+    <div class="fb bad"><b>기상청 예보</b><br>3시간 뒤 초속 55m의 초강력 태풍이 이 지역에 도착해요.</div>
+    <p>지금 가상 건물의 5층 위험도는 <b>${r5}%</b>예요.</p>
+    <button type="button" class="locked" id="lockBtn">🔒 미래 실험하기</button>
+    <p class="q">태풍이 오면 5층은 버틸 수 있을까요?</p>
+    ${optsHTML(['버틸 수 있어요','버티지 못해요','지금 가상 건물로는 알 수 없어요'],a,2,'a')}
+    ${a!==null?`<div class="fb ${a===2?'good':'bad'}">${a===2?'맞아요.':'그렇게 판단할 근거가 화면에 없었어요.'} 지금의 가상 건물은 센서가 <b>이미 측정한 것</b>만 보여줘요. 태풍은 아직 오지 않았으니 센서가 잴 수 없죠. 태풍이 와서 피해가 생긴 뒤에야 알게 된다면 너무 늦어요.</div>
+    <button type="button" class="go" id="next">그럼 무엇이 필요할까?</button>`:''}`;
+  },
+  bind(){
+    bind('#lockBtn',()=>toast('지금의 가상 건물은 미래를 실험할 수 없어요. 측정한 현재만 보여줘요.','lock'));
+    document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{G.answered=+b.dataset.a;AU.play(G.answered===2?'correct':'wrong');render();});
+    bind('#next',()=>{AU.play('page');go('l2c');});
+  }
+};
+STEP.l2c={
+  html(){
+    const a=G.answered;
+    return `<p class="kicker">레벨 2 → 3</p><h2 class="disp">가상 건물에 무엇을 더할까?</h2>
+    <p class="q">태풍이 오기 전에 건물을 지키려면, 가상 건물에 어떤 능력이 더 필요할까요?</p>
+    ${optsHTML(['센서를 2배로 늘린다','가상 건물에서 태풍을 미리 실험해 보고, 그 결과로 현실 건물에 지시를 보낸다','태풍이 올 때까지 기다렸다가 CCTV로 확인한다'],a,1,'a')}
+    ${a!==null&&a!==1?`<div class="fb bad">${a===0?'센서를 아무리 늘려도 아직 일어나지 않은 태풍은 잴 수 없어요.':'기다리면 피해가 생긴 뒤에야 알게 돼요.'} 내비게이션이 "앞으로 걸릴 시간"을 어떻게 알려줬는지 떠올려 보세요.</div>
+    <button type="button" class="go alt" id="retry">다시 고르기</button>`:''}`;
+  },
+  bind(){
+    document.querySelectorAll('[data-a]').forEach(b=>b.onclick=async()=>{
+      G.answered=+b.dataset.a;
+      if(G.answered!==1){AU.play('wrong');render();return;}
+      AU.play('correct');render();await wait(600);unlockL3();
+    });
+    bind('#retry',()=>{AU.play('page');G.answered=null;render();});
+  }
+};
+async function unlockL3(){
+  AU.play('unlock');G.level=3;renderTop();setBanner('레벨 3 열림: 분석 엔진과 지시 채널 연결');
+  D.hubOn=1;await wait(700);AU.play('whoosh');
+  D.cmdFlow=1;AU.play('cmd');await wait(1400);D.cmdFlow=0;
+  setBanner('');go('l3a');
+}
+
+/* ----- 레벨 3: 미리 실험하고 현실로 지시 ----- */
+const ACTS=[
+  {id:'facade',n:'외벽 보강',d:'바람 힘 -40%, 공사비 20',cost:20},
+  {id:'damper',n:'제진 댐퍼',d:'흔들림 흡수, 공사비 30',cost:30},
+  {id:'seismic',n:'기둥 내진 보강',d:'버티는 힘 +35%, 공사비 40',cost:40},
+  {id:'closeTop',n:'4·5층 출입 통제',d:'사람 무게 0, 공사비 없음',cost:0}
+];
+const costOf=rf=>ACTS.reduce((s,a)=>s+(rf[a.id]?a.cost:0),0);
+async function runSim(){
+  if(G.simRunning)return;
+  G.simRunning=true;G.simRes=null;render();
+  AU.play('run');AU.mood('tense');setBanner('가상 실험 중: 현실 건물은 그대로예요','');setCap('현실: 아직 평온해요');
+  D.simMode=true;D.rf={...G.simRf};D.active=new Set(['wind','accel','strain']);
+  const wv=G.simWind,res=analyze({age:REAL.age,occ:100,wind:wv,mag:0},G.simRf);
+  if(wv>15)setTimeout(()=>AU.play('wind'),300);
+  const t0=performance.now();let creak=false,crack=false;
+  await new Promise(done=>{
+    (function step(){
+      const p=clamp((performance.now()-t0)/3600,0,1),e=ease(p);
+      const cur=analyze({age:REAL.age,occ:100,wind:wv*e,mag:0},G.simRf);
+      D.target=cur;D.k=6;D.wind=wv*e;
+      const m=maxOf(cur);
+      if(m>85&&!creak){creak=true;AU.play('creak');}
+      if(m>100&&!crack){crack=true;AU.play('crack');setTimeout(()=>AU.play('glass'),150);}
+      if(p<1)requestAnimationFrame(step);else done();
+    })();
+  });
+  G.simRes=res;G.simKey=JSON.stringify(G.simRf)+wv;G.simRunning=false;D.active=new Set();
+  AU.mood('calm');
+  const m=maxOf(res);
+  if(m<85){AU.play('pass');setBanner('실험 결과: 모든 층이 안전 기준을 통과했어요');}
+  else{AU.play('fail');setBanner(m>=100?'실험 결과: 가상 건물이 버티지 못해요':'실험 결과: 위험한 층이 있어요','hot');}
+  render();
+}
+function backToLive(){
+  if(D.simMode){D.simMode=false;syncTwinToReal(3);D.wind=REAL.wind;setBanner('');}
+}
+async function sendCommand(){
+  if(G.simRunning)return;
+  const rf={...G.simRf};
+  G.sending=true;render();
+  backToLive();
+  AU.play('cmd');D.cmdFlow=1;setBanner('지시를 현실 건물로 보내는 중','cmd');
+  const names=ACTS.filter(a=>rf[a.id]).map(a=>a.n);
+  feed(`[지시] ${names.length?names.join(', '):'조치 없음'}`,'c');
+  await wait(1600);D.cmdFlow=0;
+  if(names.length){AU.play('hammer');setCap('현실: 지시대로 공사 중');}
+  REAL.rf=rf;D.rf={...rf};
+  await wait(1500);
+  REAL.clockAnim=1;AU.play('aging');setCap('');setBanner('시간이 흐르고 있어요');
+  await wait(2200);
+  AU.mood('tense');AU.play('siren');setBanner('현실 건물에 태풍 도착!','hot');setCap('현실: 초속 55m 태풍');
+  REAL.wind=55;AU.play('wind');
+  await wait(1500);
+  D.active=new Set(['wind','accel','strain']);AU.play('scan');D.dataFlow=2;AU.play('stream');
+  feed('[센서] 옥상 풍속계: 초속 55m','s');AU.play('ping',0);await wait(400);
+  feed(`[센서] 5층 변형률계: ${Math.round(200+liveRisk()[4]*6)} με`,'s');AU.play('ping',1);await wait(700);
+  syncTwinToReal(1.8);D.wind=55;AU.play('whoosh');setBanner('가상 건물이 현실 태풍 상황을 따라 해요');
+  await wait(2400);
+  const res=liveRisk(),m=maxOf(res);
+  G.sentRes={res,m,cost:costOf(rf),rf};
+  if(m>=100){REAL.damage=2;AU.play('crack');AU.play('glass');feed(`[가상] 최대 위험도 ${Math.round(m)}%, 위층 유리창 파손`,'t');}
+  else feed(`[가상] 최대 위험도 ${Math.round(m)}%`,'t');
+  D.active=new Set();D.dataFlow=1;AU.mood('calm');
+  if(m<85){AU.play('pass');setBanner('건물이 태풍을 버텼어요!');}
+  else if(m<100){AU.play('over');setBanner('버텼지만 아슬아슬했어요','hot');}
+  else{AU.play('fail');setBanner('피해가 생겼어요','hot');}
+  G.sending=false;go('l3b');
+}
+STEP.l3a={
+  html(){
+    const r=G.simRes,cur=JSON.stringify(G.simRf)+G.simWind,fresh=r&&G.simKey===cur,busy=G.simRunning||G.sending;
+    return `<p class="kicker">레벨 3</p><h2 class="disp">미리 실험하고, 현실에 지시하기</h2>
+    <p>이제 가상 건물에서 <b>아직 일어나지 않은 일</b>을 실험할 수 있어요. 태풍을 넣어 보고, 어떤 조치가 필요한지 찾아서 현실 건물에 지시를 보내세요.</p>
+    <div class="sl"><label for="wind">태풍 풍속</label><input type="range" id="wind" min="0" max="65" step="1" value="${G.simWind}" ${busy?'disabled':''}><output id="wo">초속 ${G.simWind}m</output></div>
+    <div class="acts">${ACTS.map(a=>`<button type="button" data-x="${a.id}" aria-pressed="${!!G.simRf[a.id]}" ${busy?'disabled':''}>${a.n}<small>${a.d}</small></button>`).join('')}</div>
+    <p class="crit">목표: 초속 55m 태풍에서 모든 층 위험도 85% 미만, 공사비는 되도록 적게. 지금 고른 조치의 공사비는 <b>${costOf(G.simRf)}</b>이에요.</p>
+    <button type="button" class="go" id="sim" ${busy?'disabled':''}>${G.simRunning?'가상 실험 중...':'가상 건물에서 실험하기'}</button>
+    ${fresh?`<div style="margin-top:10px">${r.map((v,i)=>({v,i})).reverse().map(({v,i})=>`<div class="rbar"><span>${i+1}층</span><div class="track"><i style="width:${Math.min(100,v/120*100)}%;background:${rgbCss(riskRGB(v))}"></i></div><b>${Math.round(v)}%</b></div>`).join('')}</div>
+      <div class="fb ${maxOf(r)<85?'good':'bad'}">${maxOf(r)<85?(G.simWind>=55?'이 조치면 예보된 태풍을 버틸 수 있어요. 현실로 지시를 보내세요.':'이 풍속에서는 안전해요. 예보된 초속 55m로도 실험해 보세요.'):`${worstOf(r)+1}층이 위험해요. 바람은 높은 층일수록 세게 받아요. 조치를 바꿔 다시 실험해 보세요.`}</div>`:''}
+    ${feedHTML()}
+    <button type="button" class="go cmd" id="send" ${busy?'disabled':''}>${G.sending?'지시 실행 중...':'이 조치를 현실 건물로 보내기'}</button>`;
+  },
+  bind(){
+    const s=$('#wind');
+    if(s)s.oninput=()=>{G.simWind=+s.value;$('#wo').textContent=`초속 ${G.simWind}m`;AU.play('slide');};
+    if(s)s.onchange=()=>{backToLive();render();};
+    document.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{const id=b.dataset.x;G.simRf[id]=!G.simRf[id];AU.play(G.simRf[id]?'toggleOn':'toggleOff');backToLive();render();});
+    bind('#sim',runSim);
+    bind('#send',()=>{
+      const cur=JSON.stringify(G.simRf)+G.simWind;
+      if((!G.simRes||G.simKey!==cur)&&G.warned!==cur){
+        G.warned=cur;toast('이 조치는 아직 가상 건물에서 실험하지 않았어요. 그래도 보내려면 한 번 더 누르세요.','lock');return;
+      }
+      sendCommand();
+    });
+  }
+};
+STEP.l3b={
+  html(){
+    const s=G.sentRes,m=s.m;
+    const ok=m<85;
+    return `<p class="kicker">레벨 3</p><h2 class="disp">${ok?'태풍을 이겨냈어요':m<100?'아슬아슬하게 버텼어요':'피해가 생겼어요'}</h2>
+    <div class="fb ${ok?'good':'bad'}">현실 태풍 속 최대 위험도는 <b>${Math.round(m)}%</b>였어요. 공사비는 <b>${s.cost}</b>를 썼어요.
+    ${ok?(s.cost<=60?' 가장 적은 공사비로 찾을 수 있는 해법이에요!':' 가상 실험 덕분에 태풍이 오기 전에 미리 대비할 수 있었어요.'):m<100?' 건물은 버텼지만 안전 기준(85%)은 넘었어요.':' 가상 건물에서 먼저 충분히 실험했다면 막을 수 있었어요.'}</div>
+    ${feedHTML()}
+    ${ok||m<100?`<button type="button" class="go" id="next">다음 상황으로</button>`:''}
+    ${!ok?`<button type="button" class="go alt" id="retry">태풍 오기 전으로 돌아가 다시 하기</button>`:''}`;
+  },
+  bind(){
+    bind('#next',()=>{AU.play('page');REAL.wind=0;D.wind=0;syncTwinToReal(3);setBanner('');setCap('');go('l3c');});
+    bind('#retry',()=>{AU.play('page');REAL.wind=0;D.wind=0;REAL.damage=0;REAL.rf={};syncTwinToReal(3);G.simRes=null;setBanner('');setCap('');go('l3a');});
+  }
+};
+STEP.l3c={
+  html(){
+    return `<p class="kicker">레벨 3</p><h2 class="disp">예고 없는 지진</h2>
+    <p>태풍이 지나간 다음 날이에요. 지진은 태풍과 달리 <b>미리 예보할 수 없어요</b>. 일어나는 순간 센서가 측정하고, 가상 건물이 바로 분석해야 해요.</p>
+    <p>지진이 나면 가상 건물이 계산한 층별 위험도를 보고, 현실 건물에 보낼 지시를 고르세요.</p>
+    <button type="button" class="go" id="start">관제 계속하기</button>`;
+  },
+  bind(){bind('#start',async()=>{
+    $('#start').disabled=true;AU.play('click');
+    await wait(900);
+    AU.mood('tense');AU.play('siren');setBanner('현실 건물에 지진 발생!','hot');setCap('현실: 규모 6.3 지진');
+    REAL.quake=1;REAL.mag=6.3;setTimeout(()=>AU.play('quake'),300);
+    await wait(1500);
+    D.active=new Set(['seismo','accel','strain']);AU.play('scan');D.dataFlow=2;
+    feed('[센서] 지진계: 최대 지반 가속도 0.29g','s');AU.play('ping',0);await wait(400);
+    feed('[센서] 1층 가속도계: 흔들림 25mm','s');AU.play('ping',1);await wait(400);
+    AU.play('stream');await wait(700);
+    syncTwinToReal(2);D.quake=1;AU.play('whoosh');setBanner('가상 건물이 지진을 분석 중');
+    const r=liveRisk();if(maxOf(r)>=85)setTimeout(()=>AU.play('creak'),700);
+    await wait(2600);
+    REAL.quake=0;D.quake=.25;D.active=new Set();D.dataFlow=1;
+    G.quakeRes=r;AU.play('notify');setBanner('분석 완료: 지시를 고르세요');
+    go('l3d');
+  });}
+};
+const QOPT=['정상 운영','정밀 점검 예약','위험 층 출입 통제','전원 대피'];
+STEP.l3d={
+  html(){
+    const a=G.answered,r=G.quakeRes,lv=levelOf(maxOf(r)),w=worstOf(r);
+    return `<p class="kicker">레벨 3</p><h2 class="disp">현실에 보낼 지시는?</h2>
+    <p>3D 화면 옆 숫자가 가상 건물이 계산한 층별 위험도예요. 가장 위험한 층을 찾아보세요.</p>
+    <p class="crit">기준: 가장 위험한 층이 60% 미만 정상 운영, 85% 미만 정밀 점검, 100% 미만 출입 통제, 100% 이상 전원 대피</p>
+    ${optsHTML(QOPT,a,lv,'a')}
+    ${a!==null?`<div class="fb ${a===lv?'good':'bad'}">${a===lv?'정확한 지시예요!':a>lv?'안전하지만 지나친 지시예요. 필요 없는 대피는 시민 불편을 키워요.':'위험을 놓쳤어요!'} 가장 위험한 곳은 <b>${w+1}층(${Math.round(r[w])}%)</b>이라서 '${QOPT[lv]}'이 알맞아요. 지진은 아래층 기둥일수록 큰 힘을 받아요.${REAL.rf.seismic||REAL.rf.damper?' 태풍 때 해 둔 보강 공사가 지진에도 도움이 됐어요.':''}</div>
+    <button type="button" class="go" id="next">정리하기</button>`:''}`;
+  },
+  bind(){
+    document.querySelectorAll('[data-a]').forEach(b=>b.onclick=async()=>{
+      const r=G.quakeRes,lv=levelOf(maxOf(r));
+      G.answered=+b.dataset.a;AU.play(G.answered===lv?'correct':G.answered>lv?'over':'wrong');
+      D.cmdFlow=1;AU.play('cmd');setBanner(`지시 전송: ${QOPT[G.answered]}`,'cmd');
+      if(G.answered===3)REAL.evac=true;
+      if(G.answered===2)REAL.rf={...REAL.rf,closeTop:true};
+      render();await wait(1600);D.cmdFlow=0;D.quake=0;syncTwinToReal(3);
+    });
+    bind('#next',()=>{AU.play('unlock');showEnd();});
+  }
+};
+
+/* ----- 정리: 이름 붙이기 ----- */
+const QUIZ=[
+  {q:'건축 박람회에서 보여주는 3D 건물 홍보 영상',a:0,ex:'모양은 똑같지만 현실 건물과 데이터를 주고받지 않아요.'},
+  {q:'지하철역 전광판의 "열차가 전 역을 출발했습니다" 안내',a:1,ex:'현실의 열차 위치를 받아서 보여주기만 해요.'},
+  {q:'막히는 길을 피해 경로를 다시 찾아주는 내비게이션',a:2,ex:'데이터를 받고, 미래를 계산하고, 운전자의 행동을 바꿔요.'},
+  {q:'공장 기계의 진동을 분석해 고장 나기 전에 자동으로 기계를 멈추는 시스템',a:2,ex:'데이터로 예측하고 현실 기계를 직접 제어해요.'}
+];
+const QN=['디지털 모델','디지털 섀도','디지털 트윈'];
+function showEnd(){
+  setBanner('');
+  const ov=$('#ov'),c=$('#ovCard');
+  const draw=()=>{
+    const all=QUIZ.every((_,k)=>G.quizDone[k]!==undefined);
+    c.innerHTML=`<p class="kicker">정리하기</p><h2 class="disp">여러분이 방금 만든 것</h2>
+    <p>오늘 가상 건물은 세 번 바뀌었어요. 각 단계에는 이름이 있어요.</p>
+    <div class="three">
+      <div><span class="kicker">레벨 1</span><b>디지털 모델</b><div class="ar">현실 <em>✕</em> 가상</div>모양만 같은 3D 모형. 현실에서 지진이 나도 아무것도 몰랐어요.</div>
+      <div><span class="kicker">레벨 2</span><b>디지털 섀도</b><div class="ar">현실 <em style="color:#2A8FB0">→</em> 가상</div>센서 데이터로 현실을 그림자처럼 따라 했지만, 미래를 보거나 행동할 수는 없었어요.</div>
+      <div><span class="kicker">레벨 3</span><b>디지털 트윈</b><div class="ar">현실 <em style="color:#2A8FB0">→</em><em style="color:#E07B1A">←</em> 가상</div>데이터로 현실을 따라 하고, 미리 실험하고, 그 결과로 다시 현실을 바꿨어요.</div>
+    </div>
+    <p class="def">디지털 트윈은 현실의 대상과 데이터로 계속 연결된 가상 쌍둥이로, 현실을 따라 하고 미래를 실험해 다시 현실을 더 낫게 만드는 기술이에요.</p>
+    <p style="margin-top:16px"><b>확인 문제: 다음은 셋 중 무엇일까요?</b></p>
+    <div class="quiz">${QUIZ.map((x,k)=>{
+      const p=G.quizDone[k];
+      return `<div class="item"><p>${k+1}. ${x.q}</p><div class="ch">${QN.map((n,j)=>{let cls='';if(p!==undefined){if(j===x.a)cls='right';else if(j===p)cls='wrong';}return `<button type="button" data-q="${k}" data-c="${j}" class="${cls}" ${p!==undefined?'disabled':''}>${n}</button>`;}).join('')}</div>${p!==undefined?`<div class="ex">${p===x.a?'정답! ':''}${x.ex}</div>`:''}</div>`;
+    }).join('')}</div>
+    ${all?`<p style="margin-top:16px"><b>모둠에서 이야기해 봐요</b></p>
+    <ol class="qs">
+      <li>레벨 1에서 레벨 2로 갈 때, 그리고 레벨 2에서 레벨 3으로 갈 때 각각 무엇이 더해졌나요?</li>
+      <li>태풍 때는 미리 실험할 수 있었는데, 지진 때는 왜 그러지 못했을까요?</li>
+      <li>우리 학교 건물로 디지털 트윈을 만든다면 어떤 센서를 달고, 무엇을 미리 실험해 보고 싶나요?</li>
+    </ol>`:''}
+    <div class="btns"><button class="back" type="button" id="close">관제실로 돌아가기</button><button class="ok" type="button" id="again">처음부터 다시</button></div>`;
+    c.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const k=+b.dataset.q,j=+b.dataset.c;G.quizDone[k]=j;AU.play(j===QUIZ[k].a?'correct':'wrong');draw();});
+    $('#close').onclick=()=>{AU.play('page');ov.hidden=true;};
+    $('#again').onclick=()=>{AU.play('page');ov.hidden=true;restart();};
+  };
+  draw();ov.hidden=false;
+}
+
+/* ---------------- 시작 화면 / 재시작 ---------------- */
+function showIntro(){
+  const c=$('#ovCard');
+  c.innerHTML=`<p class="kicker">기술 · 건설 기술과 디지털 트윈</p><h2 class="disp">쌍둥이 건물 만들기</h2>
+  <p>여러분은 오늘 건물 관제실의 신입 관제사예요. 큰 화면에는 컴퓨터 속 <b>가상 건물</b>이, 오른쪽 위 작은 창에는 <b>현실 건물의 CCTV</b>가 보여요.</p>
+  <p>가상 건물은 처음엔 아주 단순해요. 문제를 하나씩 겪으면서, 가상 건물에 어떤 능력이 필요한지 직접 찾아 레벨을 올려 보세요.</p>
+  <p style="color:var(--muted);font-size:14px">3D 화면은 마우스로 끌어서 돌리고, 휠로 확대할 수 있어요. 🎵 배경음과 🔊 효과음이 나와요.</p>
+  <div class="btns"><button class="ok" type="button" id="begin">시작하기</button></div>`;
+  $('#ov').hidden=false;
+  $('#begin').onclick=()=>{AU.init();AU.play('run');$('#ov').hidden=true;};
+}
+function restart(){
+  Object.assign(REAL,{age:BASE_AGE,occ:100,wind:0,mag:0,quake:0,rf:{},evac:false,damage:0,agingAnim:0,clockAnim:0,crack:0});
+  Object.assign(D,{level:1,k:3,quake:0,wind:0,occ:100,active:new Set(),sensorsOn:0,hubOn:0,rf:{},simMode:false,dataFlow:0,cmdFlow:0});
+  D.target=liveRisk();D.disp=D.target.slice();
+  hub.visible=false;hub.scale.setScalar(.001);
+  Object.assign(G,{step:'p1',level:1,tried:new Set(),answered:null,simRf:{},simWind:55,simRes:null,simRunning:false,sending:false,sentRes:null,quakeRes:null,feed:[],quizDone:{}});
+  l2busy=false;AU.mood('calm');setBanner('');setCap('');render();
+}
+$('#restartBtn').onclick=()=>{if(G.simRunning||G.sending||l2busy)return toast('진행 중인 장면이 끝난 뒤 눌러 주세요.');AU.play('page');restart();};
+$('#bgmBtn').onclick=()=>{AU.init();const on=AU.toggleBgm();$('#bgmBtn').setAttribute('aria-pressed',on);AU.play('click');};
+$('#sfxBtn').onclick=()=>{AU.init();const on=AU.toggleSfx();$('#sfxBtn').setAttribute('aria-pressed',on);AU.play('click');};
+
+/* ---------------- 루프 ---------------- */
+let last=performance.now();
+function loop(t){
+  const dt=Math.min(100,t-last);last=t;
+  if(REAL.agingAnim>0)REAL.agingAnim=Math.max(0,REAL.agingAnim-dt/2200);
+  if(REAL.clockAnim>0)REAL.clockAnim=Math.max(0,REAL.clockAnim-dt/2200);
+  updateThree(dt,t);drawReal(t,dt);drawLinks(t);
+  requestAnimationFrame(loop);
+}
+initThree();initLabels();
+if(window.ResizeObserver)new ResizeObserver(()=>resizeThree()).observe($('#stage'));
+window.addEventListener('resize',resizeThree);
+restart();showIntro();
+requestAnimationFrame(loop);
+})();
+
+</script>
+
+
+</body></html>

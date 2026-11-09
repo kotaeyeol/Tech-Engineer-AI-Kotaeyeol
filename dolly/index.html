@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>바이오랩 2: 돌리 프로젝트 — 핵 이식 복제 실험실 | 생명기술 수업 게임</title>
+<meta name="description" content="핵 이식 복제 실험실 — 1996년 복제 양 돌리를 탄생시킨 체세포 핵 이식 과정을 미니게임으로 직접 따라가고, 복제 기술의 윤리를 토론하는 고등학교 생명기술 수업용 웹 게임.">
+<meta name="keywords" content="바이오랩, 돌리 프로젝트, 복제 양 돌리, 체세포 핵 이식, 핵 이식, 동물 복제, 생명기술, 생명 윤리, 기술 수업, 기술가정, 교육용 게임, 수업용 게임, 공학하는 기술쌤">
+<meta name="author" content="고태열 (공학하는 기술쌤)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://kotaeyeol.github.io/Tech-Engineer-AI-Kotaeyeol/dolly/">
+<meta name="theme-color" content="#221e2e">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACbklEQVR4nO2bv2tUQRDHPycBRRCrgIJ3kMRGhCN1EIz/QBqbIEHQwkYR/Ack2Fop2kYQkTQ2NrYKksIqCGKTKFwgKOIvrKxikYzhLTfZt2/3ZYo3n+pub3d2mPnuvLnlrrf968cOHeaItQPWeACsHbDGA2DtgDUeAGsHrPEAWDtgjQfA2gFrPADWDlgz0ZbhC8P5seNv379u1X7qPq6ApgtjGfjw8c3Y8fPnLh64LpY52VezH+4Ts9d5BfRSb4TqZqApWuaa7htTQucVoNaA2Blvm3D/1Mwf+7kFwObaMwBm9uyFSnAFhANNz9q3L7sRnzzVz3JI9pWzu3brNgC/H78A4OTNy8B+hkNm5paA/czHcAXUnRjLcCzzqQrRlKBlPoZWC1wBdSfmnm1tvaaMsGOce/QQgM0ru5n8+3IEwNGFQWVe3bMvuALkRdsdnoaW+f611cr41pNFAP6MPgFwYmE6aZ+vz9+NHXcF5GY+Vt1L9QfC7OJdANZX7yXNF7wTDMi+EYpltlTmQ8LMavh9QIQJiZBU31gtyD3TuetL3SkKroDUBW11hFZ0XgG96cFwB+DpyjIAg6mzYyeOPm8c+Hlp5i8tVd6XPvtC5xXw/ykgHaEoIeTq9eXK54elhLYyL7gC5EWoBI3J79sAjPbex5QgtUOI1RhBev1Z5Ta3FK6AcECLdKiMUAkaUjsErcaIvdP9MxGLZXEF5BoYHq/GMPb9O1TSq/s3cl3IwhXQlmGtltR92hwWroDUBXcerBR1oLS9VDqvgMa/ENFI7dhK20vFFeD/Gus4HgBrB6zxAFg7YI0HwNoBazwA1g5Y8w9Zxtw1Je8o9QAAAABJRU5ErkJggg==">
+<!-- Open Graph (카카오톡 · 페이스북 · 밴드 미리보기) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="공학하는 기술쌤">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="바이오랩 2: 돌리 프로젝트 — 핵 이식 복제 실험실">
+<meta property="og:description" content="흰 얼굴 A양과 유전 정보가 똑같은 양을 만들어라! 돌리를 탄생시킨 체세포 핵 이식을 미니게임으로 따라가고 복제의 윤리를 토론해요.">
+<meta property="og:url" content="https://kotaeyeol.github.io/Tech-Engineer-AI-Kotaeyeol/dolly/">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="바이오랩 2 돌리 프로젝트 — 픽셀 연구원과 A·B·C양">
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="바이오랩 2: 돌리 프로젝트 — 핵 이식 복제 실험실">
+<meta name="twitter:description" content="Bio Lab 2: Project Dolly — recreate the nuclear transfer that cloned Dolly the sheep, then debate the ethics of cloning.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": ["VideoGame", "LearningResource"], "name": "바이오랩 2: 돌리 프로젝트", "alternateName": "Bio Lab 2: Project Dolly", "description": "핵 이식 복제 실험실 — 1996년 복제 양 돌리를 탄생시킨 체세포 핵 이식 과정을 미니게임으로 직접 따라가고, 복제 기술의 윤리를 토론하는 고등학교 생명기술 수업용 웹 게임.", "url": "https://kotaeyeol.github.io/Tech-Engineer-AI-Kotaeyeol/dolly/", "inLanguage": "ko", "genre": ["교육용 게임", "시뮬레이션"], "gamePlatform": ["웹 브라우저", "태블릿"], "applicationCategory": "EducationalApplication", "operatingSystem": "Any", "isAccessibleForFree": true, "educationalLevel": "고등학교", "learningResourceType": "교육용 게임", "teaches": ["체세포 핵 이식", "동물 복제", "생명 윤리", "동물 실험 3R 원칙"], "about": ["생명기술", "복제 양 돌리", "체세포 핵 이식"], "audience": {"@type": "EducationalAudience", "educationalRole": "student"}, "author": {"@type": "Person", "name": "고태열", "alternateName": "공학하는 기술쌤"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com/"><link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e6f0ee;--ink:#221e2e;--muted:#6b6478;--card:#fff;--done:#3aa66b;--now:#ee8a2e;--blue:#3f7fd6;--pink:#f05a8a;--soft:#f6f4fa}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none}
+.jua{font-family:"Jua","Pretendard","Apple SD Gothic Neo",sans-serif;font-weight:400}
+button{font:inherit;cursor:pointer;color:var(--ink)}
+.btn{font-weight:700;padding:11px 20px;border:2px solid var(--ink);border-radius:10px;background:#fff;box-shadow:0 4px 0 var(--ink);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.main{background:var(--ink);color:#fff}
+.btn.go{background:var(--now);color:#fff}
+.hidden{display:none!important}
+
+/* ---------- title ---------- */
+#title{position:fixed;inset:0;z-index:30;overflow:auto}
+#tcv{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated}
+#tWrap{position:relative;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(8px,2vh,20px) 16px;gap:clamp(6px,1.6vh,16px)}
+#logo{text-align:center;color:#fff;-webkit-text-stroke:7px var(--ink);paint-order:stroke fill;text-shadow:0 5px 0 var(--ink)}
+#logo .small{-webkit-text-stroke:5px var(--ink)}
+#logo .small{font-size:clamp(14px,2.2vw,20px);letter-spacing:.3em;color:#ffe9a8}
+#logo h1{margin:2px 0 0;font-size:clamp(40px,min(8vw,10vh),84px);line-height:1}
+#logo .sub{font-size:clamp(17px,2.8vw,26px);margin-top:6px}
+#tCard{background:#fffffff2;border:3px solid var(--ink);border-radius:14px;box-shadow:0 6px 0 var(--ink);padding:clamp(10px,1.8vh,16px) 18px;width:min(560px,100%)}
+#tCard .lbl{margin:clamp(4px,1vh,10px) 0 clamp(3px,.7vh,6px)}
+#tCard .lead{margin:0 0 12px;text-align:center;font-size:15px;line-height:1.6}
+.lbl{font-size:13px;font-weight:700;color:var(--muted);margin:10px 0 6px}
+.picks{display:flex;gap:10px}
+.picks>button{flex:1;border:2px solid #cfc9d9;border-radius:12px;background:var(--soft);padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700}
+.picks>button canvas{image-rendering:pixelated}
+.picks>button.sel{border-color:var(--ink);background:#fff4e8;box-shadow:0 3px 0 var(--ink)}
+.seg{display:flex;border:2px solid var(--ink);border-radius:10px;overflow:hidden}
+.seg button{flex:1;border:0;background:#fff;padding:9px 6px;font-weight:700;font-size:14px}
+.seg button+button{border-left:2px solid var(--ink)}
+.seg button.sel{background:var(--ink);color:#fff}
+#nameIn{width:100%;font:inherit;font-size:15px;padding:9px 12px;border:2px solid #cfc9d9;border-radius:10px;outline:none}
+#nameIn:focus{border-color:var(--ink)}
+#startBtn{display:block;width:100%;margin-top:14px;font-size:20px;padding:13px}
+.hint{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5}
+
+/* ---------- game ---------- */
+#app{display:flex;height:100%;gap:12px;padding:10px 12px 12px}
+#left{flex:7;min-width:0;display:flex;flex-direction:column;gap:8px}
+#hud{display:flex;align-items:center;gap:10px}
+#hudTitle{font-size:19px;white-space:nowrap}
+.nmchip{display:flex;align-items:center;gap:5px;background:#fff;border:2px solid var(--ink);border-radius:99px;padding:2px 10px 2px 4px;font-size:13px;font-weight:800;white-space:nowrap;box-shadow:0 2px 0 var(--ink)}
+.nmchip canvas{image-rendering:pixelated;border-radius:50%;background:#e6f0ee}
+#mission{background:#fff;border:2px solid var(--ink);border-radius:10px;padding:6px 12px;box-shadow:0 3px 0 var(--ink);flex:1;min-width:0;font-size:14px;display:flex;flex-direction:column;gap:4px}
+#mission .m{line-height:1.4}
+#prog{height:6px;background:#ebe8f0;border-radius:3px;overflow:hidden}
+#prog i{display:block;height:100%;background:var(--done);width:0;transition:width .4s}
+#pauseBtn{width:46px;height:46px;border:2px solid var(--ink);border-radius:10px;background:#fff;box-shadow:0 3px 0 var(--ink);font-size:18px;font-weight:900;flex:none}
+#stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+#cv{image-rendering:pixelated;border:3px solid var(--ink);border-radius:10px;box-shadow:0 4px 0 var(--ink);background:#000;max-width:100%;max-height:100%}
+#right{flex:0 0 clamp(196px,19vw,236px);background:var(--card);border:3px solid var(--ink);border-radius:12px;box-shadow:0 4px 0 var(--ink);padding:10px 9px;overflow:hidden;display:flex;flex-direction:column;margin-top:54px}
+#dia{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-between}
+#dia>.node,#dia>.arrow,.rdia>.node,.rdia>.arrow{flex:none}
+#right h2{margin:0 0 2px;font-size:18px}
+#right p.s{margin:0 0 10px;font-size:12px;color:var(--muted)}
+.row{display:flex;gap:8px;align-items:stretch}
+.node{border:2px dashed #c9c3d4;border-radius:8px;padding:clamp(2px,.5vh,5px) 5px;font-size:clamp(10.5px,1.5vh,12px);color:#9a94a6;background:var(--soft);transition:.3s;flex:1;text-align:center;line-height:1.35}
+.node canvas{display:block;height:clamp(14px,2.8vh,24px);width:auto;margin:0 auto 1px;image-rendering:pixelated;opacity:.3;transition:.3s}
+.node.now{border:2px solid var(--now);color:var(--ink);background:#fff4e8;animation:pulse 1.2s infinite}
+.node.done{border:2px solid var(--done);color:var(--ink);background:#eaf7ef}
+.node.done canvas,.node.now canvas{opacity:1}
+.node.eth{border-color:#b9a6e6}.node.eth.done{background:#f1ebff;border-color:#7c5cd6}
+.arrow{text-align:center;color:#c9c3d4;font-size:12px;line-height:clamp(10px,1.7vh,16px);transition:.3s;flex:1}
+.arrow.lit{color:var(--done);font-weight:900}
+@keyframes pulse{50%{box-shadow:0 0 0 4px #ee8a2e33}}
+#pad{position:absolute;left:8px;bottom:8px;width:132px;height:132px;opacity:.75}
+#pad button,#act{position:absolute;border:2px solid var(--ink);background:#fff;border-radius:10px;box-shadow:0 3px 0 var(--ink);font-size:18px;touch-action:none}
+#pad button{width:44px;height:44px}
+#pad .u{left:44px;top:0}#pad .d{left:44px;top:88px}#pad .l{left:0;top:44px}#pad .r{left:88px;top:44px}
+#pad button.on,#act.on{background:var(--ink);color:#fff;transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+#act{right:12px;bottom:16px;width:76px;height:76px;border-radius:50%;font-size:16px;font-weight:800;opacity:.9}
+#toast{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
+#toast.show{opacity:1}
+
+/* ---------- overlays ---------- */
+.ov{position:fixed;inset:0;background:#221e2ebb;display:flex;align-items:center;justify-content:center;z-index:40;padding:16px}
+.box{background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:0 6px 0 var(--ink);padding:18px 20px;width:min(560px,100%);max-height:100%;overflow:auto}
+#dlg .who{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.tag{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--now);border-radius:99px;padding:3px 9px}
+.tag.eth{background:#7c5cd6}.tag.p{background:var(--blue)}.tag.g{background:var(--done)}
+.speaker{font-size:13px;font-weight:700;color:var(--muted)}
+#dlg h3{margin:0 0 8px;font-size:23px}
+#dTxt{margin:0 0 12px;line-height:1.7;font-size:16px;white-space:pre-line}
+#dVis{display:flex;justify-content:center;gap:12px;margin:2px 0 12px}
+#dVis canvas{image-rendering:pixelated}
+.key{background:#fff8e6;border:2px solid #f2c94c;border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:15px;line-height:1.6}
+.key b{color:#b07a00}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.opts button{text-align:left;border:2px solid #cfc9d9;border-radius:10px;background:var(--soft);padding:10px 12px;font-size:15px;line-height:1.45}
+.opts button:hover{border-color:var(--ink)}
+.opts button.bad{border-color:#e05555;background:#fdeeee;color:#9b2c2c}
+.opts button.good{border-color:var(--done);background:#eaf7ef}
+.opts button.pick{border-color:var(--ink);background:#fff4e8}
+.opts.row2{flex-direction:row}.opts.row2 button{flex:1;text-align:center;font-weight:800}
+.fb{border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:15px;line-height:1.6;white-space:pre-line}
+.fb.bad{background:#fdeeee;color:#7d2323}.fb.good{background:#eaf7ef;color:#1d5a37}
+.sides{display:flex;gap:10px;margin-bottom:12px}
+.sides div{flex:1;border-radius:10px;padding:10px;font-size:14px;line-height:1.55}
+.sides .pro{background:#eaf2ff}.sides .con{background:#fff0f3}
+.sides b{display:block;margin-bottom:4px}
+.dBtns{display:flex;justify-content:flex-end;gap:8px}
+.bar{height:12px;border:2px solid var(--ink);border-radius:8px;overflow:hidden;margin:6px 0 12px}
+.bar i{display:block;height:100%;width:0;background:repeating-linear-gradient(45deg,var(--now) 0 8px,#f5a85a 8px 16px)}
+.stamp{display:inline-block;transform:rotate(-8deg);border:4px solid #d23b3b;color:#d23b3b;border-radius:10px;padding:4px 16px;font-size:30px;margin:6px auto 12px;animation:stamp .4s ease-out}
+@keyframes stamp{0%{transform:rotate(-8deg) scale(2.2);opacity:0}100%{transform:rotate(-8deg) scale(1);opacity:1}}
+.pmenu{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.pmenu .btn{width:100%;font-size:17px}
+
+/* report */
+#ending .box{width:min(980px,100%)}
+.rbox{width:min(1180px,100%);height:min(760px,calc(100vh - 82px));margin-top:50px;display:flex;flex-direction:column;overflow:hidden;padding:clamp(10px,2vh,18px) 18px}
+.rhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:clamp(6px,1.4vh,12px)}
+.rhead h3{margin:4px 0 0;font-size:clamp(20px,3vh,26px)}.rhead p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.rgrid{flex:1;min-height:0;display:grid;grid-template-columns:.95fr 1.45fr 1fr;gap:12px}
+.rsteps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:clamp(3px,.6vh,6px);min-height:0}
+.rsteps li{flex:1;display:flex;align-items:center;gap:8px;font-size:clamp(11px,1.6vh,13.5px);line-height:1.35;background:var(--soft);border-radius:8px;padding:2px 9px;min-height:0}
+.rsteps li small{color:var(--muted);font-size:.92em}
+.rsteps li span{flex:none;width:clamp(18px,2.8vh,26px);height:clamp(18px,2.8vh,26px);border-radius:50%;background:var(--done);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px}
+.rsteps li.e span{background:#7c5cd6}
+.rdia{background:var(--soft);border-radius:12px;padding:8px;display:flex;flex-direction:column;justify-content:space-between;min-height:0}
+.rdia .node{font-size:12px}
+.mine{font-size:clamp(12px,1.7vh,14px);line-height:1.55;margin:0;padding-left:18px}
+.rside{display:flex;flex-direction:column;gap:10px;min-height:0}
+.rside .key{margin:0;font-size:clamp(12px,1.75vh,14.5px);line-height:1.55}
+.rside .more{margin-top:6px;font-size:clamp(10.5px,1.5vh,12.5px);color:var(--muted);line-height:1.5}
+.mineBox{background:var(--soft);border-radius:10px;padding:8px 12px;flex:1;min-height:0}
+.mineBox .lbl{margin:0 0 4px}
+@media (max-width:760px){#hud{padding-right:108px}#app{flex-direction:column}#right{flex:none;max-height:32%;margin-top:0}#hudTitle{display:none}}
+
+/* ending */
+#ending{background:#221e2ee6}
+#ecv{display:block;margin:0 auto 6px;image-rendering:pixelated;max-width:100%;max-height:26vh;width:auto!important}
+.cert{border:3px double #b07a00;border-radius:12px;padding:14px;background:#fffdf5;text-align:center}
+.cert h2{margin:0 0 4px;font-size:30px}
+.cert p{margin:4px 0;line-height:1.6}
+.stats{display:flex;justify-content:center;gap:10px;margin:10px 0 2px;flex-wrap:wrap}
+.stats div{background:#fff;border:2px solid var(--ink);border-radius:10px;padding:6px 12px;font-size:13px}
+.stats b{display:block;font-size:20px}
+/* 어절 단위 줄바꿈 */
+body{word-break:keep-all;overflow-wrap:break-word}
+p,li,.key,.fb,.sides div,.opts button,#dTxt,.mgoal,.lead,.hint,#toast,.mmsg{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+/* 상단 버튼 · 소리 */
+#topBtns{position:fixed;top:10px;right:12px;z-index:55;display:flex;gap:8px}
+.ib{width:46px;height:46px;border:2px solid var(--ink);border-radius:10px;background:#fff;box-shadow:0 3px 0 var(--ink);font-size:17px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0}
+.ib:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+#sndPop{position:fixed;top:66px;right:12px;z-index:60;background:#fff;border:3px solid var(--ink);border-radius:12px;box-shadow:0 5px 0 var(--ink);padding:12px 14px;width:260px}
+#sndPop h4{margin:0 0 10px;font-size:17px}
+.vrow{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:14px;font-weight:700}
+.vrow span{width:50px;flex:none}.vrow input{flex:1;accent-color:var(--now);height:22px}.vrow b{width:28px;text-align:right;font-size:12px;color:var(--muted)}
+.btn.small{padding:7px 12px;font-size:14px;box-shadow:0 3px 0 var(--ink)}
+#pVol{background:var(--soft);border-radius:10px;padding:12px 12px 10px;text-align:left;margin:12px 0 2px}
+#pVol .lblv{font-size:13px;font-weight:800;color:var(--muted);margin-bottom:8px}
+#pause{z-index:50}
+/* 미니게임 */
+.mbox{width:min(780px,100%)}
+.mhead{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+.mfail{margin-left:auto;font-size:13px;font-weight:800;color:#d23b3b}
+.mgoal{margin:2px 0 8px;font-size:15.5px;line-height:1.55;min-height:4.65em;white-space:pre-line}
+.mstage{position:relative;border:3px solid var(--ink);border-radius:10px;overflow:hidden;background:#16202b;margin:0 0 10px;display:flex;justify-content:center}
+#mcv{display:block;width:auto;height:auto;max-width:100%;max-height:52vh;image-rendering:pixelated;touch-action:none}
+.mmsg{position:absolute;left:50%;top:8px;transform:translateX(-50%);padding:7px 14px;border-radius:8px;font-weight:800;font-size:15px;opacity:0;transition:opacity .2s;pointer-events:none;text-align:center;max-width:92%;box-shadow:0 3px 0 #0004}
+.mmsg.show{opacity:1}.mmsg.good{background:#3aa66b;color:#fff}.mmsg.bad{background:#d23b3b;color:#fff}.mmsg.info{background:#221e2e;color:#fff}
+#mgBtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:10px}
+#mgBtns button{flex:1;min-width:64px;max-width:240px;padding:14px 10px;font-size:16px;touch-action:none;user-select:none;-webkit-user-select:none}
+#mgBtns button.on{background:var(--ink);color:#fff;transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.mfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:12px;color:var(--muted)}
+</style></head><body>
+
+<noscript><div style="padding:24px;font-size:16px;line-height:1.7"><h1>바이오랩 2: 돌리 프로젝트</h1><p>체세포 핵 이식으로 복제 양 돌리를 만드는 과정을 따라가는 생명기술 수업용 웹 게임입니다. 플레이하려면 자바스크립트를 켜 주세요.</p></div></noscript>
+<!-- ================= TITLE ================= -->
+<div id="title">
+ <canvas id="tcv" width="1194" height="540"></canvas>
+ <div id="tWrap">
+  <div id="logo" class="jua"><div class="small">BIO LAB · CLONING DIVISION</div><h1>바이오랩 2</h1><div class="sub">돌리 프로젝트 — 핵 이식 복제 실험실</div></div>
+  <div id="tCard">
+   <p class="lead">흰 얼굴 <b>A양</b>과 유전 정보가 똑같은 양을 만들어라!<br>1996년 복제 양 <b>돌리</b>를 탄생시킨 실험을 직접 따라가 봅니다.</p>
+   <div class="lbl">1. 연구원 고르기</div>
+   <div class="picks" id="cPick"><button data-c="boy" class="sel"><canvas width="48" height="72" id="pboy"></canvas>남자 연구원</button><button data-c="girl"><canvas width="48" height="72" id="pgirl"></canvas>여자 연구원</button></div>
+   <div class="lbl">2. 연구원 이름 (선택)</div>
+   <input id="nameIn" maxlength="12" placeholder="예: 김바이오 (비워 두면 '신입 연구원')">
+   <div class="lbl">3. 조작 방법</div>
+   <div class="seg" id="ctlSeg"><button data-m="touch">터치패드 + 키보드</button><button data-m="key" class="sel">키보드만</button></div>
+   <button class="btn go jua" id="startBtn">실험 시작 ▶</button>
+   <div class="hint">이동: WASD · 방향키 / 터치패드 &nbsp;·&nbsp; 조사: Space · E / 조사 버튼 &nbsp;·&nbsp; 일시정지: Esc · P</div>
+  </div>
+ </div>
+</div>
+
+<!-- top buttons -->
+<div id="topBtns"><button class="ib" id="sndBtn" title="소리 설정" aria-label="소리 설정"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"></path><path d="M16 8.5a5 5 0 0 1 0 7M18.6 6a8.6 8.6 0 0 1 0 12" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"></path></svg></button><button class="ib hidden" id="pauseBtn" title="일시정지" aria-label="일시정지">II</button></div>
+<div id="sndPop" class="hidden"><h4 class="jua">소리 설정</h4><div id="sndCtl"><div class="vrow"><span>배경음</span><input type="range" min="0" max="100" data-vol="bgm" aria-label="배경음 크기"><b data-vv="bgm">50</b></div>
+ <div class="vrow"><span>효과음</span><input type="range" min="0" max="100" data-vol="sfx" aria-label="효과음 크기"><b data-vv="sfx">80</b></div>
+ <button class="btn small" data-vol="mute">🔇 음소거</button></div></div>
+
+<!-- ================= GAME ================= -->
+<div id="app" class="hidden">
+ <div id="left">
+  <div id="hud"><b id="hudTitle" class="jua">바이오랩 2</b><span id="hudName" class="nmchip"></span>
+   <div id="mission"><div class="m" id="mTxt"></div><div id="prog"><i></i></div></div>
+</div>
+  <div id="stage">
+   <canvas id="cv" width="1024" height="704"></canvas>
+   <div id="toast"></div>
+   <div id="pad"><button class="u" data-k="up">▲</button><button class="l" data-k="left">◀</button><button class="r" data-k="right">▶</button><button class="d" data-k="down">▼</button></div>
+   <button id="act">조사</button>
+  </div>
+ </div>
+ <div id="right">
+  <h2 class="jua">복제 도식</h2>
+  <p class="s">단계를 마치면 불이 들어와요</p>
+  <div id="dia">
+  <div class="node eth" id="n0">⓪ 윤리 위원회 심의 · 승인</div>
+  <div class="row"><div class="arrow" id="a1">↓</div><div class="arrow" id="a3">↓</div></div>
+  <div class="row"><div class="node" id="n1" data-s="sheepA"><canvas width="64" height="44"></canvas>① A양 체세포 채취</div><div class="node" id="n3" data-s="sheepB"><canvas width="64" height="44"></canvas>③ B양 난자 채취</div></div>
+  <div class="row"><div class="arrow" id="a2">↓</div><div class="arrow" id="a4">↓</div></div>
+  <div class="row"><div class="node" id="n2">② 체세포 배양<br>(핵 준비)</div><div class="node" id="n4">④ 탈핵<br>(난자 핵 제거)</div></div>
+  <div class="arrow" id="a5">↘ 핵 + 빈 난자 ↙</div>
+  <div class="node" id="n5">⑤ 핵 이식 · 전기 융합</div>
+  <div class="arrow" id="a6">↓</div>
+  <div class="node" id="n6">⑥ 배아 배양 (2→4→8세포)</div>
+  <div class="arrow" id="a7">↓</div>
+  <div class="node" id="n7" data-s="sheepC"><canvas width="64" height="44"></canvas>⑦ 대리모 C양에 착상</div>
+  <div class="arrow" id="a8">↓</div>
+  <div class="node" id="n8" data-s="lamb"><canvas width="44" height="34"></canvas>⑧ 새끼 양 탄생 — A양을 닮았다!</div>
+  <div class="arrow" id="a9">↓</div>
+  <div class="node eth" id="n9">⑨ 윤리 회의 · 돌리 이야기</div></div>
+ </div>
+</div>
+
+<!-- dialog -->
+<div class="ov hidden" id="dlg"><div class="box">
+ <div class="who"><span class="tag" id="dTag"></span><span class="speaker" id="dWho"></span></div>
+ <h3 class="jua" id="dTitle"></h3>
+ <div id="dVis"></div>
+ <p id="dTxt"></p>
+ <div id="dExtra"></div>
+ <div class="dBtns" id="dBtns"></div>
+</div></div>
+
+<!-- mini game -->
+<div class="ov hidden" id="mini"><div class="box mbox">
+ <div class="mhead"><span class="tag g" id="mgTag"></span><span class="speaker" id="mgWho">미니게임</span><span class="mfail" id="mgFail"></span></div>
+ <h3 class="jua" id="mgTitle" style="margin:0 0 4px;font-size:23px"></h3>
+ <p class="mgoal" id="mgGoal"></p>
+ <div class="mstage"><canvas id="mcv" width="660" height="360"></canvas><div class="mmsg" id="mgMsg"></div></div>
+ <div id="mgBtns"></div>
+ <div class="mfoot"><span id="mgKeys"></span><button class="btn small hidden" id="mgSkip">건너뛰고 다음으로</button></div>
+</div></div>
+
+<!-- pause -->
+<div class="ov hidden" id="pause"><div class="box" style="width:min(380px,100%);text-align:center">
+ <h3 class="jua" style="font-size:28px;margin:0 0 4px">일시정지</h3>
+ <p style="margin:0 0 8px;color:var(--muted);font-size:14px" id="pInfo"></p>
+ <div class="pmenu">
+  <button class="btn go" id="pResume">계속하기</button>
+  <button class="btn" id="pRestart">처음부터 다시 하기</button>
+  <button class="btn" id="pHome">메인 화면으로</button>
+  <button class="btn" id="pPad">터치패드 끄기</button>
+ </div>
+ <div id="pVol"><div class="lblv">소리 조절</div><div id="pVolCtl"><div class="vrow"><span>배경음</span><input type="range" min="0" max="100" data-vol="bgm" aria-label="배경음 크기"><b data-vv="bgm">50</b></div>
+ <div class="vrow"><span>효과음</span><input type="range" min="0" max="100" data-vol="sfx" aria-label="효과음 크기"><b data-vv="sfx">80</b></div>
+ <button class="btn small" data-vol="mute">🔇 음소거</button></div></div>
+ <p class="hint">Esc 또는 P 키로도 일시정지할 수 있어요</p>
+</div></div>
+
+<!-- report -->
+<div class="ov hidden" id="report"><div class="box rbox">
+ <div class="rhead"><div><span class="tag g">연구 보고서</span><h3 class="jua" id="rTitle"></h3><p>돌리 프로젝트의 전 과정을 한눈에 돌아봅시다.</p></div>
+  <button class="btn go" id="rEnd">엔딩 보기 ▶</button></div>
+ <div class="rgrid">
+  <div class="rdia" id="rDia">
+  <div class="node eth" id="rn0">⓪ 윤리 위원회 심의 · 승인</div>
+  <div class="row"><div class="arrow" id="ra1">↓</div><div class="arrow" id="ra3">↓</div></div>
+  <div class="row"><div class="node" id="rn1" data-s="sheepA"><canvas width="64" height="44"></canvas>① A양 체세포 채취</div><div class="node" id="rn3" data-s="sheepB"><canvas width="64" height="44"></canvas>③ B양 난자 채취</div></div>
+  <div class="row"><div class="arrow" id="ra2">↓</div><div class="arrow" id="ra4">↓</div></div>
+  <div class="row"><div class="node" id="rn2">② 체세포 배양<br>(핵 준비)</div><div class="node" id="rn4">④ 탈핵<br>(난자 핵 제거)</div></div>
+  <div class="arrow" id="ra5">↘ 핵 + 빈 난자 ↙</div>
+  <div class="node" id="rn5">⑤ 핵 이식 · 전기 융합</div>
+  <div class="arrow" id="ra6">↓</div>
+  <div class="node" id="rn6">⑥ 배아 배양 (2→4→8세포)</div>
+  <div class="arrow" id="ra7">↓</div>
+  <div class="node" id="rn7" data-s="sheepC"><canvas width="64" height="44"></canvas>⑦ 대리모 C양에 착상</div>
+  <div class="arrow" id="ra8">↓</div>
+  <div class="node" id="rn8" data-s="lamb"><canvas width="44" height="34"></canvas>⑧ 새끼 양 탄생 — A양을 닮았다!</div>
+  <div class="arrow" id="ra9">↓</div>
+  <div class="node eth" id="rn9">⑨ 윤리 회의 · 돌리 이야기</div></div>
+  <ol class="rsteps" id="rSteps"></ol>
+  <div class="rside">
+   <div class="key"><b>핵심 정리</b><br>새끼 양의 유전 정보는<br><b>핵을 준 A양</b>과 같아요.<br>· B양 → 핵을 뺀 난자 (새 생명의 그릇)<br>· C양 → 배아를 품어 낳아 준 대리모
+    <div class="more">※ 더 알아보기: 세포질 속 미토콘드리아에도 아주 적은 DNA가 있는데, 이것은 난자를 준 B양에게서 와요. 그래서 "거의 완벽한" 복제라고 해요.</div></div>
+   <div class="mineBox"><div class="lbl" id="rMineT">나의 윤리 판단</div><ul class="mine" id="rMine"></ul></div>
+  </div>
+ </div>
+</div></div>
+
+<!-- ending -->
+<div class="ov hidden" id="ending"><div class="box">
+ <canvas id="ecv"></canvas>
+ <div class="cert">
+  <div class="tag g">PROJECT COMPLETE</div>
+  <h2 class="jua">축하합니다!</h2>
+  <p id="eMsg"></p>
+  <div class="stats" id="eStats"></div>
+ </div>
+ <div class="dBtns" style="justify-content:center;margin-top:14px"><button class="btn" id="eReport">보고서 다시 보기</button><button class="btn" id="eHome">메인 화면</button><button class="btn go" id="eAgain">처음부터 다시</button></div>
+</div></div>
+
+<script>
+const SHEEP={"palette": {"O": "#221e2e", "W": "#f7f5ef", "w": "#e2ddd2", "s": "#c4bcae", "c": "#e6dcc6", "C": "#c9b998", "x": "#a8966f", "F": "#ffe4d2", "f": "#f2c6b0", "n": "#e88a9c", "b": "#f896b4", "K": "#3b3442", "k": "#58506a", "E": "#221e2e", "e": "#ffffff", "H": "#d9c08e", "h": "#a98a5a", "L": "#f2c6b0", "l": "#d9a994", "D": "#3b3442", "d": "#2b2533", "V": "#4a3a32", "A": "#3f7fd6", "B": "#ee8a2e", "G": "#3aa66b", "R": "#f05a8a", "r": "#c23a6a", "Y": "#f2c94c", "y": "#c9962e"}, "sprites": {"sheepA": {"idle0": ["................................", "................................", "...........OOO.........OOOO.....", ".......OOOOWWWOOOO....OWWWWO....", "......OWWWWWWWWWWWO..OWWWWWWO...", "...OOOOWWWWWWWWWWWOOOWWWWWWFFO..", "..OWWWWWWwWWWWWWWWWOnnWFFFEFFO..", "..OWWwWWWWWWWwWWWWWWOnFFFFEFFFO.", "..OWWWWWWWWWWWWWwWWOOOFbFFFFFFO.", ".OWWWWWWWWWWWWWWWWOAAOfFFFFFFnO.", "OWWWWWWWwWWWwWWWWWOAAOOfffffOO..", "OWWWWWWWWWWWWWWWWWOAAOOOOOOO....", ".OWWWWwWWWWWWWwWWWOAAO..........", ".OWWWWWWWWWWWWWWWWOAAO..........", "OswwwswwwwwwwwwwwwwOO...........", ".OsssOswwwwwwwwwwwwO............", "..OOOOlswwwwsswwwssLO...........", ".....OllssssOOssslLLO...........", ".....OllLLOO..OOllLLO...........", ".....OllLLO....OllLLO...........", ".....OVVVVO....OVVVVO...........", "......OOOO......OOOO............"], "idle1": ["................................", "................................", "...........OOO..................", ".......OOOOWWWOOOO.....OOOO.....", "......OWWWWWWWWWWWO...OWWWWO....", "...OOOOWWWWWWWWWWWOOOOWWWWWWO...", "..OWWWWWWwWWWWWWWWWWOWWWWWWFFO..", "..OWWwWWWWWWWwWWWWWOnnWFFFFFFO..", "..OWWWWWWWWWWWWWwWWWOnFFFFEFFFO.", ".OWWWWWWWWWWWWWWWWWOOOFbFFFFFFO.", "OWWWWWWWwWWWwWWWWWOAAOfFFFFFFnO.", "OWWWWWWWWWWWWWWWWWOAAOOfffffOO..", ".OWWWWwWWWWWWWwWWWOAAO.OOOOO....", ".OWWWWWWWWWWWWWWWWOAAO..........", "OswwwswwwwwwwwwwwwOAAO..........", ".OsssOswwwwwwwwwwwwOO...........", "..OOOOlswwwwsswwwssLO...........", ".....OllssssOOssslLLO...........", ".....OllLLOO..OOllLLO...........", ".....OllLLO....OllLLO...........", ".....OVVVVO....OVVVVO...........", "......OOOO......OOOO............"], "walk0": ["................................", "................................", "...........OOO.........OOOO.....", ".......OOOOWWWOOOO....OWWWWO....", "......OWWWWWWWWWWWO..OWWWWWWO...", "...OOOOWWWWWWWWWWWOOOWWWWWWFFO..", "..OWWWWWWwWWWWWWWWWOnnWFFFEFFO..", "..OWWwWWWWWWWwWWWWWWOnFFFFEFFFO.", "..OWWWWWWWWWWWWWwWWOOOFbFFFFFFO.", ".OWWWWWWWWWWWWWWWWOAAOfFFFFFFnO.", "OWWWWWWWwWWWwWWWWWOAAOOfffffOO..", "OWWWWWWWWWWWWWWWWWOAAOOOOOOO....", ".OWWWWwWWWWWWWwWWWOAAO..........", ".OWWWWWWWWWWWWWWWWOAAO..........", "OswwwswwwwwwwwwwwwwOO...........", ".OsssOswwwwwwwwwwwwOO...........", "..OOOllswwwwsswwwssLLO..........", "....OllOssssOOsssOOLLO..........", "....OllOOLLO..OllOOLLO..........", "....OllOOLLO..OllOOLLO..........", "....OVVOOVVO..OVVOOVVO..........", ".....OO..OO....OO..OO..........."], "walk1": ["................................", "................................", "...........OOO.........OOOO.....", ".......OOOOWWWOOOO....OWWWWO....", "......OWWWWWWWWWWWO..OWWWWWWO...", "...OOOOWWWWWWWWWWWOOOWWWWWWFFO..", "..OWWWWWWwWWWWWWWWWOnnWFFFEFFO..", "..OWWwWWWWWWWwWWWWWWOnFFFFEFFFO.", "..OWWWWWWWWWWWWWwWWOOOFbFFFFFFO.", ".OWWWWWWWWWWWWWWWWOAAOfFFFFFFnO.", "OWWWWWWWwWWWwWWWWWOAAOOfffffOO..", "OWWWWWWWWWWWWWWWWWOAAOOOOOOO....", ".OWWWWwWWWWWWWwWWWOAAO..........", ".OWWWWWWWWWWWWWWWWOAAO..........", "OswwwswwwwwwwwwwwwwOO...........", ".OsssOswwwwwwwwwwwwO............", "..OOO.OswwwwsswwwssO............", "......OLssssOOsssLLO............", "......OLLOOO..OOOLLO............", "......OLLO......OLLO............", "......OVVO......OVVO............", ".......OO........OO............."]}, "sheepB": {"idle0": ["................................", "................................", "..................OOOO...O......", "...........OO....OHHHHO.OcO.....", "......OO..OccOO.OHhhhHHOcccOO...", ".....OccOOcCcccOOHhOOhHOKKKKkO..", ".....OcccCccccccOHhOHOHKKkeKKO..", "....OCcCcccccCCccOHhOhHKKkEKKKO.", "...OcCccccccCcccCcOhhhKKKKKKKKO.", "..OCccccccCccccccCOOOOOKKKKKKkO.", ".OccccccCcccCccCccOBBOOOKKKKOO..", ".OccccCccccccCccccOBBO..OOOO....", ".OccCcCccccCccCcccOBBO..........", ".OxccccccCccccccCcOYYO..........", ".OxxxxCCCCCCCCCCCCOyyO..........", "..OOxOxCCCCCCCCCCCxOO...........", "...OxOxxxCCxxxxCxxxDO...........", "....OOddxxxOxOxxxdDDO...........", ".....OddxDxOxOOOxdDDO...........", ".....OddDDO.O..OddDDO...........", ".....OVVVVO....OVVVVO...........", "......OOOO......OOOO............"], "idle1": ["................................", "................................", "................................", "...........OO.....OOOO...O......", "......OO..OccOO.OOHHHHO.OcO.....", ".....OccOOcCcccOOHhhhHHOcccOO...", ".....OcccCccccccOHhOOhHOKKKKkO..", "....OCcCcccccCCcOHhOHOHKKkkKKO..", "...OcCccccccCcccCOHhOhHKKkEKKKO.", "..OCccccccCccccccCOhhhKKKKKKKKO.", ".OccccccCcccCccCccOOOOOKKKKKKkO.", ".OccccCccccccCccccOBBO.OKKKKOO..", ".OccCcCccccCccCcccOBBO..OOOO....", ".OxccccccCccccccCcOBBO..........", ".OxxxxCCCCCCCCCCCCOYYO..........", "..OOxOxCCCCCCCCCCCOyyO..........", "...OxOxxxCCxxxxCxxxOO...........", "....OOddxxxOxOxxxdDDO...........", ".....OddxDxOxOOOxdDDO...........", ".....OddDDO.O..OddDDO...........", ".....OVVVVO....OVVVVO...........", "......OOOO......OOOO............"], "walk0": ["................................", "................................", "..................OOOO...O......", "...........OO....OHHHHO.OcO.....", "......OO..OccOO.OHhhhHHOcccOO...", ".....OccOOcCcccOOHhOOhHOKKKKkO..", ".....OcccCccccccOHhOHOHKKkeKKO..", "....OCcCcccccCCccOHhOhHKKkEKKKO.", "...OcCccccccCcccCcOhhhKKKKKKKKO.", "..OCccccccCccccccCOOOOOKKKKKKkO.", ".OccccccCcccCccCccOBBOOOKKKKOO..", ".OccccCccccccCccccOBBO..OOOO....", ".OccCcCccccCccCcccOBBO..........", ".OxccccccCccccccCcOYYO..........", ".OxxxxCCCCCCCCCCCCOyyO..........", "..OOxOxCCCCCCCCCCCxOO...........", "...OxdxxxCCxxxxCxxxDDO..........", "....OddOxxxOxOxxxOODDO..........", "....OddOxDxOxOOdxOODDO..........", "....OddOODDOO.OddOODDO..........", "....OVVOOVVO..OVVOOVVO..........", ".....OO..OO....OO..OO..........."], "walk1": ["................................", "................................", "..................OOOO...O......", "...........OO....OHHHHO.OcO.....", "......OO..OccOO.OHhhhHHOcccOO...", ".....OccOOcCcccOOHhOOhHOKKKKkO..", ".....OcccCccccccOHhOHOHKKkeKKO..", "....OCcCcccccCCccOHhOhHKKkEKKKO.", "...OcCccccccCcccCcOhhhKKKKKKKKO.", "..OCccccccCccccccCOOOOOKKKKKKkO.", ".OccccccCcccCccCccOBBOOOKKKKOO..", ".OccccCccccccCccccOBBO..OOOO....", ".OccCcCccccCccCcccOBBO..........", ".OxccccccCccccccCcOYYO..........", ".OxxxxCCCCCCCCCCCCOyyO..........", "..OOxOxCCCCCCCCCCCxOO...........", "...OxOxxxCCxxxxCxxxO............", "....O.ODxxxOxOxxxDDO............", "......ODxOxOxOOOxDDO............", "......ODDOO.O...ODDO............", "......OVVO......OVVO............", ".......OO........OO............."]}, "sheepC": {"idle0": ["................................", "....................OO.OO.......", "...................ORRORRO......", "...........OO......ORrRrRO......", "......OO..OccOO.OO..ORRRccOOO...", ".....OccOOcCcccOccO.OhKKKWKKkO..", ".....OcccCccccccCccOKKKKKWeKKO..", "....OCcCcccccCCccccOkKOKKWEKKKO.", "...OcCccccccCcccCccOOOOKKKWWKKO.", "..OCccccccCccccccCOGGOOKKKKWWkO.", ".OccccccCcccCccCccOGGOOOKKKKOO..", ".OccccCccccccCccccOGGO..OOOO....", ".OccCcCccccCccCcccOGGO..........", ".OxccccccCccccccCcOGGO..........", ".OxxxxCCCCCCCCCCCCCOOO..........", "..OOxOxCCCCCCCCCCCxOO...........", "...OxOxxxCCxxxxCxxxDO...........", "....OOddxxxOxOxxxdDDO...........", ".....OddxDxOxOOOxdDDO...........", ".....OddDDO.O..OddDDO...........", ".....OVVVVO....OVVVVO...........", "......OOOO......OOOO............"], "idle1": ["................................", "................................", "....................OO.OO.......", "...........OO......ORRORRO......", "......OO..OccOO.OO.ORrRrRO......", ".....OccOOcCcccOccO.ORRRccOOO...", ".....OcccCccccccCccOOhKKKWKKkO..", "....OCcCcccccCCccccOKKKKKWkKKO..", "...OcCccccccCcccCccOkKOKKWEKKKO.", "..OCccccccCccccccCcOOOOKKKWWKKO.", ".OccccccCcccCccCccOGGOOKKKKWWkO.", ".OccccCccccccCccccOGGO.OKKKKOO..", ".OccCcCccccCccCcccOGGO..OOOO....", ".OxccccccCccccccCcOGGO..........", ".OxxxxCCCCCCCCCCCCOGGO..........", "..OOxOxCCCCCCCCCCCxOO...........", "...OxOxxxCCxxxxCxxxDO...........", "....OOddxxxOxOxxxdDDO...........", ".....OddxDxOxOOOxdDDO...........", ".....OddDDO.O..OddDDO...........", ".....OVVVVO....OVVVVO...........", "......OOOO......OOOO............"], "walk0": ["................................", "....................OO.OO.......", "...................ORRORRO......", "...........OO......ORrRrRO......", "......OO..OccOO.OO..ORRRccOOO...", ".....OccOOcCcccOccO.OhKKKWKKkO..", ".....OcccCccccccCccOKKKKKWeKKO..", "....OCcCcccccCCccccOkKOKKWEKKKO.", "...OcCccccccCcccCccOOOOKKKWWKKO.", "..OCccccccCccccccCOGGOOKKKKWWkO.", ".OccccccCcccCccCccOGGOOOKKKKOO..", ".OccccCccccccCccccOGGO..OOOO....", ".OccCcCccccCccCcccOGGO..........", ".OxccccccCccccccCcOGGO..........", ".OxxxxCCCCCCCCCCCCCOOO..........", "..OOxOxCCCCCCCCCCCxOO...........", "...OxdxxxCCxxxxCxxxDDO..........", "....OddOxxxOxOxxxOODDO..........", "....OddOxDxOxOOdxOODDO..........", "....OddOODDOO.OddOODDO..........", "....OVVOOVVO..OVVOOVVO..........", ".....OO..OO....OO..OO..........."], "walk1": ["................................", "....................OO.OO.......", "...................ORRORRO......", "...........OO......ORrRrRO......", "......OO..OccOO.OO..ORRRccOOO...", ".....OccOOcCcccOccO.OhKKKWKKkO..", ".....OcccCccccccCccOKKKKKWeKKO..", "....OCcCcccccCCccccOkKOKKWEKKKO.", "...OcCccccccCcccCccOOOOKKKWWKKO.", "..OCccccccCccccccCOGGOOKKKKWWkO.", ".OccccccCcccCccCccOGGOOOKKKKOO..", ".OccccCccccccCccccOGGO..OOOO....", ".OccCcCccccCccCcccOGGO..........", ".OxccccccCccccccCcOGGO..........", ".OxxxxCCCCCCCCCCCCCOOO..........", "..OOxOxCCCCCCCCCCCxOO...........", "...OxOxxxCCxxxxCxxxO............", "....O.ODxxxOxOxxxDDO............", "......ODxOxOxOOOxDDO............", "......ODDOO.O...ODDO............", "......OVVO......OVVO............", ".......OO........OO............."]}, "lamb": {"idle0": ["......................", "......................", "........OO.....OOO....", ".....O.OWWO...OWWWO...", "....OWOOWWOO.OWWWWWO..", "...OWWWWWWWWOOWWFFFFO.", "..OWWWWWWWWWOnnFFFEFFO", "..OWWWwWWWwWWOnbFFEFFO", ".OWWWWWWWWWWWWOfFFFFnO", "OsWWWWWWWWWWWWWOfffOO.", ".OsWWWWWwWWWWWsOOOO...", "..OsswwwwwssssO.......", "...OlsswwslOLO........", "...OlOLssOlOLO........", "...OlOLOOOlOLO........", "...OVOVO.OVOVO........", "....O.O...O.O........."], "idle1": ["......................", "......................", "........OO............", ".....O.OWWO....OOO....", "....OWOOWWOO..OWWWO...", "...OWWWWWWWWOOWWWWWO..", "..OWWWWWWWWWWOWWFFFFO.", "..OWWWwWWWwWOnnFFFFFFO", ".OWWWWWWWWWWWOnbFFEFFO", "OsWWWWWWWWWWWWOfFFFFnO", ".OsWWWWWwWWWWWsOfffOO.", "..OsswwwwwssssO.OOO...", "...OlsswwslOLO........", "...OlOLssOlOLO........", "...OlOLOOOlOLO........", "...OVOVO.OVOVO........", "....O.O...O.O........."], "walk0": ["......................", "......................", "........OO.....OOO....", ".....O.OWWO...OWWWO...", "....OWOOWWOO.OWWWWWO..", "...OWWWWWWWWOOWWFFFFO.", "..OWWWWWWWWWOnnFFFEFFO", "..OWWWwWWWwWWOnbFFEFFO", ".OWWWWWWWWWWWWOfFFFFnO", "OsWWWWWWWWWWWWWOfffOO.", ".OsWWWWWwWWWWWsOOOO...", "..OsswwwwwssssO.......", "..OlOsswwsOOOLO.......", "..OlOOOsslO.OLO.......", "..OlO.OLOlO.OLO.......", "..OVO.OVOVO.OVO.......", "...O...O.O...O........"], "walk1": ["......................", "......................", "........OO.....OOO....", ".....O.OWWO...OWWWO...", "....OWOOWWOO.OWWWWWO..", "...OWWWWWWWWOOWWFFFFO.", "..OWWWWWWWWWOnnFFFEFFO", "..OWWWwWWWwWWOnbFFEFFO", ".OWWWWWWWWWWWWOfFFFFnO", "OsWWWWWWWWWWWWWOfffOO.", ".OsWWWWWwWWWWWsOOOO...", "..OsswwwwwssssO.......", "...OOsswwsOLOO........", "....OLOssOOLO.........", "....OLOOO.OLO.........", "....OVO...OVO.........", ".....O.....O.........."]}}};
+const CHARS={"boy": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABgCAYAAACtxXToAAAEnElEQVR4nO2csUsjQRTGv0i4Mogch1iEI1xxiIQgqY6rwxVXHsE/Qa4QCwsRCwsRCwtJ5Z8QwpVXSEoRq0NCkHAcRzhSiMUhklIEr4hvM7PzZnY2GzDvnK9xmZ3fe5t1ZjP7vewCCSoVy4+lYvkxqZ9UPm+DaHutMvrbxLitP+jmkpJK4bVABBJEWi69BgD0+n9HwTr8gUjkcyqsggSpYFzNzvggpPJ5DnZBnCTzc95Z/lPNcWcvjaTzYQTEG3Z3NoxOuzsbbDsnaXxOHUJqp/2DhjUg7aOvE8l8NAIoGACU68fGWSvXj8H1lc4bUyB/eY9ua9NI0G1tIn95b2YWzkeLiPZeDUvL7xMTAMB17ydqe21tESKV11aC7b0aAFgDXfd+AoCWXDrPrqWTZLsZkcgbd4OrtXUAwJ/fXa397bsyAOCyfeIMLo2P5tBC6QMAYHh3g8L8Ik6/HeLTl20AiLZpHwDc9i+0OSiVt64ECY5v+0oKH02Bs8MqAKCy/t0ZmPqt1C/Ydml8NISoQ36h5AzwcNuPttUhKJU3vgWKH+vOAIPzlvMqLI1nPUG1MwAkBVVVvzqNto/uhqn5rPk5fmu+MD6mWB/jBGgfwNFmE33opJg2Zc3P9eWOieRcCHFzTG33URo2a/4sx8kGm2U/f1q8NgUk+fnT4rUhRlDcRyf5+vGSeM0Risvmrbv8eGm882vQ5q2vVUZDK2lISuCDKzwpuFbxv/+eZT6MAK7R14O3SRKvXUldHjonuppK5qMRQLDqn1M758PHJZU3pkBv+6vR6arldxASeeMEPKy+YjvGg6iLCcm8Vhe4arkvHlRQAPjlqET+xdcFjECqxUxSPXWfOzJJvDECVHh4dwMAkZcO6H58UnIJvHUlSEWEwvxiFCiNpPDG3SB1frjt4+zkMwBgpd6A3VWTzbPXAPLWyUPPL5SibZ85KIln/YCl5erTVlVprUY2c5Ik8VOrC6hFCa54QfuLqD+6ihuT5if1B90czmEUSGw5DVN0a74APHnrcV/e5snbON/9WfO7YpBsrDEC1CICnbEjJC8wXMUHn/1Z80+Sy0tS/P1J+fC8AAdK+r1/Vj48L8DBLoiTZD64ws/9e/3n5sMI8O0oyetPwzurwzZw/6BhePJSeesIaHZMmDx3n/+GFJ49Ac3OyEaOi/PcpfNz/UE3F/fLbfYy57lL57WVIAD4PHiwUm9Yl6HS+FAX4ILYfnPvsqSl8qEuwAUiWIKvn5UPdYF4A11IVC9d9dl93RgpPGuJjS3lqtY+OO+bnYXzL74uwE4BesCA7GXtgYO7IRtI5bh+Sfuz5ncdi4tlRwAlTuvLT7s2MGldIE2uRM26r5+VD3UBDpTk62flQ12Ag10QJ8l8oimqnslJNOt8qAskdUgzFCXyoTBi2zHrc3davPUEzPrQnRYfpkDcV/cVLUKk8y9+BBiFkaTv1LTr8Fnno7tBqrT+erPujgD+N/tS+ehGQn0PT7laY9Huj7bXe3wk8awfEK+opJUkPrxHCNAdFGnvAcrKs9a1S7P2HqCsfHiPUBwK7xFSxM0xtd1Hadis+Sc5zn8C3Y5T5ZNN4AAAAABJRU5ErkJggg==", "girl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABgCAYAAACtxXToAAAEpElEQVR4nO2cQUsbQRTH/xtSbKHNSXqQEmxMPSySo58gUA89BY89e5AiPZQSxKMEKZ5y8GCvpaeSk5RK9xMUegkSQtQYFslB4iUKlipND+mss7szs7NZafLcfSAkO/ObN3mZzM7837hAzM3wXshlCwMV0LbrPoYy77xhYD7TV/E46meEDVHlUwzOZ/ou2MxOAwB6F1eua6weH2nKvMFgmfUurjD95JGwjEWTMp+SkgD2a1X8/P5RVUVpFHjhCNivVYWVX5bWXO9l3wAl3jcCZHBQGVU+FVQhqoNJ54VzwIviutY1mVHilZNgHMwXgGvrFIdWxVfx0Krg2joNbJAa7wvAg+IzaeOqMqq8KwBzxQ2cN5vSBs6bTcwVN6TlFPm0t9Lim0/SBnSMGu8KQD7Tx1E/g0Z5+Bu6fNYAADw+NQEA5ta6ctlJkfeNAGZT6OHs/Vc8XXuHs+q21Cl13gDce2irtIKZ+VkhdLO0jGJt13nPtpSUeaeBY2sTAHCyYzsV0t++uOCZ+VlMFf8AGE44fAeo8sIIqkznG6DEp70Nvf39UNkAX1/UEWq8dBIEgIO94cZh4dWaqprLPn947bwumIuh+aj+RXy98eO2T3vuzZBPV3NV/vcBvNdkwqRMkAzDR/Uv4r3G80Jh0VtRdl3HwrBR/UfpZ2wtyQt4QWq6flTe+Y3JQDM7jYbdEzbE/0ap8oF5AZXp6PKTzqfadt1gDY1i1HlnIcSrpXPFjdBRpcoLRdFjaxNRokqJl6rClD5EFN4XgDD6u8io8UlewHuhUV6N1CA1PlRegB06UBk1PgUM76Uivd07kYhWVNR55XaYmeyeyi9HqfIuRaht141ctjBgujqzID2eMu+aAxjMJOVuq4NuqxPomDIv1QS7rQ6er2YBABaGWru5dXuPDdqXU+F9d4Fuq+NLIBRru+i2Oo7krHJOjRcqQqwia8QqrTivdRQZSrwwADIZ+mCvqtUBSvyd5QV4xyJHrHwBGOh8kLD+mbXtuoG9qi8IWj5z2cLg8vKX85fLFgb8Ndl9VsSFKY/qX9VGEOsbAXwygUWsYC4GOpYlIXTLo/ofxVdiSPICSV5AqavLNHXWUJAuT4FP8gIjkfBvRanyyoWQF2DncAAoDyxS4rVGgBcOa5PMBwZgkjt/F3yoOYCa5q/DJ3mBMJWpaf46vC8AKu1d57w+Nd6fGeJWTrIJhD+mSp0PXAeI7rdhFiCTzksDwJ+7Z2ZurWs7p8IrJ0FeVz+rbqNRrgRuN6nx6bZdN9pw76Mb5YpLVz/Z6UiHCnXeGQFsaFilFXRbHZ+ufrO0rMyyUOWlihCvpfM6u64iQ4VP8gKqxmKXF2Adleny/zs3EMa/ypeKFY4ApquH1eXvOjcwal4gjK/YW5IX8ILUdP2ofOB5e9ljaHTP6086nx41L5DP9AHNqE8yL9wM8aICHz2dg4rU+NhrgklqbCTyHpkyALq/Ocp8MgJUhbLcuq5R4JMRMO4OjNtiH4B0264bGGEt4DqhQZiP/QhwAhDmnxRFdanyjiTGP4dnZn5WCPLJBm/OjSo/9uf4jJtPniOkqpg8Ryh5jtD9f47QXyvnZw6clFStAAAAAElFTkSuQmCC"};
+const P=SHEEP.palette, OUT='#221e2e';
+const $=id=>document.getElementById(id);
+const IMG={};for(const k in CHARS){const im=new Image();im.src=CHARS[k];IMG[k]=im;}
+/* ======== AUDIO (Web Audio 합성 — 외부 파일 없음) ======== */
+const AU={ac:null,vol:{bgm:.5,sfx:.8,mute:false},duck:1};
+try{const v=JSON.parse(localStorage.getItem('biolab2_vol')||'null');if(v)Object.assign(AU.vol,v);}catch(e){}
+function auInit(){
+  if(AU.ac){if(AU.ac.state==='suspended')AU.ac.resume();return;}
+  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+  let ac;try{ac=AU.ac=new C();}catch(e){return;}
+  const comp=ac.createDynamicsCompressor();comp.connect(ac.destination);
+  AU.master=ac.createGain();AU.master.connect(comp);
+  AU.bgm=ac.createGain();AU.bgm.gain.value=0;AU.bgm.connect(AU.master);
+  AU.sfx=ac.createGain();AU.sfx.connect(AU.master);
+  AU.lead=ac.createBiquadFilter();AU.lead.type='lowpass';AU.lead.frequency.value=2400;AU.lead.connect(AU.bgm);
+  AU.nb=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);const d=AU.nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  AU.next=ac.currentTime+.2;AU.step=0;setInterval(sched,25);
+  applyVol();
+}
+['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,auInit,{capture:true,passive:true}));
+function applyVol(){
+  if(AU.ac){const t=AU.ac.currentTime,m=AU.vol.mute?0:1;
+    AU.bgm.gain.setTargetAtTime(AU.vol.bgm*m*.5*AU.duck,t,.08);AU.sfx.gain.setTargetAtTime(AU.vol.sfx*m,t,.02);}
+  try{localStorage.setItem('biolab2_vol',JSON.stringify(AU.vol));}catch(e){}
+  syncVol();
+}
+function tone(f,t,d,type,g,dest,to,a){const ac=AU.ac,o=ac.createOscillator(),e=ac.createGain();o.type=type;o.frequency.setValueAtTime(f,t);
+  if(to)o.frequency.exponentialRampToValueAtTime(to,t+d);e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(g,t+(a||.01));
+  e.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(e);e.connect(dest||AU.sfx);o.start(t);o.stop(t+d+.05);}
+function noise(t,d,g,dest,ft,ff,fto,q){const ac=AU.ac,s=ac.createBufferSource();s.buffer=AU.nb;const e=ac.createGain();
+  e.gain.setValueAtTime(g,t);e.gain.exponentialRampToValueAtTime(.0001,t+d);let n=s;
+  if(ft){const f=ac.createBiquadFilter();f.type=ft;f.frequency.setValueAtTime(ff,t);if(fto)f.frequency.exponentialRampToValueAtTime(fto,t+d);if(q)f.Q.value=q;s.connect(f);n=f;}
+  n.connect(e);e.connect(dest||AU.sfx);s.start(t,Math.random()*.5);s.stop(t+d+.02);}
+const mf=n=>440*Math.pow(2,(n-69)/12);
+/* 밝은 배경음: C - Am - F - G, 112 BPM, 8마디 반복 */
+const CHD=[[48,52,55,60],[45,48,52,57],[41,45,48,53],[43,47,50,55]];
+const MEL=[76,null,79,81,79,null,76,74, 72,null,74,76,null,74,72,null, 81,null,84,81,79,null,77,76, 74,null,79,null,74,76,74,null,
+           79,79,81,84,null,81,79,76, 76,null,72,76,79,null,76,null, 77,79,81,null,84,81,77,null, 79,null,74,76,79,null,null,null];
+function sched(){const ac=AU.ac;if(!ac||ac.state!=='running')return;const st=60/112/2;
+  if(AU.next<ac.currentTime)AU.next=ac.currentTime+.05;
+  while(AU.next<ac.currentTime+.2){try{playStep(AU.step,AU.next,st);}catch(e){}AU.step=(AU.step+1)%64;AU.next+=st;}}
+function playStep(i,t,st){const bar=i>>3,e=i&7,ch=CHD[bar&3],B=AU.bgm;
+  if(e===0||e===3||e===4||e===6)tone(mf(ch[0]-12+(e===6?12:0)),t,st*.9,'triangle',.3,B);
+  tone(mf(ch[e%4]+12),t,st*.7,'triangle',.07,B);
+  const n=MEL[i];if(n)tone(mf(n),t,st*1.7,'square',.05,AU.lead);
+  if(e&1)noise(t,.03,.045,B,'highpass',7000);
+  if(e===0||e===4)tone(130,t,.16,'sine',.32,B,45);
+  if(e===2||e===6)noise(t,.08,.06,B,'bandpass',1900);
+}
+function sf(fn){return(...a)=>{if(!AU.ac||AU.ac.state!=='running')return;try{fn(AU.ac.currentTime,...a);}catch(e){}};}
+const SFX={
+  click:sf(t=>tone(1046,t,.05,'square',.06)),
+  talk:sf(t=>{tone(784,t,.05,'square',.05);tone(1175,t+.045,.06,'square',.045);}),
+  step:sf(t=>noise(t,.035,.05,0,'lowpass',700)),
+  open:sf(t=>{tone(523,t,.09,'triangle',.2);tone(784,t+.07,.13,'triangle',.2);}),
+  nope:sf(t=>{tone(330,t,.08,'square',.06);tone(262,t+.08,.12,'square',.06);}),
+  ok:sf(t=>[523,659,784,1047].forEach((f,i)=>{tone(f,t+i*.07,.22,'triangle',.22);tone(f*2,t+i*.07,.08,'square',.03);})),
+  ok2:sf(t=>[659,988].forEach((f,i)=>tone(f,t+i*.08,.18,'triangle',.22))),
+  bad:sf(t=>{tone(311,t,.14,'square',.07,0,220);tone(233,t+.13,.22,'square',.07,0,150);}),
+  stamp:sf(t=>{tone(160,t,.3,'sine',.6,0,45);noise(t,.15,.3,0,'lowpass',1500);}),
+  pop:sf(t=>tone(420+Math.random()*120,t,.09,'sine',.25,0,1200)),
+  pat:sf(t=>tone(600+Math.random()*140,t,.08,'triangle',.16,0,900)),
+  poke:sf(t=>{tone(1400,t,.06,'square',.06,0,700);noise(t,.05,.1,0,'highpass',3000);}),
+  suck:sf(t=>{noise(t,.5,.3,0,'bandpass',3000,300,4);tone(900,t,.45,'sine',.08,0,180);}),
+  zap:sf(t=>{for(let k=0;k<7;k++)tone(300+Math.random()*2000,t+k*.035,.05,'sawtooth',.07);noise(t,.3,.22,0,'highpass',2500);}),
+  bubble:sf(t=>tone(260+Math.random()*200,t,.14,'sine',.14,0,900)),
+  win:sf(t=>[523,659,784,1047,0,1047,1319].forEach((f,i)=>{if(f){tone(f,t+i*.09,.25,'square',.05);tone(f,t+i*.09,.3,'triangle',.18);}})),
+  clear:sf(t=>[523,523,523,659,784,0,659,784,1047].forEach((f,i)=>{if(f){tone(f,t+i*.12,.35,'square',.06);tone(f/2,t+i*.12,.38,'triangle',.22);}})),
+  /* 양 울음: 톱니파 + 빠른 떨림(LFO) + 모음 필터 = "매에~" */
+  baa:sf((t,p,pan,v)=>{p=p||1;v=v==null?1:v;const ac=AU.ac,d=.5+Math.random()*.2;
+    const o=ac.createOscillator();o.type='sawtooth';
+    o.frequency.setValueAtTime(280*p,t);o.frequency.linearRampToValueAtTime(350*p,t+.08);o.frequency.linearRampToValueAtTime(320*p,t+d*.6);o.frequency.linearRampToValueAtTime(250*p,t+d);
+    const trem=ac.createGain();trem.gain.value=.6;const lfo=ac.createOscillator();lfo.frequency.value=22+Math.random()*8;
+    const lg=ac.createGain();lg.gain.value=.45;lfo.connect(lg);lg.connect(trem.gain);
+    const f1=ac.createBiquadFilter();f1.type='bandpass';f1.frequency.setValueAtTime(600*p,t);f1.frequency.linearRampToValueAtTime(1000*p,t+.12);f1.Q.value=3;
+    const f2=ac.createBiquadFilter();f2.type='bandpass';f2.frequency.value=2300*p;f2.Q.value=5;
+    const env=ac.createGain();env.gain.setValueAtTime(.0001,t);env.gain.exponentialRampToValueAtTime(1.8*v,t+.05);
+    env.gain.setValueAtTime(1.8*v,t+d*.7);env.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(trem);trem.connect(f1);trem.connect(f2);f1.connect(env);f2.connect(env);
+    if(ac.createStereoPanner){const pn=ac.createStereoPanner();pn.pan.value=Math.max(-1,Math.min(1,pan||0));env.connect(pn);pn.connect(AU.sfx);}else env.connect(AU.sfx);
+    o.start(t);lfo.start(t);o.stop(t+d+.05);lfo.stop(t+d+.05);}),
+};
+const ICON_ON='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.6 6a8.6 8.6 0 0 1 0 12" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
+const ICON_OFF='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+function volHTML(){return `<div class="vrow"><span>배경음</span><input type="range" min="0" max="100" data-vol="bgm" aria-label="배경음 크기"><b data-vv="bgm"></b></div>
+ <div class="vrow"><span>효과음</span><input type="range" min="0" max="100" data-vol="sfx" aria-label="효과음 크기"><b data-vv="sfx"></b></div>
+ <button class="btn small" data-vol="mute"></button>`;}
+function syncVol(){
+  document.querySelectorAll('input[data-vol]').forEach(i=>i.value=Math.round(AU.vol[i.dataset.vol]*100));
+  document.querySelectorAll('[data-vv]').forEach(b=>b.textContent=Math.round(AU.vol[b.dataset.vv]*100));
+  document.querySelectorAll('button[data-vol=mute]').forEach(b=>b.textContent=AU.vol.mute?'🔈 소리 켜기':'🔇 음소거');
+  const sb=document.getElementById('sndBtn');if(sb)sb.innerHTML=(AU.vol.mute||AU.vol.bgm+AU.vol.sfx===0)?ICON_OFF:ICON_ON;
+}
+document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.vol;if(k==='bgm'||k==='sfx'){AU.vol[k]=e.target.value/100;AU.vol.mute=false;applyVol();}});
+document.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.vol==='sfx')SFX.pop();});
+document.addEventListener('click',e=>{if(e.target.closest('button[data-vol=mute]')){AU.vol.mute=!AU.vol.mute;applyVol();SFX.click();}});
+
+$('sndCtl').innerHTML=volHTML();$('pVolCtl').innerHTML=volHTML();applyVol();
+$('sndBtn').onclick=e=>{e.stopPropagation();$('sndPop').classList.toggle('hidden');SFX.click();};
+document.addEventListener('pointerdown',e=>{if(!$('sndPop').classList.contains('hidden')&&!e.target.closest('#sndPop,#sndBtn'))$('sndPop').classList.add('hidden');});
+
+
+/* ======== settings ======== */
+const S={char:'boy',name:'',ctl:('ontouchstart' in window||navigator.maxTouchPoints>0)?'touch':'key'};
+
+function sprTo(c2,rows,x,y,s,flip){const w=rows[0].length;
+  for(let j=0;j<rows.length;j++){const r=rows[j];for(let i=0;i<w;i++){const c=r[i];if(c==='.')continue;c2.fillStyle=P[c];c2.fillRect((x+(flip?w-1-i:i))*s,(y+j)*s,s,s);}}}
+function sheepCanvas(key,s,frame){const r=SHEEP.sprites[key][frame||'idle0'];const c=document.createElement('canvas');c.width=r[0].length*s;c.height=r.length*s;sprTo(c.getContext('2d'),r,0,0,s);return c;}
+function charCanvas(k,s){const c=document.createElement('canvas');c.width=16*s;c.height=24*s;const g=c.getContext('2d');g.imageSmoothingEnabled=false;
+  const draw=()=>g.drawImage(IMG[k],0,0,16,24,0,0,16*s,24*s);IMG[k].complete?draw():IMG[k].addEventListener('load',draw);return c;}
+
+/* ======== TITLE SCREEN ======== */
+const tcv=$('tcv'),tg=tcv.getContext('2d');let TW=320,TH=180,tT=0;
+const tFlock=[{k:'sheepA',x:30,vx:.22,y:0},{k:'sheepB',x:120,vx:-.16,y:6},{k:'sheepC',x:200,vx:.14,y:12},{k:'lamb',x:70,vx:.3,y:10}];
+function tResize(){TH=180;TW=Math.max(240,Math.round(TH*innerWidth/innerHeight));tcv.width=TW*3;tcv.height=TH*3;tg.imageSmoothingEnabled=false;}
+addEventListener('resize',tResize);tResize();
+function tp(x,y,w,h,c){tg.fillStyle=c;tg.fillRect(Math.round(x)*3,Math.round(y)*3,Math.ceil(w)*3,Math.ceil(h)*3);}
+let tBaa=150;
+function drawTitle(){
+  tT++;
+  if(--tBaa<=0){tBaa=360+Math.random()*480;const s=tFlock[Math.random()*4|0];SFX.baa(s.k==='lamb'?1.55:s.k==='sheepA'?1.05:.92,(s.x/TW)*1.6-.8,.7);}
+  const sky=['#8fd0f2','#9fd8f4','#b2e0f6','#c6e9f8','#d9f1fa'];
+  sky.forEach((c,i)=>tp(0,i*20,TW,20,c));
+  tp(TW*.82,18,14,14,'#fff4c2');tp(TW*.82+2,16,10,18,'#fff4c2');tp(TW*.82-2,20,18,10,'#fff4c2');
+  for(let i=0;i<4;i++){const cx=((tT*.08*(1+i*.3))+i*97)%(TW+60)-40,cy=14+i*13;
+    tp(cx,cy,26,6,'#fff');tp(cx+5,cy-4,14,5,'#fff');tp(cx+2,cy+5,22,2,'#e3f2fa');}
+  // hills
+  for(let x=0;x<TW;x++){const h1=96+Math.sin(x/34)*8+Math.sin(x/13)*3;tp(x,h1,1,TH,'#9ccd84');}
+  for(let x=0;x<TW;x++){const h2=112+Math.sin(x/22+2)*5;tp(x,h2,1,TH,'#a9d58f');}
+  // lab building
+  const bx=TW-104,by=70;
+  tp(bx-2,by-2,96,64,OUT);tp(bx,by,92,60,'#eef2f7');tp(bx,by,92,8,'#6b6488');tp(bx+4,by-10,30,12,OUT);tp(bx+6,by-8,26,10,'#6b6488');
+  for(let i=0;i<4;i++){tp(bx+8+i*21,by+16,13,12,OUT);tp(bx+9+i*21,by+17,11,10,'#9fd0f0');tp(bx+9+i*21,by+17,4,3,'#d9f1fa');}
+  tp(bx+36,by+36,20,24,OUT);tp(bx+38,by+38,16,22,'#7a7394');tp(bx+46,by+38,1,22,OUT);
+  // sign with DNA
+  tp(bx+10,by+2,72,12,OUT);tp(bx+11,by+3,70,10,'#fff');
+  for(let i=0;i<8;i++){const yy=Math.round(Math.sin((i+tT/10)/1.3)*3);tp(bx+14+i*2,by+8+yy,1,1,'#3f7fd6');tp(bx+14+i*2,by+8-yy,1,1,'#f05a8a');}
+  tg.fillStyle=OUT;tg.font='bold 17px "Jua","Pretendard",sans-serif';tg.textAlign='center';tg.textBaseline='middle';tg.fillText('복제 연구동',(bx+52)*3,(by+8.3)*3);
+  // fence
+  for(let x=0;x<TW;x+=10){tp(x,138,3,14,OUT);tp(x+1,139,1,12,'#a4703f');}
+  tp(0,142,TW,2,OUT);tp(0,143,TW,1,'#c48a55');tp(0,148,TW,2,OUT);tp(0,149,TW,1,'#c48a55');
+  tp(0,152,TW,TH,'#a9d58f');for(let y=156;y<TH;y+=6)for(let x=(y%12)?3:9;x<TW;x+=12)tp(x,y,1,1,'#8fc177');
+  // sheep
+  for(const s of tFlock){const fr=SHEEP.sprites[s.k];const w=fr.idle0[0].length;s.x+=s.vx;if(s.x<-w)s.x=TW;if(s.x>TW)s.x=-w;
+    const rows=fr[(tT>>3)%2?'walk1':'walk0'];sprTo(tg,rows,Math.round(s.x),150+s.y-rows.length,3,s.vx<0);}
+  if(!$('title').classList.contains('hidden'))requestAnimationFrame(drawTitle);
+}
+// title controls
+function refreshTitle(){
+  document.querySelectorAll('#cPick button').forEach(b=>b.classList.toggle('sel',b.dataset.c===S.char));
+  document.querySelectorAll('#ctlSeg button').forEach(b=>b.classList.toggle('sel',b.dataset.m===S.ctl));}
+$('pboy').replaceWith(Object.assign(charCanvas('boy',3),{id:'pboy'}));
+$('pgirl').replaceWith(Object.assign(charCanvas('girl',3),{id:'pgirl'}));
+document.querySelectorAll('#cPick button').forEach(b=>b.onclick=()=>{S.char=b.dataset.c;refreshTitle();SFX.click();});
+document.querySelectorAll('#ctlSeg button').forEach(b=>b.onclick=()=>{S.ctl=b.dataset.m;refreshTitle();SFX.click();});
+$('startBtn').onclick=()=>{auInit();S.name=$('nameIn').value.trim();SFX.open();startGame();};
+refreshTitle();drawTitle();
+function nm(){return S.name||'신입';}
+function rname(){return nm()+' 연구원';}
+
+/* ======== MAP ======== */
+const W=256,H=176,SC=4;
+const cv=$('cv'),ctx=cv.getContext('2d');cv.width=W*SC;cv.height=H*SC;ctx.imageSmoothingEnabled=false;
+function fit(){const st=$('stage');if(!st.clientWidth)return;const s=Math.min(st.clientWidth/W,st.clientHeight/H);cv.style.width=(W*s)+'px';cv.style.height=(H*s)+'px';}
+addEventListener('resize',fit);
+function px(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x)*SC,Math.round(y)*SC,w*SC,h*SC);}
+function spr(rows,x,y,flip){sprTo(ctx,rows,Math.round(x),Math.round(y),SC,flip);}
+function txt(t,x,y,size,col,bold){ctx.fillStyle=col;ctx.font=`${bold===false?'':'bold '}${size*SC}px "Pretendard","Apple SD Gothic Neo",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t,x*SC,y*SC);}
+
+const solids=[[0,0,256,6],[0,170,256,6],[0,0,4,176],[252,0,4,176],[96,0,256,24],[92,0,8,72],[92,106,8,70],[4,8,58,46],[4,62,58,46],[4,116,58,50]];
+const ST={
+ desk:{x:112,y:136,w:34,h:16,ix:129,iy:130,mx:129,my:124,name:'연구소장 데스크'},
+ cult:{x:106,y:22,w:24,h:22,ix:118,iy:52,mx:118,my:30,name:'세포 배양기'},
+ micro:{x:148,y:22,w:30,h:20,ix:163,iy:50,mx:163,my:30,name:'현미경 조작대'},
+ fuse:{x:194,y:22,w:26,h:22,ix:207,iy:52,mx:207,my:30,name:'전기 융합 장치'},
+ embryo:{x:232,y:64,w:20,h:30,ix:222,iy:84,mx:242,my:56,name:'배아 배양기'},
+ ethics:{x:190,y:128,w:44,h:22,ix:212,iy:124,mx:212,my:118,name:'윤리 위원회 테이블'},
+ penA:{ix:72,iy:36,mx:64,my:16,name:'A양 우리'},penB:{ix:72,iy:90,mx:64,my:70,name:'B양 우리'},penC:{ix:72,iy:146,mx:64,my:126,name:'C양 우리'},
+};
+for(const k in ST){const s=ST[k];if(s.w)solids.push([s.x,s.y,s.w,s.h]);}
+const pens={A:[6,10,54,42],B:[6,64,54,42],C:[6,118,54,46]};
+
+function drawMap(){
+  px(0,0,96,176,'#a9d58f');
+  for(let y=4;y<176;y+=8)for(let x=(y/8%2)*6+2;x<92;x+=12)px(x,y,1,1,'#8fc177');
+  px(64,8,26,160,'#d9c79c');for(let y=10;y<168;y+=9)px(68+(y%3)*5,y,2,1,'#c4b07f');
+  for(const k in pens){const [x,y,w,h]=pens[k];px(x,y,w,h,'#bfe0a8');
+    for(let yy=y+3;yy<y+h;yy+=7)for(let xx=x+3+(yy%2)*3;xx<x+w;xx+=9)px(xx,yy,1,1,'#a3cf8b');
+    const fc='#8a5a3a',fp='#a4703f';
+    px(x-2,y-2,w+4,2,OUT);px(x-2,y+h,w+4,2,OUT);px(x-2,y-2,2,h+4,OUT);px(x+w,y-2,2,h+4,OUT);
+    px(x-1,y-1,w+2,1,fp);px(x-1,y+h,w+2,1,fc);px(x-1,y-1,1,h+2,fp);px(x+w,y-1,1,h+2,fc);
+    for(let xx=x;xx<=x+w;xx+=9){px(xx-1,y-4,3,4,OUT);px(xx,y-3,1,3,fp);}
+    const sc={A:'#3f7fd6',B:'#ee8a2e',C:'#3aa66b'}[k];
+    px(x+w-2,y+h/2-6,9,9,OUT);px(x+w-1,y+h/2-5,7,7,sc);txt(k,x+w+2.5,y+h/2-1.3,6,'#fff');}
+  px(92,0,8,72,'#5a5470');px(92,106,8,70,'#5a5470');px(92,0,8,3,'#7a7394');px(92,106,8,3,'#7a7394');px(96,72,4,34,'#cfd8e6');
+  px(100,24,152,146,'#dfe6ee');
+  for(let y=24;y<170;y+=12)for(let x=100;x<252;x+=12){px(x,y,12,1,'#cdd6e1');px(x,y,1,12,'#cdd6e1');}
+  px(96,0,160,24,'#6b6488');px(96,18,160,6,'#544e6c');
+  for(const x of [104,128]){px(x,5,14,9,'#9fd0f0');px(x,5,14,1,OUT);px(x,13,14,1,OUT);px(x+7,5,1,9,OUT);}
+  // sign plate: DNA icon + 복제 연구동
+  px(170,3,78,13,OUT);px(171,4,76,11,'#fffdf5');px(171,4,76,2,'#ffe9a8');
+  for(let i=0;i<6;i++){const yy=Math.round(Math.sin(i/1.2+T/14)*3);px(175+i*2,9+yy,1,1,'#3f7fd6');px(175+i*2,9-yy,1,1,'#f05a8a');if(i%2)px(175+i*2,9,1,1,'#c9c3d4');}
+  txt('복제 연구동',214,9.6,6.2,OUT);
+  // walls
+  px(252,24,4,152,'#6b6488');px(96,170,160,6,'#6b6488');px(0,170,96,6,'#8fc177');
+  // ethics rug
+  px(182,116,62,42,'#ece4f8');px(182,116,62,1,'#cbbfe0');px(182,157,62,1,'#cbbfe0');
+  drawStations();
+}
+function box(x,y,w,h,c,top){px(x-1,y-1,w+2,h+2,OUT);px(x,y,w,h,c);if(top)px(x,y,w,3,top);}
+function drawStations(){
+  let s=ST.desk;box(s.x,s.y,s.w,s.h,'#b98a5e','#d2a678');px(s.x+4,s.y+2,8,6,'#3f7fd6');px(s.x+5,s.y+3,6,4,'#9fd0f0');px(s.x+20,s.y+3,9,5,'#fff');px(s.x+21,s.y+4,6,1,'#c9c3d4');
+  s=ST.cult;box(s.x,s.y,s.w,s.h,'#e8eef4','#ffffff');px(s.x+3,s.y+5,18,12,'#9fd0f0');for(let i=0;i<3;i++)px(s.x+5+i*6,s.y+12,3,4,'#f896b4');px(s.x+20,s.y+3,2,2,'#3aa66b');
+  s=ST.micro;box(s.x,s.y,s.w,s.h,'#d9dfe8','#f2f5f9');px(s.x+11,s.y-3,6,13,'#544e6c');px(s.x+9,s.y-5,10,3,'#3b3442');px(s.x+8,s.y+11,12,3,'#9fd0f0');px(s.x+2,s.y+8,5,2,'#a4703f');px(s.x+23,s.y+8,5,2,'#a4703f');
+  s=ST.fuse;box(s.x,s.y,s.w,s.h,'#ffe9a8','#fff4cc');px(s.x+4,s.y+5,18,8,OUT);px(s.x+6,s.y+8,14,2,(T>>4)%2?'#f2c94c':'#c9962e');px(s.x+4,s.y+15,4,4,'#ee5a5a');px(s.x+18,s.y+15,4,4,'#3aa66b');
+  s=ST.embryo;box(s.x,s.y,s.w,s.h,'#e8eef4','#fff');px(s.x+3,s.y+4,14,20,'#cfe9f7');for(let i=0;i<3;i++){px(s.x+6,s.y+7+i*6,8,3,'#fff');px(s.x+9,s.y+8+i*6,2,1,'#f896b4');}
+  s=ST.ethics;box(s.x,s.y,s.w,s.h,'#a47042','#c48a55');px(s.x+4,s.y+5,36,12,'#f4ead8');px(s.x+6,s.y+7,9,8,'#fff');px(s.x+28,s.y+7,9,8,'#fff');
+  px(s.x+19,s.y+7,6,6,'#7c5cd6');px(s.x+21,s.y+8,2,4,'#fff');
+  for(const [cx,cy] of [[s.x-6,s.y+6],[s.x+s.w+1,s.y+6],[s.x+8,s.y+s.h+2],[s.x+30,s.y+s.h+2]]){px(cx-1,cy-1,7,7,OUT);px(cx,cy,5,5,'#7a7394');}
+}
+
+/* ======== GAME STATE ======== */
+let G,T=0,running=false;
+function newState(){return{step:0,busy:false,paused:false,mistakes:0,wrong:0,miniFails:0,skips:0,baaT:240,start:Date.now(),elapsed:0,opinions:[],
+  player:{x:136,y:118,dir:3,f:0,moving:false},
+  flock:[{k:'sheepA',pen:'A',x:12,y:16,vx:.18,t:0},{k:'sheepB',pen:'B',x:20,y:70,vx:-.15,t:30},{k:'sheepC',pen:'C',x:10,y:128,vx:.14,t:60},{k:'lamb',pen:'C',x:32,y:146,vx:.22,t:15,hidden:true}]};}
+function sheepTick(s){s.t++;const rows=SHEEP.sprites[s.k].idle0,w=rows[0].length,h=rows.length;const [x0,y0,pw,ph]=pens[s.pen];
+  if(s.t%240<150){s.x+=s.vx;if(s.x<x0||s.x+w>x0+pw){s.vx*=-1;s.x+=s.vx*2;}s.walk=true;}else s.walk=false;s.y=Math.max(y0,Math.min(s.y,y0+ph-h));}
+function sheepRows(s){const fr=SHEEP.sprites[s.k];return s.walk?fr[(s.t>>3)%2?'walk1':'walk0']:((s.t%90)<8?fr.idle1:fr.idle0);}
+
+/* ======== INPUT ======== */
+const keys={};const km={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
+const MK={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',Space:'act',KeyE:'act',Enter:'act'};
+function isOpen(id){return !$(id).classList.contains('hidden');}
+addEventListener('keydown',e=>{
+  if(!running)return;
+  if(e.target&&e.target.tagName==='INPUT'&&e.code!=='Escape')return;
+  if(e.code==='Escape'||e.code==='KeyP'){e.preventDefault();if(isOpen('report')||isOpen('ending'))return;if(G.paused)resume();else pause();return;}
+  if(G.paused)return;
+  if(mg){const k=MK[e.code];if(k){e.preventDefault();if(!e.repeat)mgDown(k);}return;}
+  if(km[e.code]){keys[km[e.code]]=true;e.preventDefault();return;}
+  if(/^Digit[1-4]$/.test(e.code)&&isOpen('dlg')){const b=document.querySelectorAll('#dExtra .opts button:not([disabled])')[+e.code.slice(5)-1];if(b){b.click();e.preventDefault();}return;}
+  if(['Space','KeyE','Enter'].includes(e.code)){
+    e.preventDefault();if(e.repeat)return;
+    if(isOpen('dlg')){const b=$('dBtns').querySelector('button:not([disabled])');if(b)b.click();}
+    else if(isOpen('report')||isOpen('ending'))return;
+    else act();}
+});
+addEventListener('keyup',e=>{if(km[e.code])keys[km[e.code]]=false;if(mg){const k=MK[e.code];if(k)mgUp(k);}});
+document.querySelectorAll('#pad button').forEach(b=>{const k=b.dataset.k;
+  const on=e=>{e.preventDefault();keys[k]=true;b.classList.add('on');},off=()=>{keys[k]=false;b.classList.remove('on');};
+  b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointerleave',off);b.addEventListener('pointercancel',off);});
+$('act').addEventListener('pointerdown',e=>{e.preventDefault();$('act').classList.add('on');act();});
+$('act').addEventListener('pointerup',()=>$('act').classList.remove('on'));
+function applyCtl(){const on=S.ctl==='touch';$('pad').classList.toggle('hidden',!on);$('act').classList.toggle('hidden',!on);$('pPad').textContent=on?'터치패드 끄기':'터치패드 켜기';}
+function clearKeys(){for(const k in keys)keys[k]=false;document.querySelectorAll('#pad button').forEach(b=>b.classList.remove('on'));}
+
+function hit(x,y){const bx=x-5,by=y-4;for(const [sx,sy,sw,sh] of solids)if(bx<sx+sw&&bx+10>sx&&by<sy+sh&&by+4>sy)return true;return false;}
+function movePlayer(){const p=G.player;
+  let dx=(keys.right?1:0)-(keys.left?1:0),dy=(keys.down?1:0)-(keys.up?1:0);p.moving=!!(dx||dy);if(!p.moving)return;
+  const sp=1.15/(dx&&dy?1.414:1);if(dy>0)p.dir=0;else if(dy<0)p.dir=3;if(dx<0)p.dir=1;else if(dx>0)p.dir=2;
+  if(!hit(p.x+dx*sp,p.y))p.x+=dx*sp;if(!hit(p.x,p.y+dy*sp))p.y+=dy*sp;p.f++;if(p.f%16===1)SFX.step();}
+
+/* ======== MINI GAME ENGINE ======== */
+const MW=220,MH=120,MS=3;
+const mcv=$('mcv'),mc=mcv.getContext('2d');mcv.width=MW*MS;mcv.height=MH*MS;mc.imageSmoothingEnabled=false;
+let mg=null;
+function mp(x,y,w,h,c){mc.fillStyle=c;mc.fillRect(Math.round(x)*MS,Math.round(y)*MS,Math.max(1,Math.round(w))*MS,Math.max(1,Math.round(h))*MS);}
+function mdisc(cx,cy,r,c){cx=Math.round(cx);cy=Math.round(cy);r=Math.max(0,Math.round(r));for(let y=-r;y<=r;y++){const w=Math.round(Math.sqrt(r*r-y*y));mp(cx-w,cy+y,2*w+1,1,c);}}
+function mtxt(t,x,y,sz,c,al){mc.fillStyle=c;mc.font=`bold ${sz*MS}px "Pretendard","Apple SD Gothic Neo","Noto Sans KR",sans-serif`;mc.textAlign=al||'center';mc.textBaseline='middle';mc.fillText(t,x*MS,y*MS);}
+function mspr(key,frame,lx,ly,k,flip){sprTo(mc,SHEEP.sprites[key][frame||'idle0'],Math.round(lx/k),Math.round(ly/k),MS*k,flip);}
+function mbox(x,y,w,h,c){mp(x-1,y-1,w+2,h+2,OUT);mp(x,y,w,h,c);}
+const FIELD='#16202b';
+function microBg(c){mp(0,0,MW,MH,FIELD);mdisc(110,60,55,'#2b3a4a');mdisc(110,60,54,c||'#dff1f6');
+  for(let i=0;i<16;i++){const a=i*2.3,r=(i*7%44)+6;mp(110+Math.cos(a)*r,60+Math.sin(a)*r,1,1,'#cfe6ee');}}
+function microMask(){for(let y=0;y<MH;y++){const dy=y-60;if(Math.abs(dy)>54){mp(0,y,MW,1,FIELD);continue;}
+  const w=Math.round(Math.sqrt(54*54-dy*dy));mp(0,y,110-w,1,FIELD);mp(111+w,y,MW-(111+w),1,FIELD);}
+  mtxt('현미경 ×400',196,114,4.5,'#6f8499');}
+function drawEgg(cx,cy,R){const z=Math.max(2,Math.round(R*.16)),s=Math.max(1,Math.ceil(z/2));
+  mdisc(cx,cy,R+z+1,'#6f97a6');mdisc(cx,cy,R+z,'#cde9f0');mdisc(cx,cy,R+s,'#f0fafc');mdisc(cx,cy,R,'#d9bd85');mdisc(cx,cy,R-1,'#fff1d2');
+  const n=Math.round(R*.7);for(let i=0;i<n;i++){const a=i*2.39,r=Math.sqrt((i+.5)/n)*(R-3);mp(cx+Math.cos(a)*r,cy+Math.sin(a)*r,1,1,'#f1dcae');}}
+function drawNuc(x,y,r,c1,c2){mdisc(x,y,r,c1||'#5b3f9e');mdisc(x,y,r-1,c2||'#8f74d6');if(r>3)mp(x-2,y-2,2,2,'#c4b3f0');}
+function drawCell(x,y,r){mdisc(x,y,r+1,'#b9738c');mdisc(x,y,r,'#f8d0dc');mdisc(x,y,Math.max(1,r-1),'#3f7fd6');}
+function drawEmbryo(cx,cy,R,type,dead){cx=Math.round(cx);cy=Math.round(cy);
+  mdisc(cx,cy,R+3,dead?'#8a8f99':'#6f97a6');mdisc(cx,cy,R+2,dead?'#c9ccd2':'#cde9f0');mdisc(cx,cy,R+1,dead?'#dfe1e5':'#f0fafc');
+  let cl=dead?'#9d9993':'#c99a6a',cf=dead?'#d6d2cc':'#ffe9c4';
+  if(type==='dark'){cl='#6e5236';cf='#a58866';}
+  const cell=(x,y,r)=>{mdisc(cx+x*R,cy+y*R,r*R,cl);mdisc(cx+x*R,cy+y*R,r*R-1,cf);};
+  if(type===1){cell(0,0,1);mdisc(cx,cy,2,dead?'#999':'#3f7fd6');}
+  else if(type===2||type==='two'){cell(-.48,0,.52);cell(.48,0,.52);}
+  else if(type===4){cell(-.42,-.42,.5);cell(.42,-.42,.5);cell(-.42,.42,.5);cell(.42,.42,.5);}
+  else if(type===8||type==='good'||type==='dark'){[[-.5,-.5],[0,-.6],[.5,-.5],[-.6,0],[.6,0],[-.5,.5],[0,.6],[.5,.5]].forEach(([x,y])=>cell(x*.7,y*.7,.36));cell(0,0,.3);
+    if(type==='dark')for(let i=0;i<10;i++)mp(cx+((i*7)%11)-5,cy+((i*5)%11)-5,1,1,'#4a3622');}
+  else if(type==='blast'){mdisc(cx,cy,R,cl);mdisc(cx,cy,R-1,'#fbf4e6');for(let i=0;i<14;i++){const a=i/14*Math.PI*2;mdisc(cx+Math.cos(a)*(R-2),cy+Math.sin(a)*(R-2),1,cl);}cell(-.35,-.25,.4);}
+  else if(type==='frag'){[[-.4,-.3,.36],[.38,-.42,.26],[.12,.32,.3],[-.38,.45,.18],[.55,.2,.16],[-.05,-.02,.13],[.2,-.08,.1]].forEach(([x,y,r])=>cell(x,y,r));
+    for(let i=0;i<8;i++)mp(cx+((i*9)%(2*R))-R*.7,cy+((i*13)%(2*R))-R*.7,1,1,'#b89a7a');}
+  else if(type==='uneven'){cell(-.25,0,.65);cell(.55,-.42,.3);cell(.55,.38,.24);cell(.1,.68,.2);}
+}
+function setGoal(t){$('mgGoal').textContent=t;}
+function mgKeys(t){$('mgKeys').textContent=t;}
+let mmT;function mgMsg(t,c){const e=$('mgMsg');e.textContent=t;e.className='mmsg show '+(c||'info');clearTimeout(mmT);mmT=setTimeout(()=>e.classList.remove('show'),c==='good'?2600:2200);}
+function mgBtn(k){return document.querySelector(`#mgBtns button[data-k="${k}"]`);}
+function mgBtns(list){if(mg){mg.held={};mg.keys={};}const w=$('mgBtns');w.innerHTML='';
+  list.forEach(o=>{const b=document.createElement('button');b.className='btn '+(o.cls||'');b.textContent=o.label;b.dataset.k=o.k;
+    b.addEventListener('pointerdown',e=>{e.preventDefault();mgDown(o.k);});
+    ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>mgUp(o.k)));w.appendChild(b);});}
+function mgDown(k){if(!mg||G.paused)return;const b=mgBtn(k);if(!b||mg.held[k])return;mg.held[k]=true;mg.keys[k]=true;b.classList.add('on');if(mg.d.press)mg.d.press(mg,k);}
+function mgUp(k){if(!mg)return;const b=mgBtn(k);if(b)b.classList.remove('on');if(!mg.held[k])return;mg.held[k]=false;mg.keys[k]=false;if(mg.d.release)mg.d.release(mg,k);}
+function mgRelease(){if(!mg)return;mg.held={};mg.keys={};if('adv' in mg)mg.adv=false;document.querySelectorAll('#mgBtns button').forEach(b=>b.classList.remove('on'));}
+function openMini(id,done){const d=MG[id];mg={id,d,done,fails:0,t:0,keys:{},held:{},ended:false};
+  $('mgTag').textContent=d.tag;$('mgWho').textContent=rname()+'의 실험';$('mgTitle').textContent=d.title;setGoal(d.goal);$('mgFail').textContent='';
+  $('mgSkip').classList.add('hidden');$('mgMsg').className='mmsg';d.init(mg);$('mini').classList.remove('hidden');clearKeys();}
+function mgClose(){const me=mg;$('mini').classList.add('hidden');mg=null;if(me&&me.done)me.done();}
+function mgWin(t){if(!mg||mg.ended)return;mg.ended=true;SFX.win();mgMsg(nm()+' 연구원, '+t,'good');const me=mg;setTimeout(()=>{if(mg===me)mgClose();},1900);}
+function mgFail(t){mg.fails++;G.miniFails++;SFX.bad();mgMsg(t,'bad');$('mgFail').textContent=`재도전 ${mg.fails}번`;if(mg.fails>=3)$('mgSkip').classList.remove('hidden');}
+$('mgSkip').onclick=()=>{if(!mg)return;G.skips++;mg.ended=true;mgClose();};
+mcv.addEventListener('pointerdown',e=>{if(!mg||G.paused||!mg.d.tap)return;e.preventDefault();const r=mcv.getBoundingClientRect();
+  mg.d.tap(mg,(e.clientX-r.left)/r.width*MW,(e.clientY-r.top)/r.height*MH);});
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+/* ======== MINI GAMES ======== */
+const MG={
+/* ① 체세포 채취: 진정시키기 → 젖샘 위치 타이밍 */
+biopsy:{tag:'① 미니게임',title:'A양 진정시키고 체세포 채취하기',
+  goal:'A양이 겁먹지 않도록 [쓰다듬기]를 여러 번 눌러\n진정 게이지를 가득 채우세요.',
+  init(m){m.calm=.15;m.ph=0;m.hearts=[];m.nx=80;m.zx=96;m.up=0;this.toCalm(m);mgKeys('Space · E : 쓰다듬기 / 채취');},
+  toCalm(m,goal){m.ph=0;if(goal)setGoal(goal);mgBtns([{k:'act',label:'쓰다듬기 ♥',cls:'go'}]);},
+  press(m,k){if(m.ended||k!=='act')return;
+    if(m.ph===0){m.calm=Math.min(1,m.calm+.12);SFX.pat();m.hearts.push({x:96+Math.random()*40,y:30+Math.random()*10,t:0});
+      if(Math.random()<.3)SFX.baa(1.05,0,.6);
+      if(m.calm>=1){m.ph=1;SFX.ok2();setGoal('A양이 편안해졌어요!\n움직이는 바늘이 분홍색 젖샘 바로 아래에 왔을 때\n[채취!]를 누르세요.');mgBtns([{k:'act',label:'채취!',cls:'go'}]);}}
+    else if(m.ph===1){if(Math.abs(m.nx-m.zx)<=6){m.ph=2;SFX.poke();mgWin('체세포 채취 성공! A양의 유전 정보가 담긴 세포예요.');}
+      else{mgFail('빗나갔어요! 분홍색으로 깜빡이는 젖샘 부분을 노려요.');SFX.baa(1.2,0,.9);m.calm=.55;this.toCalm(m,'A양이 깜짝 놀랐어요.\n다시 쓰다듬어 진정시켜 주세요.');}}},
+  tick(m){if(m.ph===0)m.calm=Math.max(0,m.calm-.004);if(m.ph===1)m.nx=70+(Math.sin(m.t/34)*.5+.5)*78;if(m.ph===2)m.up=Math.min(10,m.up+.5);
+    m.hearts.forEach(h=>{h.t++;h.y-=.35;});m.hearts=m.hearts.filter(h=>h.t<50);},
+  draw(m){mp(0,0,MW,MH,'#cfe8b8');for(let y=4;y<96;y+=8)for(let x=(y%16?2:6);x<MW;x+=10)mp(x,y,1,1,'#b4d79c');
+    mp(0,94,MW,26,'#e2cf9a');for(let x=2;x<MW;x+=7)mp(x,98+(x%3)*4,3,1,'#cdb57a');
+    for(let x=4;x<MW;x+=18){mp(x,6,4,28,OUT);mp(x+1,7,2,26,'#a4703f');}mp(0,12,MW,2,'#8a5a3a');mp(0,24,MW,2,'#8a5a3a');
+    const sh=m.ph===0?(1-m.calm)*3:0,sx=72+Math.round((Math.random()-.5)*sh),sy=44;
+    mspr('sheepA',(m.t%90<6)?'idle1':'idle0',sx,sy,2,false);
+    if(m.ph>=1){const bl=(m.t>>4)%2;mp(m.zx-5,sy+28,10,4,OUT);mp(m.zx-4,sy+29,8,2,bl?'#f896b4':'#f05a8a');
+      const x=Math.round(m.ph===2?m.zx:m.nx),ty=sy+34-m.up;mp(x,ty,1,7,'#7d8a99');mp(x-3,ty+7,7,16,OUT);mp(x-2,ty+8,5,14,'#eef4f8');
+      mp(x-2,ty+16,5,6,m.ph===2?'#f896b4':'#cfe3ea');mp(x-4,ty+23,9,2,OUT);}
+    mbox(8,34,56,7,'#fff');mp(8,34,Math.round(56*m.calm),7,m.calm>=1?'#3aa66b':'#f2c94c');mtxt('진정 게이지',36,46,4.5,OUT);
+    m.hearts.forEach(h=>{const c='#f05a8a';mp(h.x,h.y,2,2,c);mp(h.x+3,h.y,2,2,c);mp(h.x,h.y+1,5,2,c);mp(h.x+1,h.y+3,3,1,c);mp(h.x+2,h.y+4,1,1,c);});}},
+
+/* ② 체세포 배양: 온도 맞추기 → 64개에서 분열 멈추기 */
+culture:{tag:'② 미니게임',title:'체세포 배양하기',
+  goal:'◀ ▶ 로 배양기 온도를 37~39℃(초록 칸)에 맞추면\n세포가 분열해요. 세포를 64개까지 키우세요.',
+  init(m){m.temp=25;m.cells=1;m.tm=0;m.hot=0;m.fin=false;
+    mgBtns([{k:'left',label:'◀ 온도 내리기'},{k:'right',label:'온도 올리기 ▶'},{k:'act',label:'영양분 줄이기',cls:'go'}]);mgKeys('◀ ▶ (A · D) : 온도 조절 · Space : 영양분 줄이기');},
+  press(m,k){if(m.ended||k!=='act')return;
+    if(m.cells<64)mgFail(`아직 세포가 ${m.cells}개뿐이에요. 64개까지 키운 다음 눌러요!`);
+    else{m.fin=true;mgWin('세포가 분열을 멈추고 "쉬는 상태"가 됐어요. 핵 이식 준비 완료!');}},
+  tick(m){if(m.ended)return;if(m.keys.left)m.temp-=.09;if(m.keys.right)m.temp+=.09;m.temp=Math.max(15,Math.min(46,m.temp));
+    if(m.temp>41){if(++m.hot>90){m.hot=0;mgFail('너무 뜨거워서 세포가 상했어요! 37~39℃를 지켜요.');m.cells=Math.max(1,m.cells>>2);}}else m.hot=0;
+    if(m.temp>=37&&m.temp<=39){m.tm++;const need=m.cells>=64?180:46;
+      if(m.tm>=need){m.tm=0;
+        if(m.cells>=64){mgFail('세포가 너무 빽빽해졌어요! 64개일 때 [영양분 줄이기]를 눌러야 해요.');m.cells=8;setGoal(this.goal);}
+        else{m.cells*=2;SFX.pop();if(m.cells===64)setGoal('세포가 64개가 됐어요! 디쉬가 꽉 차기 전에\n[영양분 줄이기]를 눌러 분열을 멈추세요.');}}}},
+  draw(m){mp(0,0,MW,MH,'#e9eef5');mp(0,104,MW,16,'#d5dde8');
+    mbox(10,6,64,108,'#fbfcfe');mtxt('배양기 온도',42,13,5,OUT);
+    const tx=28,yOf=v=>94-(v-15)/31*70;mbox(tx,22,8,72,'#fff');
+    mp(tx,yOf(39),8,yOf(37)-yOf(39),'#bfe8c8');
+    const col=m.temp>41?'#e05555':(m.temp>=37&&m.temp<=39)?'#3aa66b':'#ee8a2e',ty=yOf(m.temp);
+    mp(tx+2,ty,4,94-ty,col);mdisc(tx+4,99,6,OUT);mdisc(tx+4,99,5,col);
+    mtxt('39℃',tx+12,yOf(39)-1,4.5,'#2d8a52','left');mtxt('37℃',tx+12,yOf(37)+2,4.5,'#2d8a52','left');
+    mtxt(m.temp.toFixed(1)+'℃',56,100,6,col);
+    mdisc(150,56,46,'#8ea3b8');mdisc(150,56,45,'#f4f8fb');mdisc(150,56,41,m.fin?'#e9e4f7':'#fde3ec');
+    for(let i=0;i<Math.min(m.cells,128);i++){const r=Math.sqrt((i+.5)/128)*37,a=i*2.39996,x=150+Math.cos(a)*r,y=56+Math.sin(a)*r;
+      mdisc(x,y,2,m.fin?'#9a8fc4':'#c86d8c');mdisc(x,y,1,m.fin?'#e2dcf7':'#f6c2d3');mp(x,y,1,1,m.fin?'#6a4fb0':'#8f3a5c');}
+    const st=m.fin?'Zz… 분열을 멈춘 쉬는 상태':m.temp>41?'너무 뜨거워요!':m.temp>39?'조금 높아요 — 분열 멈춤':m.temp<37?'온도가 낮아 분열하지 않아요':'적정 온도 · 분열 중';
+    mtxt(st,150,5,5,m.temp>=37&&m.temp<=39||m.fin?'#2d8a52':'#c25b00');
+    mtxt(`세포 ${m.cells}개 / 목표 64개`,150,110,5.5,m.cells===64?'#2d8a52':OUT);}},
+
+/* ③ 난자 채취: 떠다니는 세포 중 난자만 골라 담기 */
+eggs:{tag:'③ 미니게임',title:'난자 골라 담기',
+  goal:'떠다니는 세포 중 크고 둥근 난자만 4개 담으세요.\n붉은 혈액 세포와 회색 찌꺼기는 피하세요!',
+  init(m){m.items=[];m.cx=110;m.cy=60;m.got=0;m.left=2400;m.sp=0;m.since=0;for(let i=0;i<5;i++)this.spawn(m,62+i*22);
+    mgBtns([{k:'left',label:'◀'},{k:'up',label:'▲'},{k:'down',label:'▼'},{k:'right',label:'▶'},{k:'act',label:'담기',cls:'go'}]);
+    mgKeys('방향키 · WASD : 피펫 이동 · Space : 담기 · 화면의 세포를 직접 눌러도 돼요');},
+  spawn(m,x){let r=Math.random(),type=r<.38?'egg':r<.72?'rbc':'deb';if(m.since>=2)type='egg';m.since=type==='egg'?0:m.since+1;
+    m.items.push({type,x:x||50,y:26+Math.random()*68,vx:.16+Math.random()*.2,ph:Math.random()*6,r:type==='egg'?8:type==='rbc'?3:2});},
+  grab(m,x,y){let best=null,bd=1e9;for(const it of m.items){const d=Math.hypot(it.x-x,it.y-y);if(d<it.r+4&&d<bd){bd=d;best=it;}}
+    if(!best){SFX.nope();mgMsg('여기에는 세포가 없어요','info');return;}
+    m.items.splice(m.items.indexOf(best),1);
+    if(best.type==='egg'){m.got++;SFX.suck();if(m.got>=4)mgWin('난자 4개를 모두 담았어요!');else mgMsg(`난자 ${m.got} / 4`,'good');}
+    else mgFail(best.type==='rbc'?'그건 붉은 혈액 세포예요. 난자는 훨씬 크고 둥글어요!':'그건 세포 찌꺼기예요. 크고 둥근 난자를 골라요!');},
+  press(m,k){if(!m.ended&&k==='act')this.grab(m,m.cx,m.cy);},
+  tap(m,x,y){if(m.ended)return;m.cx=x;m.cy=y;this.grab(m,x,y);},
+  tick(m){if(m.ended)return;const s=1.5;if(m.keys.left)m.cx-=s;if(m.keys.right)m.cx+=s;if(m.keys.up)m.cy-=s;if(m.keys.down)m.cy+=s;
+    m.cx=Math.max(58,Math.min(162,m.cx));m.cy=Math.max(8,Math.min(112,m.cy));
+    if(++m.sp>=50){m.sp=0;this.spawn(m);}
+    m.items.forEach(it=>{it.x+=it.vx;it.y+=Math.sin(m.t/30+it.ph)*.15;});m.items=m.items.filter(it=>it.x<176);
+    if(--m.left<=0){mgFail('시간이 다 됐어요! 처음부터 다시 담아 봐요.');m.got=0;m.left=2400;}},
+  draw(m){microBg();
+    for(const it of m.items){if(it.type==='egg'){drawEgg(it.x,it.y,it.r);mdisc(it.x+it.r+1,it.y-4,1,'#d9bd85');}
+      else if(it.type==='rbc'){mdisc(it.x,it.y,3,'#c94a4a');mdisc(it.x,it.y,1,'#ef8f8f');}
+      else{mp(it.x-2,it.y-1,3,2,'#8d939c');mp(it.x,it.y+1,2,1,'#8d939c');mp(it.x+1,it.y-2,1,1,'#8d939c');}}
+    microMask();
+    const x=Math.round(m.cx),y=Math.round(m.cy);mp(x-8,y,5,1,OUT);mp(x+4,y,5,1,OUT);mp(x,y-8,1,5,OUT);mp(x,y+4,1,5,OUT);mp(x-1,y-1,3,3,'#ee8a2e');
+    mtxt('담은 난자',196,10,4.8,'#fff');for(let i=0;i<4;i++)mbox(179+i*9,17,7,7,i<m.got?'#fff1d2':'#2b3a4a');
+    mp(178,30,36,3,'#2b3a4a');mp(178,30,Math.round(36*m.left/2400),3,m.left<600?'#e05555':'#3aa66b');mtxt(Math.ceil(m.left/60)+'초',196,39,5,'#fff');
+    mtxt('난자',24,40,5,'#fff');drawEgg(24,56,7);mtxt('혈액 세포',24,78,4.5,'#ff9a9a');mdisc(16,88,3,'#c94a4a');mtxt('찌꺼기',24,100,4.5,'#aab');mp(30,87,3,2,'#8d939c');}},
+
+/* ④ 탈핵: 난자 돌려 정렬 → 피펫 깊이 타이밍 */
+enucleate:{tag:'④ 미니게임',title:'탈핵 — 난자의 핵 빼내기',
+  goal:'◀ ▶ 로 난자를 돌려 보라색 핵을 오른쪽 점선에 맞추세요.\n점선이 초록색으로 바뀌면 [핵 빼기]를 꾹 누르세요.\n(작은 극체 바로 옆에 핵이 있어요)',
+  init(m){m.th=1.4+Math.random()*3.2;m.ph=0;m.tip=170;m.adv=false;m.suck=0;
+    mgBtns([{k:'left',label:'◀ 돌리기'},{k:'right',label:'돌리기 ▶'},{k:'act',label:'핵 빼기 (꾹 누르기)',cls:'go'}]);
+    mgKeys('◀ ▶ : 난자 돌리기 · Space 꾹 누르기 : 피펫 넣기 → 떼면 흡입');},
+  al(m){const a=((m.th%(2*Math.PI))+3*Math.PI)%(2*Math.PI)-Math.PI;return Math.abs(a)<.13;},
+  nuc(m){return{x:104+18*Math.cos(m.th),y:60+18*Math.sin(m.th)};},
+  press(m,k){if(m.ended||k!=='act')return;
+    if(m.ph===0){if(!this.al(m)){SFX.nope();mgMsg('먼저 ◀ ▶ 로 핵을 점선에 맞춰요','info');return;}
+      m.ph=1;setGoal('버튼을 누르고 있으면 피펫이 들어가요.\n피펫 끝이 보라색 핵에 닿았을 때 손을 떼세요!');}
+    if(m.ph===1)m.adv=true;},
+  release(m,k){if(m.ended||k!=='act'||m.ph!==1||!m.adv)return;m.adv=false;const d=m.tip-this.nuc(m).x;
+    if(Math.abs(d)<=5){m.ph=2;SFX.suck();mgWin('탈핵 성공! 이제 B양의 유전 정보가 없는 "빈 난자"예요.');}
+    else if(d>5){mgFail('핵에 닿지 않았어요. 조금 더 깊이 넣어요!');m.tip=170;}
+    else{mgFail('너무 깊이 들어가 핵을 지나쳤어요! 난자가 다칠 수 있어요.');m.tip=170;}},
+  tick(m){if(m.ph===0){if(m.keys.left)m.th-=.03;if(m.keys.right)m.th+=.03;}
+    if(m.ph===1&&m.adv&&!m.ended){m.tip-=.55;if(m.tip<84){m.adv=false;mgRelease();mgFail('난자 반대편까지 찔렀어요! 핵 위치에서 손을 떼요.');m.tip=170;}}
+    if(m.ph===2)m.suck=Math.min(1,m.suck+.025);},
+  draw(m){microBg('#e3f3f8');
+    mp(0,53,64,14,'#5f8796');mp(0,54,63,12,'#d6eef4');mp(60,56,4,8,'#5f8796');mp(61,57,2,6,'#eaf8fb');
+    drawEgg(104,60,30);const n=this.nuc(m),al=this.al(m);
+    const pa=m.th+.42;mdisc(104+33*Math.cos(pa),60+33*Math.sin(pa),3,'#d9bd85');mdisc(104+33*Math.cos(pa),60+33*Math.sin(pa),2,'#fff1d2');
+    if(m.ph<2)for(let x=108;x<150;x+=4)mp(x,60,2,1,al?'#3aa66b':'#ee8a2e');
+    const tp=Math.round(m.tip);
+    if(m.ph<2)drawNuc(n.x,n.y,6);else if(m.suck<1)drawNuc(n.x+(tp+8-n.x)*m.suck,n.y,Math.max(2,6-4*m.suck));
+    mp(tp+6,57,MW,7,'#5f8796');mp(tp+6,58,MW,5,'#eef9fb');mp(tp,59,7,3,'#5f8796');mp(tp+1,60,6,1,'#eef9fb');
+    if(m.ph===2&&m.suck>=1)drawNuc(tp+14,60,2);
+    if(m.ph===0&&!al){const t=m.t/10;for(let i=0;i<3;i++){const a=t+i*2.1;mp(104+40*Math.cos(a),60+40*Math.sin(a),2,2,'#ee8a2e');}}
+    microMask();
+    mtxt(al?'정렬됨 ✓ 이제 [핵 빼기]를 꾹!':'핵을 점선에 맞추세요',110,4,5,al?'#7ee0a0':'#ffd08a');
+    mtxt('고정 피펫',26,47,4.5,'#9fb6c6');mtxt('흡입 피펫',194,50,4.5,'#9fb6c6');
+    mtxt('핵',22,80,5,'#c4b3f0');drawNuc(36,80,4);mtxt('극체',22,94,5,'#e9d6a8');mdisc(36,94,2,'#d9bd85');}},
+
+/* ⑤ 핵 이식 · 전기 융합: 높이 맞춰 삽입 → 전압 타이밍 */
+fusion:{tag:'⑤ 미니게임',title:'핵 이식 · 전기 융합',
+  goal:'▲ ▼ 로 피펫 높이를 움직이는 난자의 틈(점선)에 맞추세요.\n점선이 초록색으로 바뀌면 [세포 넣기]를 누르세요.',
+  init(m){m.ph=0;m.py=46;m.ey=60;m.f=0;m.flash=0;m.v=0;m.ins=0;
+    mgBtns([{k:'up',label:'▲ 위로'},{k:'down',label:'▼ 아래로'},{k:'act',label:'세포 넣기',cls:'go'}]);mgKeys('▲ ▼ (W · S) : 높이 조절 · Space : 세포 넣기 / 전기 자극');},
+  press(m,k){if(m.ended||k!=='act')return;
+    if(m.ph===0){if(Math.abs(m.py-m.ey)<=4){m.ph=1;SFX.poke();mgMsg('세포를 넣었어요!','good');
+        setGoal('전압 게이지의 노란 바늘이 초록 칸에 왔을 때\n[⚡ 전기 자극]을 누르세요.');mgBtns([{k:'act',label:'⚡ 전기 자극',cls:'go'}]);mgKeys('Space : 전기 자극');}
+      else mgFail('세포가 틈에 들어가지 않았어요. 점선이 초록색일 때 넣어요!');}
+    else if(m.ph===1&&m.ins>=1){SFX.zap();m.flash=14;
+      if(m.v>=.62&&m.v<=.78){m.ph=2;mgWin('융합 성공! 이제 난자 속 핵은 A양의 것이에요.');}
+      else mgFail(m.v<.62?'전압이 너무 약해서 합쳐지지 않았어요. 초록 칸에서 눌러요!':'전압이 너무 세서 세포가 상할 뻔했어요! 초록 칸에서 눌러요.');}},
+  tick(m){if(m.ph===0){m.ey=60+Math.sin(m.t/50)*14;if(m.keys.up)m.py-=1.1;if(m.keys.down)m.py+=1.1;m.py=Math.max(32,Math.min(88,m.py));}
+    else{m.ey+=(60-m.ey)*.08;m.ins=Math.min(1,m.ins+.05);if(m.ph===1)m.v=Math.sin(m.t/13)*.5+.5;}
+    if(m.ph===2)m.f=Math.min(1,m.f+.02);if(m.flash>0)m.flash--;},
+  draw(m){microBg('#e3f3f8');const ey=Math.round(m.ey),R=24;
+    if(m.ph>=1){mp(52,26,6,68,'#7d8a99');mp(53,27,4,66,'#b9c4d0');mp(162,26,6,68,'#7d8a99');mp(163,27,4,66,'#b9c4d0');}
+    mdisc(104,ey,R+10,'#6f97a6');mdisc(104,ey,R+9,'#cde9f0');mdisc(104,ey,R+7,'#f0fafc');mdisc(104,ey,R,'#d9bd85');mdisc(104,ey,R-1,'#fff1d2');
+    for(let i=0;i<16;i++){const a=i*2.39,r=Math.sqrt((i+.5)/16)*(R-3);mp(104+Math.cos(a)*r,ey+Math.sin(a)*r,1,1,'#f1dcae');}
+    const gx=104+R+4;
+    if(m.ph===0){const cy=Math.round(m.py);mp(152,cy-3,MW,7,'#5f8796');mp(152,cy-2,MW,5,'#eef9fb');drawCell(148,cy,3);
+      const ok=Math.abs(m.py-m.ey)<=4;mp(gx-1,ey-7,3,1,ok?'#3aa66b':'#ee8a2e');mp(gx-1,ey+7,3,1,ok?'#3aa66b':'#ee8a2e');for(let x=gx+6;x<146;x+=3)mp(x,ey,2,1,ok?'#3aa66b':'#ee8a2e');}
+    else if(m.ph===1){const cx=Math.round(148+(gx-148)*m.ins);if(m.ins<1){mp(cx+4,ey-3,MW,7,'#5f8796');mp(cx+4,ey-2,MW,5,'#eef9fb');}drawCell(cx,ey,3);}
+    else{const cx=Math.round(gx+(104-gx)*m.f);if(m.f<.5){mdisc(cx,ey,4,'#b9738c');mdisc(cx,ey,3,'#f8d0dc');}
+      mdisc(cx,ey,Math.round(2+3*m.f),'#2f5fb0');mdisc(cx,ey,Math.round(1+3*m.f),'#3f7fd6');}
+    if(m.flash>0&&m.flash%2===0){for(let x=58;x<162;x+=6)mp(x,ey+((x/6|0)%2?5:-5),6,2,'#fff36b');mp(0,0,MW,MH,'rgba(255,255,190,.2)');}
+    microMask();
+    if(m.ph>=1){mtxt('+',55,20,7,'#ffd08a');mtxt('−',165,20,7,'#9fd0f0');
+      const gx2=62,gw=96,gy=110;mbox(gx2,gy,gw,5,'#2b3a4a');mp(gx2+Math.round(gw*.62),gy,Math.round(gw*.16),5,'#3aa66b');mp(gx2+Math.round(gw*.78),gy,gw-Math.round(gw*.78),5,'#a33a3a');
+      mp(gx2+Math.round(gw*m.v)-1,gy-3,3,11,'#fff36b');mtxt('전압',gx2-10,gy+2,5,'#fff');}
+    mtxt('체세포',196,24,4.5,'#9fb6c6');drawCell(196,34,3);mtxt('(A양 핵)',196,44,4.2,'#9fd0f0');}},
+
+/* ⑥ 배아 배양: 분열 순서 카드 → 10개 배아 관찰 */
+divide:{tag:'⑥ 미니게임',title:'배아 배양 — 분열 순서 맞추기',
+  goal:'융합 세포가 자라는 순서대로 카드를 골라\n위쪽 칸(1번 → 5번)을 채우세요.',
+  ST:[1,2,4,8,'blast'],NM:['1세포','2세포','4세포','8세포','포배'],
+  init(m){m.ph=0;do{m.ord=shuffle([0,1,2,3,4]);}while(m.ord.join()==='0,1,2,3,4');m.placed=[];m.next=0;m.sel=0;m.shake=0;
+    mgBtns([{k:'left',label:'◀'},{k:'right',label:'▶'},{k:'act',label:'이 카드 고르기',cls:'go'}]);mgKeys('◀ ▶ : 카드 선택 · Space : 고르기 · 카드를 직접 눌러도 돼요');},
+  free(m){return m.ord.filter(i=>!m.placed.includes(i));},
+  pick(m,stage){if(stage===m.next){m.placed.push(stage);m.next++;SFX.pop();
+      if(m.next>=5){SFX.ok2();this.toObs(m);}else m.sel=Math.min(m.sel,this.free(m).length-1);}
+    else{m.shake=14;m.bad=stage;mgFail('순서가 달라요! 세포는 하나가 둘로, 둘이 넷으로… 이렇게 나뉘어요.');}},
+  toObs(m){m.ph=1;m.day=1;m.dt=0;const g=shuffle([0,1,2,3,4,5,6,7,8,9]);m.fate=Array(10).fill(99);const stops=[2,2,3,3,4,5,6];
+    for(let i=3;i<10;i++)m.fate[g[i]]=stops[i-3];
+    setGoal('순서 완성! 융합 세포 10개를 배양기에 넣고\n며칠 동안 지켜봐요. 모두 잘 자랄까요?');mgBtns([]);mgKeys('');},
+  press(m,k){if(m.ended||m.ph!==0)return;const f=this.free(m);if(k==='left')m.sel=(m.sel+f.length-1)%f.length;if(k==='right')m.sel=(m.sel+1)%f.length;if(k==='act')this.pick(m,f[m.sel]);},
+  tap(m,x,y){if(m.ended||m.ph!==0||y<64)return;const j=Math.floor((x-8)/42);if(j<0||j>4)return;const st=m.ord[j];if(m.placed.includes(st))return;
+    m.sel=this.free(m).indexOf(st);this.pick(m,st);},
+  stageOf(d){return[1,1,2,4,8,8,'blast','blast'][d]||'blast';},
+  tick(m){if(m.shake>0)m.shake--;if(m.ph===1&&!m.ended){if(++m.dt>=60){m.dt=0;m.day++;SFX.bubble();
+      if(m.day>7){m.day=7;mgWin('10개 중 3개만 포배까지 자랐어요. 복제는 성공률이 아주 낮아요!');}}}},
+  draw(m){if(m.ph===0){mp(0,0,MW,MH,'#e9eef5');const f=this.free(m);
+      for(let j=0;j<5;j++){const x=8+j*42;mbox(x,6,38,50,j===m.next?'#fff4e8':'#f6f4fa');mtxt(String(j+1),x+5,11,5,j===m.next?'#ee8a2e':'#9a94a6');
+        if(j<4)mtxt('→',x+40,30,5,'#9a94a6');const st=m.placed[j];if(st!==undefined){drawEmbryo(x+19,26,12,this.ST[st]);mtxt(this.NM[st],x+19,49,5,'#2d8a52');}}
+      for(let j=0;j<5;j++){const st=m.ord[j];if(m.placed.includes(st))continue;const isSel=f[m.sel]===st;
+        const x=8+j*42+(m.bad===st&&m.shake?((m.shake%4)-2)*2:0),y=66-(isSel?3:0);
+        if(isSel)mp(x-3,y-3,44,56,'#ee8a2e');mbox(x,y,38,50,'#fff');drawEmbryo(x+19,y+20,12,this.ST[st]);mtxt(this.NM[st],x+19,y+43,5,OUT);}}
+    else{mp(0,0,MW,MH,'#22303f');mtxt(`배양 ${m.day}일째`,110,8,7,'#fff');let alive=0;
+      for(let i=0;i<10;i++){const x=24+(i%5)*43,y=i<5?36:82,ok=m.day<m.fate[i];if(ok)alive++;
+        drawEmbryo(x,y,13,ok?this.stageOf(m.day):this.stageOf(m.fate[i]-1),!ok);
+        if(!ok){mp(x-7,y-1,15,2,'#e05555');mtxt('성장 멈춤',x,y+21,4.3,'#ff9a9a');}else if(m.day>=5)mtxt('잘 자라는 중',x,y+21,4.3,'#7ee0a0');}
+      mtxt(`살아 있는 배아 ${alive} / 10`,110,112,5.5,'#ffd08a');}}},
+
+/* ⑦ 배아 선별 → 착상(주사기 압력 유지) */
+select:{tag:'⑦ 미니게임',title:'건강한 배아 골라 착상하기',
+  goal:'왼쪽 견본처럼 세포가 고르게 나뉜\n건강한 배아 3개를 골라 주세요.',
+  WHY:{frag:'조각난 배아예요. 세포가 깨져 있어서 잘 자라기 어려워요.',two:'아직 2세포에서 멈춘 배아예요. 분열이 멈췄어요.',
+       uneven:'세포 크기가 제각각이에요. 고르게 나뉘지 않았어요.',dark:'색이 어둡고 거친 배아예요. 상태가 좋지 않아요.'},
+  init(m){m.ph=0;m.types=shuffle(['good','good','good','frag','two','uneven','dark','frag','two']);m.st=Array(9).fill(0);m.cur=4;m.ok=0;m.pr=0;m.prog=0;
+    mgBtns([{k:'left',label:'◀'},{k:'up',label:'▲'},{k:'down',label:'▼'},{k:'right',label:'▶'},{k:'act',label:'고르기',cls:'go'}]);
+    mgKeys('방향키 : 배아 선택 · Space : 고르기 · 직접 눌러도 돼요');},
+  pos(i){return{x:72+(i%3)*38,y:21+Math.floor(i/3)*39};},
+  choose(m,i){if(m.st[i])return;const t=m.types[i];
+    if(t==='good'){m.st[i]=1;m.ok++;SFX.pop();
+      if(m.ok>=3){SFX.ok2();m.ph=1;setGoal('[주사기 밀기]를 누르거나 떼면서\n압력 바늘을 초록 칸에 유지하세요.\n너무 세게 밀면 배아가 다쳐요.');
+        mgBtns([{k:'act',label:'주사기 밀기 (꾹 누르기)',cls:'go'}]);mgKeys('Space 꾹 누르기 : 밀기 · 떼면 압력이 줄어요');}
+      else mgMsg(`건강한 배아 ${m.ok} / 3`,'good');}
+    else{m.st[i]=2;mgFail(this.WHY[t]);}},
+  press(m,k){if(m.ended||m.ph!==0)return;const c=m.cur;
+    if(k==='left')m.cur=c%3?c-1:c+2;if(k==='right')m.cur=c%3<2?c+1:c-2;if(k==='up')m.cur=(c+6)%9;if(k==='down')m.cur=(c+3)%9;if(k==='act')this.choose(m,m.cur);},
+  tap(m,x,y){if(m.ended||m.ph!==0)return;for(let i=0;i<9;i++){const p=this.pos(i);if(Math.abs(x-p.x)<18&&Math.abs(y-p.y)<18){m.cur=i;this.choose(m,i);}}},
+  tick(m){if(m.ph!==1||m.ended)return;m.pr=m.keys.act?Math.min(1,m.pr+.013):Math.max(0,m.pr-.011);
+    if(m.pr>.9){mgFail('너무 세게 밀었어요! 천천히, 일정한 힘으로 밀어요.');m.pr=0;m.prog=Math.max(0,m.prog-.3);mgRelease();}
+    else if(m.pr>=.45&&m.pr<=.72){m.prog+=.006;if(m.t%24===0)SFX.bubble();if(m.prog>=1){m.prog=1;SFX.baa(.95,0,.8);mgWin('착상 성공! 배아가 C양의 자궁에 자리 잡았어요.');}}},
+  draw(m){if(m.ph===0){mp(0,0,MW,MH,'#e9eef5');mbox(52,2,114,116,'#dff1f6');
+      mbox(4,14,42,62,'#fff');mtxt('견본',25,21,5,OUT);drawEmbryo(25,42,12,'good');mtxt('건강한 배아',25,62,4.3,'#2d8a52');mtxt('세포 8개',25,69,4.3,'#6b6478');
+      for(let i=0;i<9;i++){const p=this.pos(i);drawEmbryo(p.x,p.y,12,m.types[i]);
+        if(m.st[i]===1){mp(p.x-16,p.y-16,33,2,'#3aa66b');mp(p.x-16,p.y+15,33,2,'#3aa66b');mp(p.x-16,p.y-16,2,33,'#3aa66b');mp(p.x+15,p.y-16,2,33,'#3aa66b');}
+        if(m.st[i]===2){mp(p.x-15,p.y-15,31,31,'rgba(210,59,59,.35)');for(let d=-8;d<=8;d++){mp(p.x+d,p.y+d,2,2,'#d23b3b');mp(p.x+d,p.y-d,2,2,'#d23b3b');}}
+        if(i===m.cur){const c=(m.t>>4)%2?'#ee8a2e':'#f5a85a';mp(p.x-18,p.y-18,37,1,c);mp(p.x-18,p.y+18,37,1,c);mp(p.x-18,p.y-18,1,37,c);mp(p.x+18,p.y-18,1,37,c);}}
+      mtxt('고른 배아',193,40,5,OUT);mtxt(`${m.ok} / 3`,193,52,8,m.ok>=3?'#2d8a52':'#ee8a2e');}
+    else{mp(0,0,MW,MH,'#cfe8b8');mp(0,94,MW,26,'#e2cf9a');mspr('sheepC','idle0',140,46,2,false);
+      mbox(14,56,74,14,'#eef4f8');const pl=Math.round(14+40*m.prog);mp(14,57,pl-14+1,12,'#cfe3ea');mp(pl,52,3,22,'#7d8a99');mp(2,60,pl-2,4,'#7d8a99');
+      for(let i=0;i<3;i++)mdisc(Math.round(60+i*8+m.prog*24),63,2,'#ffe9c4');mp(88,62,62,1,'#9aa8b8');mp(148,62,3,3,'#9aa8b8');
+      const mx0=30,mw=160,my=14;mbox(mx0,my,mw,7,'#fff');mp(mx0+mw*.45,my,mw*.27,7,'#9fe0b4');mp(mx0+mw*.9,my,mw*.1,7,'#f3a3a3');
+      mp(mx0+Math.round(mw*m.pr)-1,my-3,3,13,OUT);mtxt('압력',mx0-10,my+3,5,OUT);mtxt('천천히 · 일정하게',110,30,5,'#2d8a52');
+      mbox(14,80,74,5,'#fff');mp(14,80,Math.round(74*m.prog),5,'#3aa66b');mtxt(`옮긴 양 ${Math.round(m.prog*100)}%`,51,91,5,OUT);}}},
+
+/* ⑧ DNA 지문: 전기영동 → 띠 비교 */
+dna:{tag:'⑧ 미니게임',title:'DNA 지문 검사',
+  goal:'[전류 흘리기]를 꾹 누르고 있으면\nDNA 조각이 젤 속을 이동해 띠가 생겨요.',
+  L:[{n:'새끼 양',p:[.14,.31,.52,.7,.88]},{n:'A양',p:[.14,.31,.52,.7,.88]},{n:'B양',p:[.2,.4,.47,.66,.82]},{n:'C양',p:[.1,.37,.6,.76,.93]}],
+  init(m){m.ph=0;m.run=0;m.cur=1;mgBtns([{k:'act',label:'전류 흘리기 (꾹 누르기)',cls:'go'}]);mgKeys('Space 꾹 누르기 : 전류 흘리기');},
+  choose(m,i){m.cur=i;if(i===1){m.ph=2;mgWin('띠 위치가 A양과 똑같아요! 새끼 양은 A양의 복제 양이 맞아요.');}
+    else mgFail(i===2?'B양과는 띠 위치가 달라요. B양은 핵을 뺀 난자만 줬어요.':'C양과는 띠 위치가 달라요. C양은 새끼를 낳아 주기만 했어요.');},
+  press(m,k){if(m.ended||m.ph!==1)return;if(k==='left')m.cur=m.cur>1?m.cur-1:3;if(k==='right')m.cur=m.cur<3?m.cur+1:1;if(k==='act')this.choose(m,m.cur);},
+  tap(m,x){if(m.ended||m.ph!==1)return;const i=Math.round((x-50)/40);if(i>=1&&i<=3)this.choose(m,i);},
+  tick(m){if(m.ph===0&&m.keys.act){m.run=Math.min(1,m.run+.008);if(m.t%14===0)SFX.bubble();
+    if(m.run>=1){m.ph=1;SFX.ok2();setGoal('새끼 양의 DNA 띠(주황색)와\n똑같은 위치에 띠가 있는 양을 고르세요.');
+      mgBtns([{k:'left',label:'◀'},{k:'right',label:'▶'},{k:'act',label:'이 양과 일치!',cls:'go'}]);mgKeys('◀ ▶ : 양 고르기 · Space : 결정');}}},
+  draw(m){mp(0,0,MW,MH,'#1e1a2e');mbox(26,14,168,100,'#2a2342');mtxt('−',16,20,7,'#9fd0f0');mtxt('+',16,106,7,'#ff9a9a');
+    for(let i=0;i<4;i++){const L=this.L[i],x=50+i*40;
+      if(i===0)mp(x-15,15,30,98,'#3a2c3a');if(m.ph>=1&&i===m.cur)mp(x-15,15,30,98,'#463a78');
+      mp(x-9,17,18,3,'#0e0b18');mtxt(L.n,x,7,5.2,i===0?'#ffd08a':'#fff');
+      for(const p of L.p){const y=Math.round(22+p*86*m.run);mp(x-9,y,18,2,i===0?'#ffb86b':'#ff7bd5');}}
+    if(m.ph>=1)for(const p of this.L[0].p){const y=Math.round(22+p*86);for(let x=66;x<192;x+=4)mp(x,y,2,1,'rgba(255,208,138,.5)');}
+    if(m.ph===0){mp(26,116,Math.round(168*m.run),3,'#3aa66b');}}},
+};
+
+/* ======== CONTENT ======== */
+const BOSS='연구소장',CHAIR='윤리 위원장';
+const STEPS=[
+ {at:'ethics',k:'⓪',short:'윤리 위원회 심의',sum:'실험 목적 · 3R 원칙 · 정직한 기록을 약속하고 승인받음',eth:true},
+ {at:'penA',k:'①',short:'A양 체세포 채취',sum:'복제할 원본 A양의 젖샘에서 체세포를 얻음'},
+ {at:'cult',k:'②',short:'체세포 배양',sum:'체세포를 키운 뒤 분열을 멈춘 "쉬는 상태"로 준비'},
+ {at:'penB',k:'③',short:'B양 난자 채취',sum:'B양에게서 새 생명이 자랄 그릇인 난자를 얻음'},
+ {at:'micro',k:'④',short:'탈핵',sum:'난자의 핵을 빼서 B양의 유전 정보를 없앰'},
+ {at:'fuse',k:'⑤',short:'핵 이식 · 전기 융합',sum:'체세포와 빈 난자를 전기로 합쳐 핵을 A양의 것으로'},
+ {at:'embryo',k:'⑥',short:'배아 배양',sum:'2 → 4 → 8세포로 분열해 배아가 됨 (10개 중 3개 성공)'},
+ {at:'penC',k:'⑦',short:'대리모 C양에 착상',sum:'건강한 배아를 골라 대리모 C양의 자궁에 옮김'},
+ {at:'penC',k:'⑧',short:'새끼 양 탄생',sum:'흰 얼굴 새끼 양 탄생! DNA 검사로 A양과 일치 확인'},
+ {at:'ethics',k:'⑨',short:'윤리 회의 · 돌리 이야기',sum:'돌리의 삶을 돌아보고 복제 기술의 쓰임을 토론함',eth:true},
+ {at:'desk',k:'✓',short:'보고서 제출',sum:''},
+];
+const MINI={1:'biopsy',2:'culture',3:'eggs',4:'enucleate',5:'fusion',6:'divide',7:'select'};
+const PRAISE=[n=>`훌륭해요, ${n}!`,n=>`${n}, 손이 정말 정확해요!`,n=>`역시 ${n}이에요!`,n=>`${n}, 실험 감각이 대단한데요?`,
+  n=>`좋아요, ${n}! 이 기세로 계속 가 봐요.`,n=>`${n} 덕분에 실험이 순조로워요!`];
+function praise(){return PRAISE[Math.random()*PRAISE.length|0](rname());}
+function lab(i,what,doing,result,key,vis){const s=STEPS[i];return[
+  {tag:s.k+' 단계',who:'연구 노트',title:s.short,text:what,vis},
+  {tag:s.k+' 미니게임',tagc:'g',who:()=>rname()+'의 실험',title:MG[MINI[i]].title,text:doing,mini:MINI[i]},
+  {tag:s.k+' 단계',who:'실험 결과',title:result,text:()=>praise(),key,vis,light:i}];}
+const DLG={
+ intro:[
+  {tag:'브리핑',tagc:'p',who:BOSS,title:()=>`${rname()}, 환영해요!`,
+   text:()=>`유전자 재조합 실험을 훌륭히 마친\n${rname()}을 복제 연구동으로 모셨어요.\n앞으로 잘 부탁해요!`},
+  {tag:'브리핑',tagc:'p',who:BOSS,title:'이번 임무',vis:['sheepA','sheepB','sheepC'],
+   text:'흰 얼굴 A양과 유전 정보가 똑같은 양을 만들어 주세요.\n1996년 스코틀랜드에서 복제 양 "돌리"를 탄생시킨 방법,\n"체세포 핵 이식"을 그대로 따라가 볼 거예요.'},
+  {tag:'브리핑',tagc:'p',who:BOSS,title:'잠깐, 실험 전에!',
+   text:()=>`동물을 쓰는 실험은 시작하기 전에\n반드시 동물실험윤리위원회의 승인을 받아야 해요.\n과학은 "할 수 있는 일"만이 아니라\n"해도 되는 일"인지도 함께 묻는 일이니까요.\n${rname()}, 먼저 윤리 위원회 테이블로 가 보세요.`},
+  {tag:'조작 안내',tagc:'g',who:'도움말',title:'이렇게 플레이해요',
+   text:()=>`· 이동: ${S.ctl==='touch'?'왼쪽 아래 터치패드 또는 ':''}WASD · 방향키\n· 조사: ${S.ctl==='touch'?'조사 버튼 또는 ':''}Space · E\n· 주황색 느낌표(!)가 다음 목적지예요.\n· 오른쪽 "복제 도식"에 한 일이 차곡차곡 표시돼요.\n· 오른쪽 위 버튼으로 소리 조절 · 일시정지를 해요.`},
+ ],
+ 0:[
+  {tag:'⓪ 실험 전 심의',tagc:'eth',who:CHAIR,title:'동물실험윤리위원회입니다',
+   text:()=>`${rname()}의 실험 계획을 심사하겠습니다.\n세 가지 질문에 모두 답하면\n실험을 승인할게요.`},
+  {tag:'⓪ 심의 1/3',tagc:'eth',who:CHAIR,title:'이 실험의 목적으로 알맞은 것은?',quiz:[
+    {t:'체세포 핵으로 새 개체를 만들 수 있는지 밝히기 위해',ok:true,fb:'좋아요. 이 기술은 우수한 가축 보존이나\n의약품 생산에 쓰일 수 있어요.\n동물 실험은 분명하고 정당한 목적이 있어야 승인돼요.'},
+    {t:'사람도 똑같이 복제할 수 있는지 시험하기 위해',fb:'우리나라는 「생명윤리 및 안전에 관한 법률」로\n인간 복제를 금지하고 있어요. 승인할 수 없어요.'},
+    {t:'신기한 양을 만들어 사람들에게 보여 주기 위해',fb:'호기심도 중요하지만, 동물을 쓰는 실험은\n그만한 이유가 있어야 승인돼요.'}]},
+  {tag:'⓪ 심의 2/3',tagc:'eth',who:CHAIR,title:'동물 실험의 3R 원칙',
+   text:'동물 실험에는 3R 원칙이 있어요. 그중\n"실험 동물의 수를 꼭 필요한 만큼으로 줄인다"는\n무엇일까요?',quiz:[
+    {t:'대체 (Replacement)',fb:'대체는 가능하면 동물 대신\n세포나 컴퓨터 모델 등을 쓰는 거예요.'},
+    {t:'감소 (Reduction)',ok:true,fb:'정답! 3R은 대체(동물 대신 다른 방법) ·\n감소(수 줄이기) · 개선(고통 줄이기)이에요.'},
+    {t:'개선 (Refinement)',fb:'개선은 마취나 돌봄으로\n동물의 고통을 줄이는 거예요.'}]},
+  {tag:'⓪ 심의 3/3',tagc:'eth',who:CHAIR,title:'실험 결과는 어떻게 기록할까요?',quiz:[
+    {t:'성공한 결과만 골라서 깔끔하게 기록한다',fb:'실패한 기록도\n다음 연구자에게 꼭 필요한 정보예요.'},
+    {t:'실패한 배아까지 모두 사실대로 기록한다',ok:true,fb:'맞아요! 결과를 숨기거나 꾸미지 않는 것을\n"연구 진실성"이라고 해요.'},
+    {t:'아쉬운 결과는 숫자를 살짝 고쳐 기록한다',fb:'데이터를 바꾸는 건 "조작"이라는 연구 부정행위예요.\n과학 전체의 신뢰를 무너뜨려요.'}]},
+  {tag:'⓪ 심의 결과',tagc:'eth',who:CHAIR,title:'실험 계획 승인',stamp:'승 인',light:0,
+   text:()=>`${rname()}의 실험을 승인합니다.\n양들을 아끼고, 모든 결과를 정직하게 기록해 주세요.\n이제 A양 우리로 가서 첫 단계를 시작하세요.`},
+ ],
+ 1:lab(1,'복제할 원본은 흰 얼굴 A양이에요.\nA양의 젖샘(유선)에서 아주 작은 조직을 떼어\n"체세포"를 얻어요.\n체세포는 정자 · 난자 같은 생식세포가 아닌,\n몸을 이루는 보통 세포예요.',
+   ()=>`${rname()}, 수의사와 함께 직접 채취해 봐요.\n먼저 A양을 쓰다듬어 진정시킨 다음,\n분홍색 젖샘 위치를 노려 체세포를 채취하세요.`,
+   'A양의 체세포를 얻었어요!','<b>핵심</b> 체세포의 <b>핵</b> 안에는 A양의 유전 정보(DNA)가 모두 있어요.<br>이 핵이 복제의 "설계도"가 돼요.',['sheepA']),
+ 2:lab(2,'얻은 체세포를 배양기에 넣어 수를 늘려요.\n그다음 영양분을 줄이면 세포가 분열을 멈추고\n"쉬는 상태"가 돼요.\n이 상태의 핵은 난자 속에서\n처음부터 다시 시작하기 좋아요.',
+   '배양기 온도를 37~39℃로 맞춰 세포를 키우세요.\n(양의 체온과 비슷한 온도예요)\n세포가 64개가 되면 영양분을 줄여 분열을 멈추세요.\n너무 늦으면 디쉬가 꽉 차 버려요!',
+   '핵 이식에 쓸 체세포 준비 완료!','<b>핵심</b> 체세포는 <b>유전 정보를 주는 쪽</b>이에요.<br>실제 돌리 실험에서도 분열을 멈춘 세포를 썼어요.'),
+ 3:lab(3,'이번엔 검은 얼굴 B양에게서 "난자"를 얻어요.\n난자의 세포질에는 새 생명이 자라기 시작하는 데\n필요한 물질이 들어 있어요.',
+   '채취한 액체를 현미경으로 보면 여러 세포가 떠다녀요.\n그중 크고 둥근 난자만 4개 골라 담으세요.\n작은 혈액 세포나 찌꺼기는 피하세요!',
+   'B양의 난자를 얻었어요!','<b>핵심</b> 난자는 새 생명이 자랄 <b>그릇</b>이에요.<br>하지만 지금은 B양의 핵이 아직 들어 있어요.',['sheepB']),
+ 4:lab(4,'현미경을 보며 "고정 피펫"으로 난자를 붙잡고,\n가느다란 "흡입 피펫"으로 핵을 빨아내요.\n이것을 "탈핵"이라고 해요.',
+   ()=>`게임 전체에서 가장 섬세한 작업이에요.\n집중해요, ${rname()}!\n난자를 돌려 핵을 흡입 피펫 쪽으로 맞추고,\n버튼을 꾹 누르면 피펫이 들어가요.\n핵에 닿았을 때 손을 떼면 핵을 빨아들여요.`,
+   '탈핵 성공! 빈 난자가 되었어요.','<b>핵심</b> 핵을 빼야 <b>B양의 유전 정보가 섞이지 않아요</b>.<br>이제 이 난자는 핵이 없는 "빈 그릇"이에요.'),
+ 5:lab(5,'A양의 체세포를 빈 난자 곁에 넣고\n아주 짧은 전기 자극을 줘요.\n그러면 두 세포가 하나로 합쳐지면서\nA양의 핵이 난자 속으로 들어가요.\n전기 자극은 "자라기 시작해!"라는 신호도 돼요.',
+   '두 단계로 진행해요.\n① 피펫 높이를 맞춰 체세포를 빈 난자의 틈에 넣기\n② 전압 바늘이 초록 칸에 왔을 때 전기 자극 주기',
+   '융합 성공! 핵 이식 완료!','<b>핵심</b> 이제 난자 속 핵은 <b>A양의 것</b>!<br>정자 없이도 새 생명이 시작될 수 있게 되었어요.'),
+ 6:lab(6,'융합 세포를 배양기에서 며칠 동안 키워요.\n세포가 2개 → 4개 → 8개로 분열하며\n"배아"가 돼요.',
+   '먼저 배아가 자라는 순서대로 카드를 골라 보세요.\n그다음 융합 세포 10개를 배양기에 넣고\n며칠 동안 어떻게 되는지 지켜봐요.',
+   '배아 10개 중 3개만 잘 자랐어요','<b>핵심</b> 복제는 <b>성공률이 아주 낮은</b> 기술이에요.<br>실제 돌리 실험에서는 융합 세포 277개 중 단 <b>1마리</b>만 태어났어요.<br>실패한 배아도 모두 기록해 두었어요.'),
+ 7:lab(7,'잘 자란 배아를 대리모 C양의 자궁에 넣어요.\n이것을 "착상"이라고 해요.\n양의 임신 기간은 약 5개월(약 150일)이에요.',
+   '잘 자란 배아 중에서도 건강한 배아만 골라야 해요.\n건강한 배아 3개를 고른 다음, 주사기를\n천천히 일정한 힘으로 밀어 C양에게 옮기세요.',
+   '착상 성공!','<b>핵심</b> 대리모 C양은 새끼를 품어 낳아 줄 뿐,<br><b>유전 정보는 주지 않아요</b>.',['sheepC']),
+ 8:[
+  {tag:'⑧ 단계',who:'약 5개월 뒤…',title:'새끼 양이 태어났어요!',vis:['sheepA','sheepB','sheepC'],
+   text:()=>`검은 얼굴 C양이 건강한 새끼 양을 낳았어요.\n그런데 이 새끼 양, 누구를 닮았을까요?\n${rname()}의 추리를 들려주세요!`},
+  {tag:'⑧ 추리',who:'연구 노트',title:'새끼 양은 누구를 닮았을까?',quiz:[
+    {t:'A양 — 흰 얼굴 · 체세포(핵)를 줌',ok:true,fb:'정답! 새끼 양의 핵 속 유전 정보는 A양에게서 왔어요.\n그래서 검은 얼굴 C양이 낳았는데도 흰 얼굴이에요.'},
+    {t:'B양 — 검은 얼굴 · 난자를 줌',fb:'B양은 난자를 줬지만 핵은 빼냈어요.\n핵에 있던 B양의 유전 정보는 남아 있지 않아요.'},
+    {t:'C양 — 검은 얼굴 · 새끼를 낳아 줌',fb:'C양은 새끼를 품어 낳아 줬지만,\n유전 정보를 주지는 않았어요.'}],onOk:()=>{G.flock[3].hidden=false;SFX.baa(1.6,-.4,1);}},
+  {tag:'⑧ 미니게임',tagc:'g',who:'유전자 검사실',title:'얼굴만 보고 확신해도 될까요?',mini:'dna',
+   text:'과학자는 생김새가 아니라 증거로 확인해요.\nDNA 지문 검사로 새끼 양의 DNA를\nA · B · C양과 비교해 봐요.'},
+  {tag:'⑧ 단계',who:'실험 결과',title:'복제 양 탄생!',vis:['lamb','sheepA'],light:8,
+   key:'<b>핵심</b> 이 새끼 양은 A양과 유전 정보가 같은 <b>복제 양</b>이에요.<br>돌리도 바로 이렇게 태어났어요.',
+   text:()=>`축하해요, ${rname()}! 복제에 성공했어요.\n이제 윤리 위원회 테이블로 가서\n실제 돌리의 이야기를 들어 보세요.`},
+ ],
+ 9:[
+  {tag:'⑨ 돌리 이야기 1',tagc:'eth',who:CHAIR,title:'1996년 7월 5일, 스코틀랜드',vis:['lamb'],
+   text:'로슬린 연구소에서 다 자란 양의 체세포로 만든\n최초의 복제 포유류 "돌리"가 태어났어요.\n6살 핀 도셋 양(흰 얼굴)의 젖샘 세포를 썼지요.\n1997년 2월에 발표되자 전 세계가 깜짝 놀랐어요.'},
+  {tag:'⑨ 돌리 이야기 2',tagc:'eth',who:CHAIR,title:'277번 중의 단 1번',
+   text:'돌리 한 마리를 위해 융합 세포 277개를 만들었고,\n그중 배아 29개를 대리모 양들에게 옮겼어요.\n하지만 태어난 것은 돌리 하나뿐이었어요.\n"동물을 얼마나 써도 될까?"라는 질문이 남았지요.'},
+  {tag:'⑨ 돌리 이야기 3',tagc:'eth',who:CHAIR,title:'돌리의 삶',
+   text:'돌리는 새끼 6마리를 낳아, 복제 동물도\n정상적으로 번식할 수 있음을 보여 줬어요.\n하지만 관절염과 폐 질환을 앓다가\n2003년, 6살에 안락사되었어요.\n양의 보통 수명(10~12년)의 절반쯤이었지요.'},
+  {tag:'⑨ 돌리 이야기 4',tagc:'eth',who:CHAIR,title:'복제 동물은 빨리 늙을까?',
+   text:'돌리가 일찍 죽자 "복제 동물은 빨리 늙는다"는\n걱정이 커졌어요.\n하지만 돌리와 같은 세포로 만든 복제 양들은\n대부분 건강하게 나이 들었다는 연구가 나왔어요.\n과학은 이렇게 의문을 갖고, 다시 확인해요.'},
+  {tag:'⑨ 돌리 이야기 5',tagc:'eth',who:CHAIR,title:'할 수 있는 것 ≠ 해도 되는 것',
+   text:'돌리 이후 인간 복제에 대한 걱정이 커지자\n많은 나라가 법으로 인간 복제를 금지했어요.\n2005년 우리나라에서는 세계 최초의 복제 개\n"스너피"가 태어났어요.\n같은 시기, 인간 배아 줄기세포 논문 조작과\n연구용 난자를 얻는 과정의 윤리 문제가 드러났어요.\n실험 전에 약속한 "정직한 기록"이\n왜 중요한지 보여 주는 사건이에요.'},
+  {tag:'⑨ 토론',tagc:'eth',who:CHAIR,title:()=>`이제 ${rname()}이 판단할 차례`,
+   text:'복제 기술을 쓰고 싶다는 의뢰 4건이 들어왔어요.\n정답이 하나인 문제는 아니에요.\n찬성 · 반대를 고른 뒤, 양쪽 생각을 비교해 보세요.'},
+  {tag:'⑨ 의뢰 1/4',tagc:'eth',who:()=>`의뢰서 · ${rname()}의 판단은?`,title:'멸종 위기 동물 복원',opinion:{id:'멸종 위기 동물 복원',
+    text:'보관해 둔 멸종 위기 동물의 세포로\n복제 개체를 만들어 수를 늘리고 싶어요.\n(2020년 미국에서 멸종 위기종\n검은발족제비가 실제로 복제되었어요.)',
+    pro:'사라질 뻔한 동물과 유전적 다양성을 지킬 수 있어요.',con:'서식지 보호 같은 근본 해결책이 아니고, 대리모 동물의 부담과 낮은 성공률 문제가 있어요.'}},
+  {tag:'⑨ 의뢰 2/4',tagc:'eth',who:()=>`의뢰서 · ${rname()}의 판단은?`,title:'반려동물 복제',opinion:{id:'반려동물 복제',
+    text:'세상을 떠난 우리 강아지를 복제해\n다시 만나고 싶어요.',
+    pro:'이별의 슬픔을 달래 줄 수 있고, 개인의 선택으로 존중할 수 있어요.',con:'생김새는 같아도 성격과 기억은 복제되지 않아요. 여러 마리의 대리모 개가 필요하고, 유기 동물 문제도 있어요.'}},
+  {tag:'⑨ 의뢰 3/4',tagc:'eth',who:()=>`의뢰서 · ${rname()}의 판단은?`,title:'의약품을 만드는 동물',opinion:{id:'의약품 생산 동물 복제',
+    text:'젖으로 사람에게 필요한 단백질 의약품을 만드는\n양을 복제해서 늘리고 싶어요.',
+    pro:'구하기 어려운 의약품을 많이 만들어 환자를 도울 수 있어요.',con:'동물을 "약 공장"처럼 도구로만 보는 것은 아닌지, 안전성은 충분한지 따져 봐야 해요.'}},
+  {tag:'⑨ 의뢰 4/4',tagc:'eth',who:()=>`의뢰서 · ${rname()}의 판단은?`,title:'사람 복제',opinion:{id:'인간 복제',
+    text:'저와 똑같은 사람을 복제해 주세요.',
+    pro:'일부는 자녀를 갖기 어려운 사람의 선택권이라고 주장하기도 해요.',con:'복제된 사람의 정체성과 인권, 안전성 문제가 해결되지 않았어요. 그래서 우리나라를 포함한 많은 나라가 법으로 금지해요.'}},
+  {tag:'⑨ 정리',tagc:'eth',who:CHAIR,title:'기술은 도구, 판단은 사람의 몫',light:9,
+   text:()=>`중요한 건 기술의 이익과 위험, 그리고\n동물과 사람에게 미치는 영향을 함께 따져 보는 거예요.\n수고했어요, ${rname()}!\n연구소장 데스크로 가서 보고서를 제출하세요.`},
+ ],
+ 10:[
+  {tag:'보고서 제출',tagc:'p',who:BOSS,title:()=>`수고 많았어요, ${rname()}!`,
+   text:'모든 실험과 윤리 회의를 마쳤군요.\n보고서를 함께 보면서\n우리가 한 일을 정리해 봅시다.'},
+ ],
+};
+
+/* ======== DIALOG ENGINE ======== */
+let dq=null,di=0,dDone=null;
+function runDialog(pages,done){dq=pages;di=0;dDone=done;G.busy=true;clearKeys();$('dlg').classList.remove('hidden');showPage();}
+function val(v){return typeof v==='function'?v():v;}
+function showPage(){
+  const p=dq[di];const ex=$('dExtra'),bt=$('dBtns');ex.innerHTML='';bt.innerHTML='';
+  $('dTag').textContent=p.tag||'';$('dTag').className='tag '+(p.tagc||'');$('dWho').textContent=val(p.who)||'';
+  $('dTitle').textContent=val(p.title)||'';
+  const tx=p.opinion?p.opinion.text:val(p.text);$('dTxt').textContent=tx||'';$('dTxt').classList.toggle('hidden',!tx);
+  const vis=$('dVis');vis.innerHTML='';(p.vis||[]).forEach(k=>vis.appendChild(sheepCanvas(k,3)));vis.classList.toggle('hidden',!p.vis);
+  if(p.stamp){SFX.stamp();const s=document.createElement('div');s.style.textAlign='center';s.innerHTML=`<span class="stamp jua">${p.stamp}</span>`;ex.appendChild(s);}
+  if(p.key){const k=document.createElement('div');k.className='key';k.innerHTML=p.key;ex.appendChild(k);}
+  if(p.light!==undefined)lightPanel(p.light);
+  const next=(label,cls)=>{const b=document.createElement('button');b.className='btn '+(cls||'main');b.textContent=label||(di<dq.length-1?'다음 ▶':'확인');b.onclick=()=>{SFX.talk();nextPage();};bt.appendChild(b);return b;};
+  if(p.quiz){
+    const o=document.createElement('div');o.className='opts';const fb=document.createElement('div');
+    shuffle(p.quiz.slice()).forEach((q,i)=>{const b=document.createElement('button');b.textContent=(i+1)+'. '+q.t;
+      b.onclick=()=>{fb.className='fb '+(q.ok?'good':'bad');fb.textContent=q.fb;
+        if(q.ok){SFX.ok();o.querySelectorAll('button').forEach(x=>x.disabled=true);b.classList.add('good');if(p.onOk)p.onOk();next();}
+        else{G.wrong++;SFX.bad();b.classList.add('bad');b.disabled=true;}};o.appendChild(b);});
+    ex.appendChild(o);ex.appendChild(fb);
+  }else if(p.opinion){
+    const o=document.createElement('div');o.className='opts row2';const side=document.createElement('div');
+    ['찬성','반대'].forEach(ch=>{const b=document.createElement('button');b.textContent=ch;
+      b.onclick=()=>{SFX.click();o.querySelectorAll('button').forEach(x=>{x.disabled=true;x.classList.toggle('pick',x===b);});
+        G.opinions=G.opinions.filter(x=>x.id!==p.opinion.id);G.opinions.push({id:p.opinion.id,ch});
+        side.className='sides';side.innerHTML=`<div class="pro"><b>찬성하는 쪽의 생각</b>${p.opinion.pro}</div><div class="con"><b>반대하는 쪽의 생각</b>${p.opinion.con}</div>`;next();};o.appendChild(b);});
+    ex.appendChild(o);ex.appendChild(side);
+  }else if(p.mini){
+    const b=next('미니게임 시작 ▶','go');b.onclick=()=>{SFX.open();$('dlg').classList.add('hidden');openMini(p.mini,()=>{$('dlg').classList.remove('hidden');nextPage();});};
+  }else if(p.action){
+    const bar=document.createElement('div');bar.className='bar hidden';bar.innerHTML='<i></i>';ex.appendChild(bar);
+    const b=next(p.action,'go');b.onclick=()=>{b.disabled=true;bar.classList.remove('hidden');let v=0;
+      const iv=setInterval(()=>{v+=4;bar.firstChild.style.width=v+'%';if(v>=100){clearInterval(iv);nextPage();}},40);};
+  }else next();
+}
+function nextPage(){di++;if(di<dq.length)showPage();else{$('dlg').classList.add('hidden');G.busy=false;const d=dDone;dDone=null;if(d)d();}}
+
+/* ======== PANEL ======== */
+function buildDiagram(el,mini){
+  el.innerHTML=`
+  <div class="node eth" id="${mini}n0">⓪ 윤리 위원회 심의 · 승인</div>
+  <div class="row"><div class="arrow" id="${mini}a1">↓</div><div class="arrow" id="${mini}a3">↓</div></div>
+  <div class="row"><div class="node" id="${mini}n1" data-s="sheepA">① A양 체세포 채취</div><div class="node" id="${mini}n3" data-s="sheepB">③ B양 난자 채취</div></div>
+  <div class="row"><div class="arrow" id="${mini}a2">↓</div><div class="arrow" id="${mini}a4">↓</div></div>
+  <div class="row"><div class="node" id="${mini}n2">② 체세포 배양<br>(핵 준비)</div><div class="node" id="${mini}n4">④ 탈핵<br>(난자 핵 제거)</div></div>
+  <div class="arrow" id="${mini}a5">↘ 핵 + 빈 난자 ↙</div>
+  <div class="node" id="${mini}n5">⑤ 핵 이식 · 전기 융합</div>
+  <div class="arrow" id="${mini}a6">↓</div>
+  <div class="node" id="${mini}n6">⑥ 배아 배양 (2→4→8세포)</div>
+  <div class="arrow" id="${mini}a7">↓</div>
+  <div class="node" id="${mini}n7" data-s="sheepC">⑦ 대리모 C양에 착상</div>
+  <div class="arrow" id="${mini}a8">↓</div>
+  <div class="node" id="${mini}n8" data-s="lamb">⑧ 새끼 양 탄생 — A양을 닮았다!</div>
+  <div class="arrow" id="${mini}a9">↓</div>
+  <div class="node eth" id="${mini}n9">⑨ 윤리 회의 · 돌리 이야기</div>`;
+  el.querySelectorAll('.node[data-s]').forEach(n=>n.prepend(sheepCanvas(n.dataset.s,2)));
+}
+buildDiagram($('dia'),'');buildDiagram($('rDia'),'r');
+let lit=-1;
+function lightPanel(i){lit=Math.max(lit,i);updatePanel();}
+function updatePanel(pre){pre=pre||'';const cur=G?G.step:0;
+  for(let i=0;i<=9;i++){const n=$(pre+'n'+i);n.classList.toggle('done',i<=lit);n.classList.toggle('now',!pre&&i===cur&&i>lit);}
+  for(let i=1;i<=9;i++){const a=$(pre+'a'+i);if(a)a.classList.toggle('lit',lit>=i-1&&(i!==3||lit>=2));}
+  // arrows into node i: a1 (n0→n1), a3 (n0→n3) lit when n0 done; a2: n1→n2; a4: n3→n4; a5 needs n2&n4
+  if(!pre){const set=(id,v)=>$(id).classList.toggle('lit',v);set('a1',lit>=0);set('a3',lit>=0);set('a2',lit>=1);set('a4',lit>=3);}
+  const m=$('mTxt');
+  if(G&&G.step<STEPS.length){const s=STEPS[G.step];m.innerHTML=`<b>${s.k} ${s.short}</b> → <span style="color:var(--muted)">${ST[s.at].name}(으)로 가세요</span>`;}
+  else if(G)m.innerHTML='<b>임무 완료!</b> 돌리 프로젝트를 모두 마쳤어요';
+  $('prog').firstChild.style.width=(G?G.step/STEPS.length*100:0)+'%';
+}
+
+/* ======== FLOW ======== */
+function act(){
+  if(!running||G.busy||G.paused)return;
+  const p=G.player;let best=null,bd=20;
+  for(const k in ST){const s=ST[k];const d=Math.hypot(p.x-s.ix,p.y-s.iy);if(d<bd){bd=d;best=k;}}
+  if(!best){SFX.nope();toast(`${rname()}, 장비나 양 우리 가까이 가서 조사하세요`);return;}
+  if(G.step>=STEPS.length)return;
+  const cur=STEPS[G.step];
+  if(best!==cur.at){G.mistakes++;SFX.nope();toast(`${rname()}, 여기는 「${ST[best].name}」. 지금은 「${cur.short}」 차례예요 → ${ST[cur.at].name}`);return;}
+  const i=G.step;SFX.open();if(best.startsWith('pen'))SFX.baa(best==='penA'?1.05:.92,-.5,.9);
+  runDialog(DLG[i],()=>{
+    if(i===10){openReport();return;}
+    G.step++;if(i!==7&&G.step<STEPS.length)toast(`좋아요, ${rname()}! 다음은 「${STEPS[G.step].short}」 → ${ST[STEPS[G.step].at].name}`);
+    if(i===7){runDialog(DLG[8],()=>{G.step++;updatePanel();toast(`${rname()}, 다음은 윤리 위원회 테이블이에요!`);});}
+    updatePanel();
+  });
+}
+let tt;function toast(s){const e=$('toast');e.textContent=s;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2200);}
+
+function startGame(){
+  $('title').classList.add('hidden');$('app').classList.remove('hidden');
+  ['report','ending','pause','dlg','mini','sndPop'].forEach(id=>$(id).classList.add('hidden'));mg=null;AU.duck=1;applyVol();$('pauseBtn').classList.remove('hidden');
+  G=newState();lit=-1;running=true;applyCtl();fit();updatePanel();
+  $('hudName').innerHTML='';const fc=document.createElement('canvas');fc.width=26;fc.height=26;const fg=fc.getContext('2d');fg.imageSmoothingEnabled=false;fg.drawImage(IMG[S.char],2,0,12,12,1,1,24,24);$('hudName').append(fc,rname());
+  setTimeout(fit,50);
+  runDialog(DLG.intro,()=>{updatePanel();toast(`${rname()}, 주황색 느낌표(!)가 있는 윤리 위원회 테이블로 가세요`);});
+}
+function goHome(){running=false;mg=null;AU.duck=1;applyVol();$('pauseBtn').classList.add('hidden');['app','report','ending','pause','dlg','mini'].forEach(id=>$(id).classList.add('hidden'));$('title').classList.remove('hidden');refreshTitle();drawTitle();}
+function pause(){if(!running||isOpen('report')||isOpen('ending'))return;G.paused=true;clearKeys();mgRelease();AU.duck=.35;applyVol();SFX.click();$('sndPop').classList.add('hidden');const s=STEPS[Math.min(G.step,STEPS.length-1)];
+  $('pInfo').textContent=`${rname()} · 진행 ${Math.min(G.step,10)}/10 · 지금: ${mg?'미니게임 「'+mg.d.title+'」':s.short}`;$('pRestart').textContent='처음부터 다시 하기';$('pause').classList.remove('hidden');}
+function resume(){G.paused=false;AU.duck=1;applyVol();$('pause').classList.add('hidden');}
+$('pauseBtn').onclick=pause;$('pResume').onclick=resume;
+$('pRestart').onclick=()=>{const b=$('pRestart');if(b.dataset.c!=='1'){b.dataset.c='1';b.textContent='진행 내용이 사라져요. 한 번 더 누르면 다시 시작';setTimeout(()=>{b.dataset.c='';b.textContent='처음부터 다시 하기';},3000);return;}b.dataset.c='';startGame();};
+$('pHome').onclick=()=>{const b=$('pHome');if(b.dataset.c!=='1'){b.dataset.c='1';b.textContent='한 번 더 누르면 메인 화면으로';setTimeout(()=>{b.dataset.c='';b.textContent='메인 화면으로';},3000);return;}b.dataset.c='';goHome();};
+$('pPad').onclick=()=>{S.ctl=S.ctl==='touch'?'key':'touch';applyCtl();};
+
+function openReport(){
+  G.busy=true;$('pauseBtn').classList.add('hidden');if(!G.elapsed)SFX.win();G.elapsed=G.elapsed||Date.now()-G.start;lit=9;G.step=STEPS.length;updatePanel();updatePanel('r');
+  $('rTitle').textContent=rname()+'의 연구 보고서';$('rMineT').textContent=rname()+'의 윤리 판단';
+  $('rSteps').innerHTML=STEPS.slice(0,10).map((s,i)=>`<li class="${s.eth?'e':''}"><span>${i}</span><div><b>${s.short}</b><br><small>${s.sum}</small></div></li>`).join('');
+  $('rMine').innerHTML=G.opinions.map(o=>`<li>${o.id}: <b>${o.ch}</b></li>`).join('')||'<li>기록 없음</li>';
+  $('report').classList.remove('hidden');$('report').scrollTop=0;
+}
+$('rEnd').onclick=()=>{$('report').classList.add('hidden');openEnding();};
+$('eReport').onclick=()=>{$('ending').classList.add('hidden');openReport();};
+$('eHome').onclick=goHome;$('eAgain').onclick=startGame;
+
+/* ======== ENDING ======== */
+const ecv=$('ecv'),eg=ecv.getContext('2d');let eAnim=false,conf=[];
+function openEnding(){
+  const ms=G.elapsed,m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60;
+  $('eMsg').innerHTML=`<b>${rname()}</b>, 돌리 프로젝트를 완수했어요!<br>윤리 심의부터 체세포 핵 이식, 새끼 양의 탄생, 그리고 윤리 회의까지.<br>여러분은 <b>"할 수 있는 것"과 "해도 되는 것"을 함께 생각하는 과학자</b>예요.`;
+  $('eStats').innerHTML=`<div>걸린 시간<b>${m}분 ${s}초</b></div><div>순서 실수<b>${G.mistakes}번</b></div><div>퀴즈 오답<b>${G.wrong}번</b></div><div>미니게임 재도전<b>${G.miniFails}번</b></div><div>윤리 판단<b>${G.opinions.length}/4건</b></div>`;
+  SFX.clear();
+  ecv.width=200*3;ecv.height=60*3;ecv.style.width='min(600px,100%)';eg.imageSmoothingEnabled=false;
+  conf=Array.from({length:60},()=>({x:Math.random()*200,y:-Math.random()*60,v:.4+Math.random()*.7,c:['#f05a8a','#f2c94c','#3f7fd6','#3aa66b','#ee8a2e'][Math.random()*5|0]}));
+  $('ending').classList.remove('hidden');if(!eAnim){eAnim=true;endLoop();}
+}
+let eT=0;
+function endLoop(){
+  if($('ending').classList.contains('hidden')){eAnim=false;return;}
+  eT++;const p=(x,y,w,h,c)=>{eg.fillStyle=c;eg.fillRect(Math.round(x)*3,Math.round(y)*3,w*3,h*3);};
+  p(0,0,200,60,'#cdebf7');p(0,44,200,16,'#a9d58f');for(let x=2;x<200;x+=9)p(x,48+(x%2)*4,1,1,'#8fc177');
+  // stage
+  p(40,40,120,5,OUT);p(41,41,118,3,'#f2c94c');
+  const jump=Math.abs(Math.sin(eT/10))*4;
+  eg.imageSmoothingEnabled=false;
+  sprTo(eg,SHEEP.sprites.sheepA[(eT>>4)%2?'idle0':'idle1'],48,40-22,3,false);
+  eg.drawImage(IMG[S.char],0,0,16,24,92*3,Math.round(41-24-jump)*3,48,72);
+  sprTo(eg,SHEEP.sprites.lamb[(eT>>3)%2?'walk0':'walk1'],114,Math.round(40-16-jump*.6),3,true);
+  // banner
+  p(62,3,76,11,OUT);p(63,4,74,9,'#fff');eg.fillStyle=OUT;eg.font='bold 21px "Jua",sans-serif';eg.textAlign='center';eg.textBaseline='middle';eg.fillText('MISSION CLEAR',100*3,8.8*3);
+  for(const c of conf){c.y+=c.v;c.x+=Math.sin((eT+c.y)/9)*.3;if(c.y>60){c.y=-4;c.x=Math.random()*200;}p(c.x,c.y,1,2,c.c);}
+  requestAnimationFrame(endLoop);
+}
+
+/* ======== RENDER LOOP ======== */
+function frame(){
+  if(running&&!G.paused){T++;if(!G.busy)movePlayer();G.flock.forEach(sheepTick);
+    if(!mg&&--G.baaT<=0){G.baaT=420+Math.random()*600;const vis=G.flock.filter(s=>!s.hidden),s=vis[Math.random()*vis.length|0];
+      const d=Math.hypot(G.player.x-s.x-12,G.player.y-s.y-10);SFX.baa(s.k==='lamb'?1.55:s.k==='sheepA'?1.05:.92,-.6,Math.max(.3,1-d/220));}}
+  if(mg){if(!G.paused){mg.t++;mg.d.tick(mg);}if(mg)mg.d.draw(mg);}
+  if(running){
+    drawMap();
+    if(G.step<STEPS.length&&!G.busy){const s=ST[STEPS[G.step].at];const bob=Math.sin(T/8)*2;const mx=s.mx,my=s.my-9+bob;
+      px(mx-3,my,7,9,OUT);px(mx-2,my+1,5,7,'#ee8a2e');px(mx,my+2,1,3,'#fff');px(mx,my+6,1,1,'#fff');}
+    const items=[];
+    for(const s of G.flock){if(s.hidden)continue;const r=sheepRows(s);items.push({y:s.y+r.length,f:()=>spr(r,s.x,s.y,s.vx<0)});}
+    const p=G.player,col=p.moving?((p.f>>3)%4):0;
+    items.push({y:p.y,f:()=>ctx.drawImage(IMG[S.char],col*16,p.dir*24,16,24,Math.round(p.x-8)*SC,Math.round(p.y-23)*SC,16*SC,24*SC)});
+    items.sort((a,b)=>a.y-b.y).forEach(i=>i.f());
+    if(!G.busy&&!G.paused){let best=null,bd=20;for(const k in ST){const d=Math.hypot(p.x-ST[k].ix,p.y-ST[k].iy);if(d<bd){bd=d;best=k;}}
+      if(best){const t=ST[best].name;ctx.font=`bold ${5*SC}px sans-serif`;const w=ctx.measureText(t).width/SC+8;
+        px(p.x-w/2,p.y-46,w,9,'#221e2ecc');txt(t,p.x,p.y-41.4,5,'#fff');}}
+    if(!G.busy){const t=nm();ctx.font=`bold ${4*SC}px sans-serif`;const w=ctx.measureText(t).width/SC+6;px(p.x-w/2,p.y-33,w,7,'#ee8a2ee6');txt(t,p.x,p.y-29.3,4,'#fff');}
+    if(G.paused){px(0,0,W,H,'#221e2e66');}
+  }
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body></html>
