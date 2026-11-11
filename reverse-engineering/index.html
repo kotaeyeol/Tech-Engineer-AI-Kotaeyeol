@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>아이폰 리버스 엔지니어링</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: one screen, no page scroll. Compact header; 3D viewport takes the free space; a fixed-height tabbed inspector panel sits beside it on wide screens and under it on phones.
+   Look: dark engineering workstation (deliberately single dark theme). Graphite surfaces, a measured blueprint grid in the viewport, steel-blue for controls, safety orange only for "the part under inspection". */
+:root{
+  color-scheme:dark;
+  --ink:#e9eef3; --text:#c3cbd4; --muted:#7f8b97; --line:#26303a; --line2:#1d252e;
+  --paper:#0f141a; --card:#151b22; --white:#1b232c; --btn-line:#303b47;
+  --pri:#3d8bd4; --pri-soft:rgba(61,139,212,.16); --grid:rgba(120,170,220,.07); --grid2:rgba(120,170,220,.14);
+  --sig:#ec7a2f; --sig-soft:rgba(236,122,47,.16); --sig-ink:#ffb07a; --ok:#4fb37d; --ok-soft:rgba(79,179,125,.15);
+  --body-bg:radial-gradient(120% 80% at 50% 0%,#151c24 0%,#0b0f13 70%); --fig-bg:#10161c; --fig-glow:radial-gradient(90% 90% at 50% 45%,#1a222b 0%,#0e1318 100%);
+  --fig-inset:inset 0 0 80px rgba(0,0,0,.45); --tabs-bg:#121820; --tag-bg:rgba(16,22,28,.88); --rad:6px;
+  --sans:'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --panelW:400px; --panelH:clamp(272px,45dvh,360px);
+}
+*{box-sizing:border-box;word-break:keep-all;overflow-wrap:break-word;line-break:strict}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{margin:0;background:var(--body-bg);color:var(--text);font:15px/1.6 var(--sans);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+p{text-wrap:pretty}
+button{font-family:var(--sans);touch-action:manipulation;color:inherit}
+button:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+
+.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr);padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));padding-bottom:max(10px,env(safe-area-inset-bottom,0px))}
+.top{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;padding:10px 4px 8px}
+.seg.model button{padding:6px 12px;font-size:14px}
+.top h1{margin:0;font-size:clamp(18px,2.2vw,24px);font-weight:800;color:var(--ink);letter-spacing:-.02em;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.top h1 .en{font:500 11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--pri)}
+.top .kicker{font-size:12.5px;color:var(--muted)}
+
+.main{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) var(--panelW);gap:12px}
+.figure{position:relative;min-height:0;background-color:var(--fig-bg);background-image:linear-gradient(var(--grid2) 1px,transparent 1px),linear-gradient(90deg,var(--grid2) 1px,transparent 1px),linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px),var(--fig-glow);background-size:120px 120px,120px 120px,24px 24px,24px 24px,100% 100%;box-shadow:0 0 0 1px var(--line),var(--fig-inset);overflow:hidden;border-radius:var(--rad)}
+.stage{position:absolute;inset:0;outline:none}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
+.overlay{position:absolute;inset:0;pointer-events:none}
+.callouts{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.callouts line{stroke:var(--sig);stroke-width:1.2}
+.callouts circle{fill:var(--sig);stroke:var(--white);stroke-width:1.5}
+.co{position:absolute;left:0;top:0;font-size:12.5px;font-weight:700;color:var(--white);background:var(--sig);padding:2px 8px;border-radius:4px;white-space:nowrap;pointer-events:auto;cursor:pointer;border:0}
+.co.soft{background:var(--white);color:var(--sig-ink);box-shadow:0 0 0 1px var(--sig)}
+.nt{position:absolute;left:0;top:0;font-size:11px;font-weight:600;color:var(--ink);background:var(--tag-bg);box-shadow:0 0 0 1px var(--line);padding:0 6px;border-radius:3px;white-space:nowrap;pointer-events:auto;cursor:pointer;border:0;line-height:18px}
+.ghosttag{position:absolute;left:0;top:0;font-size:11px;font-weight:700;color:var(--sig-ink);background:var(--white);border:1px dashed var(--sig);padding:0 6px;white-space:nowrap;line-height:17px}
+.corner{position:absolute;font:500 11px var(--mono);letter-spacing:.02em;color:var(--muted);pointer-events:none}
+.c-tl{top:10px;left:12px}
+.c-bl{bottom:10px;left:12px;display:flex;gap:8px;align-items:center}
+.c-br{bottom:10px;right:12px;text-align:right}
+.readout{font:600 12.5px var(--mono);color:var(--ink);background:var(--tag-bg);box-shadow:0 0 0 1px var(--line);padding:3px 8px;border-radius:4px}
+.readout em{font-style:normal;font-family:var(--sans);font-weight:700}
+.tools{position:absolute;top:8px;right:8px;display:flex;gap:6px;pointer-events:auto}
+.tb{appearance:none;border:1px solid var(--btn-line);background:var(--white);font:600 12.5px var(--sans);padding:5px 9px;border-radius:6px;cursor:pointer;color:var(--ink)}
+.tb[aria-pressed="true"]{background:var(--pri);color:#fff;border-color:var(--pri)}
+.tb.sig{background:var(--sig);border-color:var(--sig);color:#fff}
+#err{position:absolute;inset:40% 16px auto;background:var(--white);border:1px solid var(--line);padding:14px;text-align:center;font-size:14px}
+
+.panel{min-height:0;background:var(--card);border-radius:var(--rad);overflow:hidden;box-shadow:0 0 0 1px var(--line);display:grid;grid-template-rows:auto minmax(0,1fr)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line);background:var(--tabs-bg)}
+.tabs button{appearance:none;border:0;background:none;padding:11px 2px 9px;font:600 14.5px var(--sans);color:var(--muted);cursor:pointer;border-bottom:3px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--pri);background:var(--pri-soft)}
+.pan{min-height:0;overflow:auto;padding:12px 14px 12px;display:flex;flex-direction:column;gap:10px}
+.pan[hidden]{display:none}
+
+.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--btn-line);border-radius:8px;overflow:hidden;background:var(--white)}
+.seg button{appearance:none;border:0;background:none;padding:6px 10px;font:600 13.5px var(--sans);color:var(--muted);cursor:pointer;white-space:nowrap}
+.seg button+button{border-left:1px solid var(--btn-line)}
+.seg button[aria-pressed="true"]{background:var(--pri);color:#fff}
+.rowx{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.btn{appearance:none;transition:border-color .15s;border:1px solid var(--btn-line);background:var(--white);color:var(--ink);font:600 14.5px var(--sans);padding:8px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.btn:disabled{opacity:.35;cursor:default}
+.btn:not(:disabled):hover,.tb:hover,.pbtn:hover,.role:hover,.dot:hover{border-color:var(--pri)}
+.btn-main{background:var(--pri);border-color:var(--pri);color:#fff}
+.btn svg{width:13px;height:13px}
+.play{padding:6px 12px;font-size:13.5px;min-width:78px}
+.play[aria-pressed="true"]{background:var(--sig);border-color:var(--sig);color:#fff}
+.card .btn{justify-self:start;margin-top:2px}
+
+.dots{display:grid;grid-template-columns:repeat(9,1fr);gap:4px}
+.dot{appearance:none;height:24px;border:1px solid var(--btn-line);background:var(--white);border-radius:5px;font:600 11.5px var(--mono);color:var(--muted);cursor:pointer;padding:0}
+.dot.done{background:var(--pri-soft);border-color:var(--pri);color:var(--ink)}
+.dot.now{background:var(--sig);border-color:var(--sig);color:#fff}
+.card{background:var(--paper);box-shadow:inset 0 0 0 1px var(--line2);border-left:3px solid var(--sig);padding:10px 12px;display:grid;gap:6px;min-height:0}
+.card.idle{border-left-color:var(--pri)}
+.card-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.card-h .k{font:600 12px var(--mono);color:var(--sig-ink)}
+.card.idle .card-h .k{color:var(--muted)}
+.card-h b{font-size:16.5px;color:var(--ink);letter-spacing:-.01em}
+.card p{margin:0;font-size:14.5px;line-height:1.6}
+.card p.warn{color:var(--sig-ink);font-weight:600;font-size:13.5px}
+.mini{display:flex;flex-wrap:wrap;gap:5px}
+.mchip{appearance:none;border:1px solid var(--sig);background:var(--white);color:var(--sig-ink);border-radius:12px;padding:1px 9px;font:600 12.5px var(--sans);cursor:pointer}
+.nav{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:auto}
+.nav .btn{min-height:44px;font-size:15px}
+
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pbtn{appearance:none;text-align:left;border:1px solid var(--btn-line);background:var(--white);border-radius:7px;padding:6px 8px;cursor:pointer;font:500 13px/1.3 var(--sans);color:var(--ink);display:flex;gap:6px;align-items:center;min-height:36px}
+.pgrid.many{grid-template-columns:repeat(4,1fr);gap:5px}
+.pgrid.many .pbtn{font-size:12.5px;padding:5px 6px;min-height:34px}
+.pbtn i{font:600 10.5px var(--mono);font-style:normal;color:var(--muted);flex:none;width:16px}
+.pbtn[data-dim]{opacity:.35}
+.ph{display:flex;align-items:center;gap:8px}
+.back{appearance:none;border:1px solid var(--btn-line);background:var(--white);border-radius:7px;padding:4px 9px;font:600 13px var(--sans);cursor:pointer;flex:none}
+.ph h2{margin:0;font-size:17px;color:var(--ink);letter-spacing:-.01em;min-width:0}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{display:inline-block;padding:0 8px;border-radius:10px;font-size:12px;font-weight:600;background:var(--white);border:1px solid var(--btn-line);color:var(--text);line-height:20px}
+.tag.sig{border-color:var(--sig);color:var(--sig-ink)}
+.ptext{margin:0;font-size:14.5px;line-height:1.65;background:var(--paper);padding:9px 11px;border-left:3px solid var(--sig)}
+.ptext b{color:var(--ink)}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.acts .btn{font-size:13.5px;padding:7px 11px}
+.hint{margin:0;font-size:13.5px;color:var(--muted)}
+
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.role{appearance:none;text-align:left;border:1px solid var(--btn-line);background:var(--white);border-radius:8px;padding:7px 9px;cursor:pointer}
+.role b{display:block;color:var(--ink);font-size:14.5px}
+.role span{font-size:12px;color:var(--muted);line-height:1.35;display:block}
+.role[aria-pressed="true"]{border-color:var(--pri);box-shadow:inset 0 0 0 1px var(--pri);background:var(--pri-soft)}
+.rres{margin:0;font-size:14.5px;line-height:1.65;background:var(--paper);padding:9px 11px;border-left:3px solid var(--pri)}
+.rres.on{border-left-color:var(--sig)}
+.rres b{color:var(--ink)}
+
+.unused-qh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.qh small{font:600 12px var(--mono);color:var(--muted)}
+.qh .score{font:600 12px var(--mono);color:var(--ink)}
+.qq{margin:0;font-size:16px;font-weight:700;color:var(--ink);line-height:1.5}
+.opts{display:grid;gap:6px}
+.opt{appearance:none;text-align:left;border:1px solid #d6d6d2;background:var(--white);border-radius:8px;padding:7px 11px;font:14.5px var(--sans);color:var(--text);cursor:pointer}
+.opt[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);color:var(--ink)}
+.res{margin:0;font-size:14.5px;line-height:1.6;padding:9px 11px;background:var(--paper);border-left:3px solid var(--ok)}
+.res.no{border-left-color:var(--sig)}
+.res b{color:var(--ink)}
+
+:root[data-theme="paper"]{
+  color-scheme:light;
+  --ink:#18181a; --text:#3d3d42; --muted:#76767c; --line:#d9d9d6; --line2:#ecece9;
+  --paper:#f2f2ef; --card:#fbfbfa; --white:#ffffff; --btn-line:#c9c9c6;
+  --pri:#18181a; --pri-soft:rgba(24,24,26,.06); --grid:transparent; --grid2:transparent;
+  --sig:#d9661c; --sig-soft:#fbe6d6; --sig-ink:#9b4610; --ok:#2f7a4f; --ok-soft:#e3f1e8;
+  --body-bg:#f2f2ef; --fig-bg:#fbfbfa; --fig-glow:linear-gradient(#fbfbfa,#fbfbfa); --fig-inset:0 0 0 0 transparent; --tabs-bg:transparent; --tag-bg:rgba(255,255,255,.9); --rad:0px;
+}
+:root[data-theme="paper"] .top h1 .en{color:var(--muted)}
+:root[data-theme="paper"] .dot.done{background:var(--ink);color:#fff;border-color:var(--ink)}
+:root[data-theme="paper"] .corner{font-family:var(--sans);font-size:11.5px}
+.themebtn{appearance:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--btn-line);background:var(--white);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;margin-left:auto}
+.themebtn:hover{border-color:var(--pri)}
+.themebtn svg{width:17px;height:17px}
+.callouts line.ntl{stroke:var(--muted);stroke-width:1;stroke-dasharray:2 2}
+.callouts circle.ntd{fill:var(--muted);stroke:none}
+@media (max-width:860px){
+  .main{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) var(--panelH);gap:8px}
+  .top{padding:8px 2px 6px;gap:6px 8px}
+  .top .kicker{display:none}
+  .top h1{font-size:16.5px}
+  .top h1 .en{display:none}
+  .seg.model button,.seg.theme button{padding:5px 9px;font-size:13px}
+}
+@media (max-width:860px) and (orientation:landscape) and (max-height:520px){
+  :root{--panelW:330px}
+  .main{grid-template-columns:minmax(0,1fr) var(--panelW);grid-template-rows:minmax(0,1fr)}
+  .top{padding:6px 2px 6px}
+  .top h1{font-size:16px}
+  .app{padding-top:max(4px,env(safe-area-inset-top,0px))}
+}
+@media (max-width:380px){
+  .pgrid{grid-template-columns:repeat(2,1fr)}
+  .roles{grid-template-columns:repeat(2,1fr)}
+  .c-br{display:none}
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <h1>아이폰 리버스 엔지니어링<span class="en">iPhone Reverse Engineering</span></h1>
+    <div class="seg model" id="modelSeg" role="group" aria-label="모형 고르기">
+      <button data-m="std" aria-pressed="true">일반 아이폰</button>
+      <button data-m="duo" aria-pressed="false">아이폰 듀오</button>
+    </div>
+    <button class="themebtn" id="themeBtn" type="button" aria-label="밝은 테마로 바꾸기" title="테마 바꾸기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"></path></svg></button>
+    <span class="kicker">기술·가정 · 정보통신 기술 수업 자료</span>
+  </header>
+
+  <main class="main">
+    <figure class="figure" style="margin:0">
+      <div class="stage" id="stage" tabindex="0" role="group" aria-label="아이폰 3D 모형. 한 손가락으로 돌리고, 두 손가락으로 확대합니다. 부품을 누르면 설명이 나옵니다."></div>
+      <div class="overlay" id="overlay"><svg class="callouts" id="co-svg" aria-hidden="true"></svg></div>
+      <span class="corner c-tl" id="figLabel">그림 1 · 일반 아이폰 · 147.6 × 71.6 × 7.8 mm</span>
+      <div class="tools">
+        <button class="tb sig" id="tArr" hidden="">펼쳐 놓기</button>
+        <button class="tb" id="tSolo" hidden="" aria-pressed="false">이 부품만</button>
+        <button class="tb" id="tNames" aria-pressed="false">이름표</button>
+        <button class="tb" id="tView">전체 보기</button>
+      </div>
+      <div class="corner c-bl"><span class="readout" id="readout">분해 0/9 · <em>조립된 상태</em></span></div>
+      <span class="corner c-br">학습용 단순화 모형<br>한 손가락 돌리기 · 두 손가락 확대</span>
+      <div id="err" hidden="">3D 모형을 불러오지 못했습니다.<br>인터넷 연결을 확인하고 새로고침해 주세요.</div>
+    </figure>
+
+    <aside class="panel">
+      <div class="tabs" role="tablist" aria-label="메뉴">
+        <button role="tab" id="tab-steps" aria-controls="pan-steps" aria-selected="true" data-tab="steps">단계</button>
+        <button role="tab" id="tab-parts" aria-controls="pan-parts" aria-selected="false" data-tab="parts" tabindex="-1">부품</button>
+        <button role="tab" id="tab-roles" aria-controls="pan-roles" aria-selected="false" data-tab="roles" tabindex="-1">분류</button>
+      </div>
+
+      <section class="pan" role="tabpanel" id="pan-steps" aria-labelledby="tab-steps">
+        <div class="rowx">
+          <div class="seg" role="group" aria-label="순서">
+            <button id="mDis" aria-pressed="true">분해 순서</button>
+            <button id="mAsm" aria-pressed="false">조립 순서</button>
+          </div>
+          <button class="btn play" id="pAuto" aria-pressed="false"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2v12l10-6z"></path></svg>재생</button>
+        </div>
+        <div class="dots" id="dots" aria-label="단계로 바로 가기" style="grid-template-columns: repeat(9, 1fr);"></div>
+        <div class="card idle" id="card" aria-live="polite"><div class="card-h"><span class="k">시작 전</span><b>조립된 상태</b></div><p>다음 단계를 누르면<br>한 단계씩 분해합니다.</p><p class="hint">재생을 누르면 단계마다 잠시 멈추며 넘어갑니다.</p></div>
+        <div class="nav">
+          <button class="btn" id="bPrev" disabled=""><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11 2v12L3 8z"></path></svg>이전</button>
+          <button class="btn btn-main" id="bNext">다음 단계<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 2v12l8-6z"></path></svg></button>
+        </div>
+      </section>
+
+      <section class="pan" role="tabpanel" id="pan-parts" aria-labelledby="tab-parts" hidden=""><p class="hint">부품을 고르면 그 부품을 크게 보여 줍니다.</p><div class="pgrid"><button class="pbtn" data-id="frame"><i>1</i>프레임</button><button class="pbtn" data-id="screw"><i>2</i>하단 나사</button><button class="pbtn" data-id="sim"><i>3</i>SIM 트레이</button><button class="pbtn" data-id="display"><i>4</i>디스플레이</button><button class="pbtn" data-id="bscrew"><i>5</i>브래킷 나사</button><button class="pbtn" data-id="bracket"><i>6</i>브래킷</button><button class="pbtn" data-id="truedepth"><i>7</i>트루뎁스</button><button class="pbtn" data-id="earpiece"><i>8</i>통화 스피커</button><button class="pbtn" data-id="rearcam"><i>9</i>후면 카메라</button><button class="pbtn" data-id="taptic"><i>10</i>탭틱 엔진</button><button class="pbtn" data-id="speaker"><i>11</i>하단 스피커</button><button class="pbtn" data-id="battery"><i>12</i>배터리</button><button class="pbtn" data-id="board"><i>13</i>메인보드</button><button class="pbtn" data-id="port"><i>14</i>충전 포트</button><button class="pbtn" data-id="coil"><i>15</i>충전 코일</button></div></section>
+
+      <section class="pan" role="tabpanel" id="pan-roles" aria-labelledby="tab-roles" hidden="">
+        <p class="hint">스마트폰도 컴퓨터입니다.<br>하는 일에 따라 부품을 묶어 보세요.</p>
+        <div class="roles" role="group" aria-label="장치 종류">
+          <button class="role" data-role="input" aria-pressed="false"><b>입력</b><span>빛·터치·소리를 받는다</span></button>
+          <button class="role" data-role="process" aria-pressed="false"><b>처리·저장</b><span>계산하고 기억한다</span></button>
+          <button class="role" data-role="output" aria-pressed="false"><b>출력</b><span>보여 주고 들려준다</span></button>
+          <button class="role" data-role="power" aria-pressed="false"><b>전원</b><span>전기를 저장·공급한다</span></button>
+          <button class="role" data-role="comm" aria-pressed="false"><b>통신</b><span>전파를 주고받는다</span></button>
+          <button class="role" data-role="frame" aria-pressed="false"><b>구조·결합</b><span>받치고 고정한다</span></button>
+        </div>
+        <p class="rres" id="rres">묶음을 누르면<br>해당 부품만 주황색으로 보입니다.</p>
+      </section>
+
+    </aside>
+  </main>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script>
+window.__bootTimer=setTimeout(function(){if(!window.__booted){var e=document.getElementById('err');if(e)e.hidden=false;}},15000);
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
+window.__booted=true;
+
+const V3=THREE.Vector3, D2R=Math.PI/180, TAU=Math.PI*2;
+const clamp=(x,a,b)=>Math.min(b,Math.max(a,x)), lerp=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=id=>document.getElementById(id);
+const ROLES={input:'입력 장치',process:'처리·저장 장치',output:'출력 장치',power:'전원 장치',comm:'통신 장치',frame:'구조·결합'};
+
+/* ================= renderer ================= */
+const host=$('stage');
+let renderer;
+try{ renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); }catch(e){ $('err').hidden=false; throw e; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.18;
+renderer.setClearColor(0x000000,0);
+host.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(renderer),0.04).texture;
+const hemi=new THREE.HemisphereLight(0xdfeaf5,0x3a4450,0.9); scene.add(hemi);
+const rimL=new THREE.DirectionalLight(0x8fb8e0,0.6); window.__rim=rimL; rimL.position.set(-10,8,-12); scene.add(rimL);
+const sun=new THREE.DirectionalLight(0xffffff,1.35); sun.position.set(5,16,10); scene.add(sun);
+const FOV=28;
+const camera=new THREE.PerspectiveCamera(FOV,1,0.2,500);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true; controls.dampingFactor=.09; controls.rotateSpeed=.8;
+controls.minDistance=2.5; controls.maxDistance=180; controls.autoRotateSpeed=1.6;
+controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
+
+/* ================= materials ================= */
+const PAL={
+  alu:{color:0xd5d7da,metalness:.7,roughness:.3},
+  ti:{color:0xb9b6b0,metalness:.75,roughness:.34},
+  backglass:{color:0xeae7e0,metalness:.05,roughness:.22},
+  darkglass:{color:0x1a1b20,metalness:.3,roughness:.12},
+  black:{color:0x2a2b30,metalness:.2,roughness:.5},
+  dark:{color:0x4a4d54,metalness:.35,roughness:.42},
+  pcb:{color:0x3f5a4b,metalness:.2,roughness:.5},
+  shield:{color:0xd0d3d7,metalness:.9,roughness:.26},
+  steel:{color:0xb3b7bd,metalness:.88,roughness:.28},
+  flex:{color:0xb07a28,metalness:.2,roughness:.42},
+  copper:{color:0xc07a3c,metalness:.9,roughness:.3},
+  battery:{color:0x5a5e66,metalness:.55,roughness:.35},
+  label:{color:0xefeee9,metalness:0,roughness:.6},
+  lens:{color:0x0b0c10,metalness:.4,roughness:.05},
+  tab:{color:0x151618,metalness:0,roughness:.7}
+};
+const mk=k=>{ const m=new THREE.MeshStandardMaterial({...PAL[k]}); m.envMapIntensity=.9; return m; };
+const M=(geo,k)=>new THREE.Mesh(geo,mk(k));
+const EDGE_COLOR=0x7d8a98;
+
+/* ================= geometry helpers (x = length, y = thickness/up, z = width; shape coords are (x,-z)) ================= */
+const crease=g=>toCreasedNormals(g,30*D2R);
+function addRR(p,cx,cz,w,d,r){ const x0=cx-w/2,x1=cx+w/2,y0=-(cz+d/2),y1=-(cz-d/2); r=Math.min(r,w/2,d/2);
+  p.moveTo(x0+r,y0); p.lineTo(x1-r,y0); p.absarc(x1-r,y0+r,r,-Math.PI/2,0,false); p.lineTo(x1,y1-r); p.absarc(x1-r,y1-r,r,0,Math.PI/2,false);
+  p.lineTo(x0+r,y1); p.absarc(x0+r,y1-r,r,Math.PI/2,Math.PI,false); p.lineTo(x0,y0+r); p.absarc(x0+r,y0+r,r,Math.PI,Math.PI*1.5,false); return p; }
+const rr=(cx,cz,w,d,r)=>addRR(new THREE.Shape(),cx,cz,w,d,r);
+const rrHole=(cx,cz,w,d,r)=>addRR(new THREE.Path(),cx,cz,w,d,r);
+function roundPoly(p,pts,rs){ // pts in world (x,z); rs radius per corner
+  const P=pts.map(([x,z])=>new THREE.Vector2(x,-z)), n=P.length;
+  const at=(i)=>P[(i+n)%n];
+  const start=at(0).clone().lerp(at(1),0.5); p.moveTo(start.x,start.y);
+  for(let k=1;k<=n;k++){ const c=at(k), a=at(k-1), b=at(k+1), r=rs[k%n]||0;
+    if(r>0){ const da=a.clone().sub(c).normalize().multiplyScalar(r), db=b.clone().sub(c).normalize().multiplyScalar(r);
+      p.lineTo(c.x+da.x,c.y+da.y); p.quadraticCurveTo(c.x,c.y,c.x+db.x,c.y+db.y); }
+    else p.lineTo(c.x,c.y);
+    if(k===n) p.lineTo(start.x,start.y); }
+  return p; }
+function sideRect(x0,x1,z0,z1,r,side,isHole){ const p=isHole?new THREE.Path():new THREE.Shape();
+  const rs = side==='L' ? [r,0,0,r] : side==='R' ? [0,r,r,0] : [r,r,r,r];
+  return roundPoly(p,[[x0,z0],[x1,z0],[x1,z1],[x0,z1]],rs); }
+function circHole(cx,cz,r){ const p=new THREE.Path(); p.absarc(cx,-cz,r,0,TAU,true); return p; }
+function poly(pts){ const s=new THREE.Shape(); pts.forEach(([x,z],i)=>i?s.lineTo(x,-z):s.moveTo(x,-z)); s.closePath(); return s; }
+function slab(shape,y0,y1,segs){ const g=new THREE.ExtrudeGeometry(shape,{depth:y1-y0,bevelEnabled:false,curveSegments:segs||10}); g.rotateX(-Math.PI/2); g.translate(0,y0,0); return crease(g); }
+const box=(x0,x1,y0,y1,z0,z1)=>new THREE.BoxGeometry(x1-x0,y1-y0,z1-z0).translate((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);
+const cylY=(cx,cz,r,y0,y1,seg)=>new THREE.CylinderGeometry(r,r,y1-y0,seg||28).translate(cx,(y0+y1)/2,cz);
+const cylX=(cy,cz,r,x0,x1,seg)=>{ const g=new THREE.CylinderGeometry(r,r,x1-x0,seg||20); g.rotateZ(-Math.PI/2); g.translate((x0+x1)/2,cy,cz); return g; };
+const cylZ=(cx,cy,r,z0,z1,seg)=>{ const g=new THREE.CylinderGeometry(r,r,z1-z0,seg||20); g.rotateX(Math.PI/2); g.translate(cx,cy,(z0+z1)/2); return g; };
+function ringY(cx,cz,ro,ri,y0,y1){ const s=new THREE.Shape(); s.absarc(cx,-cz,ro,0,TAU,false); s.holes.push(circHole(cx,cz,ri)); return slab(s,y0,y1,48); }
+function magnetRing(g,cx,cz,ro,ri,y0,y1){ for(let i=0;i<18;i++){ const a=i*TAU/18, s=new THREE.Shape(); s.absarc(cx,-cz,ro,a+0.03,a+TAU/18-0.03,false); s.absarc(cx,-cz,ri,a+TAU/18-0.03,a+0.03,true); s.closePath(); g.add(M(slab(s,y0,y1,6),'black')); } }
+const rRect=(g,x,y,w,h,r)=>{ g.beginPath(); if(g.roundRect) g.roundRect(x,y,w,h,r); else g.rect(x,y,w,h); };
+function texFrom(c){ const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t; }
+function screenMat(tex){ const m=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveIntensity:.35,roughness:.25,metalness:0,transparent:true,alphaTest:.5}); m.emissiveMap=tex; return m; }
+function screenPlane(w,d,cx,cz,y,tex,down,uv){ const g=new THREE.PlaneGeometry(w,d); g.rotateX(down?Math.PI/2:-Math.PI/2); g.translate(cx,y,cz);
+  if(uv){ const a=g.attributes.uv; for(let i=0;i<a.count;i++) a.setX(i,uv[0]+a.getX(i)*(uv[1]-uv[0])); }
+  const m=new THREE.Mesh(g,screenMat(tex)); m.userData.noEdge=true; m.userData.screen=true; return m; }
+
+/* ================= textures ================= */
+function stdScreenTex(){
+  const W=1064,H=512,c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
+  rRect(g,0,0,W,H,74); g.clip();
+  const gr=g.createLinearGradient(0,0,W,H); gr.addColorStop(0,'#f6d7bd'); gr.addColorStop(.55,'#ece7df'); gr.addColorStop(1,'#cdd5db');
+  g.fillStyle=gr; g.fillRect(0,0,W,H); g.fillStyle='rgba(24,24,26,.09)';
+  for(let i=0;i<5;i++) for(let j=0;j<4;j++){ rRect(g,170+i*150,70+j*100,96,72,22); g.fill(); }
+  g.save(); g.translate(W-130,H/2); g.rotate(Math.PI/2); g.fillStyle='#18181a'; g.font='600 64px "IBM Plex Mono",monospace'; g.textAlign='center'; g.fillText('9:41',0,-10); g.restore();
+  g.fillStyle='#050506'; const iw=0.37/14.5*W, ih=1.25/6.9*H; rRect(g,W-0.62/14.5*W-iw,H/2-ih/2,iw,ih,iw/2); g.fill();
+  return texFrom(c);
+}
+function duoInnerTex(){
+  const W=1620,H=1150,c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
+  const gr=g.createLinearGradient(0,0,W,H); gr.addColorStop(0,'#1f2a3a'); gr.addColorStop(.5,'#46546a'); gr.addColorStop(1,'#d9c3a8');
+  g.fillStyle=gr; g.fillRect(0,0,W,H);
+  g.fillStyle='rgba(255,255,255,.16)'; [[60,120,330,260],[60,410,330,330],[60,770,330,260]].forEach(r=>{ rRect(g,r[0],r[1],r[2],r[3],36); g.fill(); });
+  g.fillStyle='rgba(255,255,255,.85)'; g.font='600 72px "IBM Plex Mono",monospace'; g.fillText('9:41',80,215);
+  g.fillStyle='rgba(255,255,255,.2)';
+  for(let i=0;i<5;i++) for(let j=0;j<5;j++){ rRect(g,520+i*170,140+j*180,110,110,28); g.fill(); }
+  g.fillStyle='rgba(255,255,255,.14)'; rRect(g,W-170,180,120,H-360,40); g.fill();
+  g.fillStyle='rgba(255,255,255,.3)'; for(let j=0;j<4;j++){ rRect(g,W-150,230+j*180,80,80,22); g.fill(); }
+  return texFrom(c);
+}
+function duoOuterTex(){
+  const W=780,H=1150,c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
+  rRect(g,0,0,W,H,80); g.clip();
+  const gr=g.createLinearGradient(0,H,W,0); gr.addColorStop(0,'#1f2a3a'); gr.addColorStop(1,'#d9c3a8');
+  g.fillStyle=gr; g.fillRect(0,0,W,H); g.fillStyle='rgba(255,255,255,.2)';
+  for(let i=0;i<4;i++) for(let j=0;j<5;j++){ rRect(g,80+i*165,90+j*175,105,105,26); g.fill(); }
+  g.fillStyle='#050506'; g.beginPath(); g.arc(W/2,H-75,22,0,TAU); g.fill();
+  return texFrom(c);
+}
+
+/* ======================================================================
+   MODEL 1 — 일반 아이폰
+   ====================================================================== */
+function buildStd(add){
+  const L=14.76, Wd=7.16, LY=[0,2.4,4.8,7.2,9.6,12.2];
+  const tex=stdScreenTex();
+  add('frame',g=>{
+    const s=rr(0,0,L,Wd,1.1); s.holes.push(rrHole(0,0,L-0.56,Wd-0.56,0.86)); g.add(M(slab(s,0,0.8,16),'alu'));
+    const bs=rr(0,0,L-0.12,Wd-0.12,1.04); bs.holes.push(rrHole(5.65,-1.85,2.34,2.34,0.55)); g.add(M(slab(bs,0,0.07,16),'backglass'));
+    [[-5.4,Wd/2],[5.4,Wd/2],[-5.4,-Wd/2],[5.4,-Wd/2]].forEach(([x,z])=>g.add(M(box(x-0.05,x+0.05,0.02,0.78,z-0.03,z+0.03),'black')));
+    g.add(M(box(3.6,4.4,0.3,0.55,Wd/2-0.02,Wd/2+0.04),'alu')); g.add(M(box(2.5,3.3,0.3,0.55,Wd/2-0.02,Wd/2+0.04),'alu'));
+    g.add(M(box(2.6,4.3,0.3,0.55,-Wd/2-0.04,-Wd/2+0.02),'alu')); g.add(M(box(-7.42,-7.36,0.28,0.52,-0.62,0.62),'black'));
+  },{});
+  [-1.25,1.25].forEach((z,i)=>add('screw',g=>{ g.add(M(cylX(0.4,z,0.1,-7.44,-7.38,16),'steel')); g.add(M(cylX(0.4,z,0.05,-7.38,-7.0,12),'steel')); },{off:new V3(-1.8,0,0),stage:1,f:[.04+.12*i,.5+.12*i]}));
+  add('sim',g=>{ g.add(M(box(4.45,6.05,0.3,0.46,Wd/2-0.95,Wd/2-0.02),'steel')); g.add(M(box(4.45,6.05,0.3,0.46,Wd/2-0.02,Wd/2+0.01),'alu')); g.add(M(box(4.8,5.7,0.46,0.47,Wd/2-0.85,Wd/2-0.15),'copper')); },{off:new V3(0,0,3.0),stage:1,f:[.4,.96]});
+  add('display',g=>{ g.add(M(slab(rr(0,0,L-0.1,Wd-0.1,1.05),0.62,0.66,14),'black')); g.add(M(slab(rr(0,0,L-0.1,Wd-0.1,1.05),0.66,0.8,14),'darkglass'));
+    const pl=screenPlane(Wd-0.36,L-0.36,0,0,0.802,tex,false); pl.geometry=new THREE.PlaneGeometry(L-0.36,Wd-0.36).rotateX(-Math.PI/2).translate(0,0.802,0); g.add(pl);
+    g.add(M(box(1.6,2.4,0.56,0.62,2.6,3.2),'flex')); },{off:new V3(0,LY[5],0),stage:2});
+  [[1.2,1.7],[2.4,1.7],[2.4,3.05]].forEach(([x,z],i)=>add('bscrew',g=>{ g.add(M(cylY(x,z,0.08,0.58,0.62,14),'steel')); g.add(M(cylY(x,z,0.036,0.42,0.58,10),'steel')); },{off:new V3(0,LY[4]+1.2,0),stage:3,f:[.03+.08*i,.4+.08*i]}));
+  add('bracket',g=>g.add(M(slab(rr(1.8,2.4,1.5,1.5,0.15),0.55,0.58,6),'steel')),{off:new V3(0,LY[4],0),stage:3,f:[.55,.97]});
+  add('truedepth',g=>{ g.add(M(box(6.45,7.05,0.3,0.56,-1.7,0.35),'dark')); [[-1.35,0.16],[-0.6,0.12],[0.05,0.16]].forEach(([z,r])=>g.add(M(cylY(6.75,z,r,0.56,0.62,20),'lens'))); g.add(M(box(5.9,6.45,0.32,0.36,-1.0,-0.4),'flex')); },{off:new V3(0,LY[4],0),stage:4,f:[.05,.7]});
+  add('earpiece',g=>{ g.add(M(box(6.55,7.0,0.38,0.58,0.55,1.75),'black')); g.add(M(box(6.7,6.85,0.58,0.585,0.65,1.65),'steel')); },{off:new V3(0,LY[4],0),stage:4,f:[.3,.95]});
+  add('rearcam',g=>{ g.add(M(slab(rr(5.65,-1.85,2.2,2.2,0.45),0.1,0.56,10),'dark'));
+    [[5.15,-1.35],[6.15,-2.35]].forEach(([x,z])=>{ g.add(M(cylY(x,z,0.5,-0.22,0.1,32),'alu')); g.add(M(cylY(x,z,0.4,-0.24,-0.21,32),'lens')); g.add(M(cylY(x,z,0.36,0.56,0.6,28),'lens')); });
+    g.add(M(box(4.2,4.55,0.4,0.44,-2.4,-1.3),'flex')); },{off:new V3(0,LY[3],0),stage:5});
+  add('taptic',g=>{ g.add(M(box(-6.95,-5.85,0.14,0.5,-3.1,-1.1),'steel')); g.add(M(box(-6.6,-6.2,0.5,0.52,-2.8,-1.4),'dark')); },{off:new V3(0,LY[3],0),stage:6,f:[.05,.7]});
+  add('speaker',g=>{ g.add(M(box(-6.95,-5.85,0.14,0.5,1.1,3.1),'black')); for(let i=0;i<5;i++) g.add(M(cylY(-6.4,1.4+i*0.35,0.08,0.5,0.51,10),'steel')); },{off:new V3(0,LY[3],0),stage:6,f:[.3,.95]});
+  add('battery',g=>{ g.add(M(slab(rr(-2.4,0,6.4,6.2,0.35),0.12,0.56,8),'battery')); g.add(M(slab(rr(-2.4,0,5.4,5.0,0.2),0.56,0.565,6),'label'));
+    [-1.6,1.6].forEach(z=>g.add(M(box(-6.0,-5.55,0.3,0.33,z-0.45,z+0.45),'tab'))); g.add(M(box(0.8,1.6,0.44,0.47,2.2,2.7),'flex')); },{off:new V3(0,LY[2],0),stage:7});
+  add('board',g=>{ g.add(M(slab(poly([[1.0,-3.2],[4.2,-3.2],[4.2,-0.4],[6.2,-0.4],[6.2,2.5],[4.3,2.5],[4.3,3.2],[1.0,3.2]]),0.3,0.42,4),'pcb'));
+    g.add(M(box(2.7,4.2,0.42,0.54,0.3,2.3),'shield')); g.add(M(box(3.05,3.85,0.54,0.56,0.7,1.9),'dark')); g.add(M(box(1.3,3.8,0.42,0.52,-2.9,-0.8),'shield'));
+    g.add(M(box(4.5,5.9,0.42,0.5,-0.1,1.6),'dark')); g.add(M(box(1.15,1.65,0.42,0.48,2.2,2.7),'black')); g.add(M(box(1.8,2.45,0.42,0.48,1.75,3.05),'black')); },{off:new V3(0,LY[2],0),stage:8});
+  add('port',g=>{ g.add(M(box(-7.35,-6.3,0.2,0.5,-0.72,0.72),'steel')); g.add(M(box(-7.37,-7.3,0.27,0.43,-0.5,0.5),'black')); g.add(M(box(-6.3,-5.7,0.08,0.11,-3.0,3.0),'flex')); g.add(M(box(-7.2,-6.7,0.12,0.3,2.3,2.8),'dark')); },{off:new V3(0,LY[1],0),stage:9,f:[.05,.7]});
+  add('coil',g=>{ g.add(M(ringY(-2.4,0,2.0,1.15,0.07,0.1),'copper')); magnetRing(g,-2.4,0,2.55,2.22,0.07,0.11); g.add(M(box(-0.45,0.6,0.07,0.09,-0.25,0.25),'flex')); },{off:new V3(0,LY[1],0),stage:9,f:[.3,.95]});
+}
+const STD={
+  key:'std', label:'일반 아이폰', fig:'그림 1 · 일반 아이폰 · 147.6 × 71.6 × 7.8 mm', idle:'조립된 상태', fold:false, base:'frame',
+  viewDir:new V3(0.2,0.78,1).normalize(), arrW:24,
+  frame(t,NST){ const e=ease(clamp(t*1.12,0,1)); return {c:new V3(lerp(0,-0.3,e),lerp(0.35,6.6,e),0),hw:lerp(7.7,8.6,e),hh:lerp(2.7,7.9,e)}; },
+  rows:[['display','truedepth','earpiece','rearcam'],['frame'],['battery','board','port','coil'],['screw','sim','bscrew','bracket','taptic','speaker']],
+  anchor:{frame:[-5.6,0.4,3.4],display:[-4.8,0.4,2.6],battery:[-1.2,0.3,-1.6],board:[1.6,0.2,-1.8],coil:[0.4,0,1.6],sim:[0,0,0.4],rearcam:[0,0.2,0]},
+  build:buildStd,
+  DIS:[null,
+    {name:'나사·SIM 트레이 빼기',hint:'전원을 끄고, 충전 포트 옆 별 모양 나사 2개를 풉니다. 옆면의 SIM 트레이도 뺍니다.'},
+    {name:'화면 열기',hint:'가장자리 접착제를 데워 약하게 한 뒤, 화면을 들어 올립니다.'},
+    {name:'배터리 연결 끊기',hint:'브래킷 나사 3개를 풀고 브래킷을 들어, 배터리 커넥터를 분리합니다.',warn:'다른 케이블보다 먼저 합니다. 전기가 흐르는 채로 케이블을 빼면 회로가 망가질 수 있습니다.'},
+    {name:'전면 센서 빼기',hint:'화면 위쪽 자리에 있던 트루뎁스 카메라와 통화 스피커를 빼냅니다.'},
+    {name:'후면 카메라 빼기',hint:'카메라 두 개가 묶인 모듈을 들어 올립니다.'},
+    {name:'진동 모터·스피커 빼기',hint:'아래쪽 끝의 탭틱 엔진과 스피커를 빼냅니다.'},
+    {name:'배터리 빼기',hint:'아래쪽 검은 접착 띠를 천천히 당겨, 배터리를 떼어 냅니다.',warn:'배터리를 찌르거나 구부리면 불이 날 수 있습니다.'},
+    {name:'메인보드 빼기',hint:'케이블이 모두 빠진 메인보드를 들어 올립니다.'},
+    {name:'포트·무선 충전 코일 빼기',hint:'충전 포트 케이블을 떼고, 후면 유리 안쪽의 코일을 떼어 냅니다. 프레임만 남습니다.'}],
+  ASM:[null,
+    {name:'나사 조이고 SIM 트레이 끼우기',hint:'충전 포트 옆 나사 2개를 조이고, SIM 트레이를 끼웁니다. 조립이 끝납니다.'},
+    {name:'화면 덮기',hint:'가장자리에 새 접착제를 두르고, 화면을 눌러 붙입니다.'},
+    {name:'배터리 연결하기',hint:'배터리 커넥터를 꽂고 브래킷을 덮은 뒤, 나사 3개로 고정합니다.',warn:'배터리는 맨 나중에 연결합니다. 원래 길이의 나사를 원래 구멍에 끼웁니다.'},
+    {name:'전면 센서 넣기',hint:'트루뎁스 카메라와 통화 스피커를 화면 위쪽 자리에 넣습니다.'},
+    {name:'후면 카메라 넣기',hint:'렌즈가 후면 유리 구멍에 맞도록 카메라 모듈을 넣습니다.'},
+    {name:'진동 모터·스피커 넣기',hint:'아래쪽 끝에 탭틱 엔진과 스피커를 넣습니다.'},
+    {name:'배터리 붙이기',hint:'새 접착 띠로 배터리를 붙입니다. 커넥터는 아직 꽂지 않습니다.'},
+    {name:'메인보드 넣기',hint:'카메라 자리를 비켜 ㄱ자 모양으로 메인보드를 내려놓습니다.'},
+    {name:'포트·무선 충전 코일 붙이기',hint:'후면 유리 안쪽에 코일을 붙이고, 충전 포트 케이블을 제자리에 놓습니다.'}],
+  TYPES:[
+   {id:'frame',no:1,name:'프레임·후면 유리',short:'프레임',roles:['frame','comm'],stage:0,
+    role:'휴대폰의 뼈대입니다. 알루미늄 테두리가 부품을 붙잡고 충격을 견딥니다. 뒤판은 자기장이 지나가도록 유리로 만듭니다.',
+    look:'테두리의 <b>짙은 선</b>은 금속을 끊어 놓은 틈입니다. 덕분에 테두리 일부가 안테나 역할을 합니다.'},
+   {id:'screw',no:2,name:'하단 나사(별 모양)',short:'하단 나사',qty:2,roles:['frame'],stage:1,
+    role:'충전 포트 양옆에서 화면과 프레임을 고정합니다. 머리가 다섯 갈래 별 모양이라 일반 드라이버로는 풀 수 없습니다.',
+    look:'분해할 때 <b>가장 먼저</b> 풀고, 조립할 때 <b>가장 마지막에</b> 조입니다.'},
+   {id:'sim',no:3,name:'SIM 트레이',short:'SIM 트레이',roles:['comm'],stage:1,
+    role:'통신사 가입 정보가 담긴 SIM 카드를 끼우는 작은 서랍입니다. 옆면 구멍을 핀으로 눌러 꺼냅니다.',
+    look:'판매 지역에 따라 트레이 없이 <b>eSIM</b>만 쓰는 모델도 있습니다.'},
+   {id:'display',no:4,name:'디스플레이(OLED·커버 유리)',short:'디스플레이',roles:['output','input'],stage:2,
+    role:'화면을 보여 주는 출력 장치이면서, 터치를 읽는 입력 장치입니다. 커버 유리 아래에 터치 센서와 OLED 패널이 붙어 있습니다.',
+    look:'위쪽 <b>검은 알약 모양</b> 자리 바로 밑에 전면 카메라와 센서가 있습니다.'},
+   {id:'bscrew',no:5,name:'브래킷 나사(Y자 머리)',short:'브래킷 나사',qty:3,roles:['frame'],stage:3,
+    role:'커넥터 브래킷을 메인보드에 고정하는 아주 작은 나사입니다. 머리가 Y자 모양입니다.',
+    look:'나사마다 <b>길이가 다릅니다.</b> 긴 나사를 엉뚱한 구멍에 넣으면 기판을 뚫을 수 있습니다.'},
+   {id:'bracket',no:6,name:'커넥터 브래킷',short:'브래킷',roles:['frame'],stage:3,
+    role:'메인보드 위의 커넥터를 덮어 눌러 주는 얇은 금속판입니다. 충격을 받아도 케이블이 빠지지 않게 합니다.',
+    look:'브래킷 밑에 <b>배터리 커넥터</b>가 있습니다. 화면을 열면 가장 먼저 이것을 분리합니다.'},
+   {id:'truedepth',no:7,name:'트루뎁스 카메라',short:'트루뎁스',roles:['input'],stage:4,
+    role:'전면 카메라와 얼굴 인식 센서 묶음입니다. 얼굴에 적외선 점을 3만 개 넘게 쏘고, 그 모양을 읽어 얼굴을 알아봅니다.',
+    look:'둥근 렌즈 <b>세 개</b>가 나란히 있습니다. 화면의 검은 알약 모양 자리와 겹칩니다.'},
+   {id:'earpiece',no:8,name:'통화 스피커(리시버)',short:'통화 스피커',roles:['output'],stage:4,
+    role:'통화할 때 귀에 대는 작은 스피커입니다. 전기 신호를 소리로 바꿉니다.',
+    look:'가로로 들고 영상을 보면, 아래쪽 스피커와 함께 <b>스테레오</b> 소리를 냅니다.'},
+   {id:'rearcam',no:9,name:'후면 카메라 모듈',short:'후면 카메라',roles:['input'],stage:5,
+    role:'렌즈가 빛을 모으고, 이미지 센서가 빛을 전기 신호로 바꿉니다. 광각·초광각 카메라가 한 덩어리입니다.',
+    look:'렌즈가 두꺼워서 후면 유리 밖으로 튀어나옵니다. 이것이 <b>카메라 범프</b>입니다.'},
+   {id:'taptic',no:10,name:'탭틱 엔진(진동 모터)',short:'탭틱 엔진',roles:['output'],stage:6,
+    role:'안쪽의 추를 전자석으로 빠르게 흔들어 진동을 만듭니다. 알림과 버튼 누름을 손끝에 전합니다.',
+    look:'전기 에너지를 <b>운동 에너지</b>로 바꿉니다. 휴대폰 안에서 거의 유일하게 움직이는 부품입니다.'},
+   {id:'speaker',no:11,name:'하단 스피커',short:'하단 스피커',roles:['output'],stage:6,
+    role:'음악과 벨소리를 내는 스피커입니다. 진동판을 떨게 해 공기를 밀어 소리를 만듭니다.',
+    look:'충전 포트 옆의 <b>작은 구멍들</b>로 소리가 나갑니다.'},
+   {id:'battery',no:12,name:'배터리(리튬 이온)',short:'배터리',roles:['power'],stage:7,
+    role:'충전해서 다시 쓰는 리튬 이온 배터리입니다. 화면을 빼면 안쪽에서 가장 큰 자리를 차지합니다.',
+    look:'아래쪽 <b>검은 접착 띠</b>를 당겨 떼어 냅니다. 찌그러지면 불이 날 수 있어 조심히 다룹니다.'},
+   {id:'board',no:13,name:'메인보드(로직 보드)',short:'메인보드',roles:['process','comm'],stage:8,
+    role:'휴대폰의 두뇌입니다. 계산하는 AP, 기억 장치, 통신용 모뎀 칩이 한 기판에 모여 있습니다.',
+    look:'은색 덮개는 칩끼리 <b>전자파 간섭</b>을 막습니다. 카메라를 비켜 가느라 ㄱ자 모양입니다.'},
+   {id:'port',no:14,name:'USB-C 포트·마이크',short:'충전 포트',roles:['power','input'],stage:9,
+    role:'충전과 데이터 전송을 하는 단자와, 통화용 마이크가 얇은 케이블 하나에 붙어 있습니다.',
+    look:'호박색 <b>플렉스 케이블</b>은 얇게 휘어져서, 좁은 틈으로도 부품을 이어 줍니다.'},
+   {id:'coil',no:15,name:'무선 충전 코일·자석',short:'충전 코일',roles:['power'],stage:9,
+    role:'구리선 코일이 충전기의 코일과 전자기 유도로 전기를 주고받습니다. 둘레의 자석이 충전기를 붙잡습니다.',
+    look:'자기장은 금속을 잘 지나가지 못해서, <b>후면 유리 바로 안쪽</b>에 붙어 있습니다.'}]
+};
+
+/* ======================================================================
+   MODEL 2 — 아이폰 듀오 (book-style foldable)
+   unfolded: 164.6 (x) × 117.8 (z) × 5.2 (y) mm, hinge along z at x = 0
+   ====================================================================== */
+const DX=8.23, DZ=5.89, DT=0.52, PIV=new V3(0,0.545,0);
+function buildDuo(add){
+  const LY=[0,2.2,4.4,6.6,8.8,11.0,13.4,14.9];
+  const inTex=duoInnerTex(), outTex=duoOuterTex();
+  const frameHalf=(g,side)=>{
+    const sx=side==='L'?-1:1, x0=side==='L'?-DX:0.12, x1=side==='L'?-0.12:DX;
+    const s=sideRect(x0,x1,-DZ,DZ,1.0,side); s.holes.push(sideRect(x0+(side==='L'?0.28:0.2),x1-(side==='L'?0.2:0.28),-DZ+0.28,DZ-0.28,0.78,side,true));
+    g.add(M(slab(s,0,DT,16),'ti'));
+    [[-DZ],[DZ]].forEach(([z])=>g.add(M(box(sx*5.8-0.05,sx*5.8+0.05,0.02,DT-0.02,z-0.03,z+0.03),'black')));
+    if(side==='L'){ const bs=sideRect(-DX+0.08,-0.2,-DZ+0.08,DZ-0.08,0.95,'L'); bs.holes.push(rrHole(-6.45,-4.15,2.4,2.4,0.6)); g.add(M(slab(bs,0,0.05,16),'backglass')); }
+    else { g.add(M(box(3.6,4.4,0.16,0.36,-DZ-0.05,-DZ+0.02),'ti')); g.add(M(box(2.5,3.3,0.16,0.36,-DZ-0.05,-DZ+0.02),'ti')); }
+  };
+  add('frame',g=>frameHalf(g,'L'),{half:'L'});
+  add('frame',g=>frameHalf(g,'R'),{half:'R'});
+  [-6.6,-1.9,1.9,6.6].forEach((x,i)=>add('pscrew',g=>{ g.add(M(cylZ(x,0.26,0.1,DZ,DZ+0.06,16),'steel')); g.add(M(cylZ(x,0.26,0.05,DZ-0.4,DZ,12),'steel')); },{half:x<0?'L':'R',off:new V3(0,0,1.6),stage:2,f:[.04+.1*i,.5+.1*i]}));
+  add('outer',g=>{ g.add(M(slab(sideRect(0.3,8.1,-5.75,5.75,0.9,'R'),0,0.09,14),'darkglass')); g.add(screenPlane(7.6,11.3,4.2,0,-0.003,outTex,true)); },
+    {half:'R',stage:3,rotAxis:'z',path:[{o:new V3(0,-1.3,0),r:0},{o:new V3(0,-1.3,13.6),r:0},{o:new V3(0,0.2,13.6),r:Math.PI}]});
+  const trimHalf=(g,side)=>{ const L=side==='L', xa=L?-8.1:0.02, xb=L?-0.02:8.1;
+    g.add(M(box(xa,xb,0.52,0.555,-5.75,-5.52),'black')); g.add(M(box(xa,xb,0.52,0.555,5.52,5.75),'black'));
+    g.add(M(L?box(-8.1,-7.88,0.52,0.555,-5.52,5.52):box(7.88,8.1,0.52,0.555,-5.52,5.52),'black')); };
+  add('trim',g=>trimHalf(g,'L'),{half:'L',off:new V3(0,LY[7],0),stage:4});
+  add('trim',g=>trimHalf(g,'R'),{half:'R',off:new V3(0,LY[7],0),stage:4});
+  const innerHalf=(g,side)=>{ const L=side==='L';
+    g.add(M(slab(sideRect(L?-8.1:0.01,L?-0.01:8.1,-5.75,5.75,0.85,side),0.38,0.40,10),'steel'));
+    g.add(M(slab(sideRect(L?-8.1:0.01,L?-0.01:8.1,-5.75,5.75,0.85,side),0.40,0.52,14),'darkglass'));
+    g.add(screenPlane(7.95,11.35,L?-4.05:4.05,0,0.523,inTex,false,L?[0,0.5]:[0.5,1])); };
+  add('inner',g=>innerHalf(g,'L'),{half:'L',off:new V3(0,LY[6],0),stage:5});
+  add('inner',g=>innerHalf(g,'R'),{half:'R',off:new V3(0,LY[6],0),stage:5});
+  add('bracket',g=>g.add(M(slab(rr(-1.8,-0.1,1.3,1.1,0.12),0.34,0.37,6),'steel')),{half:'L',off:new V3(0,LY[5],0),stage:6,f:[.5,.9]});
+  add('bracket',g=>g.add(M(slab(rr(1.7,-3.85,1.4,0.9,0.12),0.24,0.27,6),'steel')),{half:'R',off:new V3(0,LY[5],0),stage:6,f:[.55,.97]});
+  [[-2.3,-0.5,'L',0.37,0.15],[-1.3,0.3,'L',0.37,0.15],[1.15,-3.5,'R',0.27,0.15],[2.25,-4.15,'R',0.27,0.15]].forEach(([x,z,h,yt,yb],i)=>
+    add('bscrew',g=>{ g.add(M(cylY(x,z,0.075,yt,yt+0.04,14),'steel')); g.add(M(cylY(x,z,0.035,yb,yt,10),'steel')); },{half:h,off:new V3(0,LY[5]+1.1,0),stage:6,f:[.03+.07*i,.38+.07*i]}));
+  add('rearcam',g=>{ g.add(M(slab(rr(-6.45,-4.15,2.3,2.3,0.45),0.07,0.38,10),'dark'));
+    [[-6.95,-4.65],[-5.95,-3.65]].forEach(([x,z])=>{ g.add(M(cylY(x,z,0.48,-0.2,0.07,32),'ti')); g.add(M(cylY(x,z,0.38,-0.22,-0.19,32),'lens')); });
+    g.add(M(box(-5.3,-5.0,0.2,0.24,-4.6,-3.6),'flex')); },{half:'L',off:new V3(0,LY[4],0),stage:7,f:[.02,.6]});
+  add('selfie',g=>{ g.add(M(box(3.75,4.65,0.1,0.3,-5.4,-4.6),'dark')); g.add(M(cylY(4.2,-5.0,0.16,0.06,0.1,20),'lens')); },{half:'R',off:new V3(0,LY[4],0),stage:7,f:[.12,.7]});
+  add('speaker',g=>{ g.add(M(box(-7.6,-6.3,0.06,0.34,4.85,5.6),'black')); },{half:'L',off:new V3(0,LY[4],0),stage:7,f:[.22,.8]});
+  add('speaker',g=>{ g.add(M(box(0.8,2.3,0.06,0.34,-5.55,-4.62),'black')); },{half:'R',off:new V3(0,LY[4],0),stage:7,f:[.28,.86]});
+  add('taptic',g=>{ g.add(M(box(5.6,7.6,0.08,0.36,-5.3,-3.3),'steel')); g.add(M(box(6.0,7.2,0.36,0.38,-5.0,-3.6),'dark')); },{half:'R',off:new V3(0,LY[4],0),stage:7,f:[.34,.92]});
+  add('touchid',g=>{ g.add(M(box(5.4,6.6,0.14,0.38,-DZ-0.07,-DZ+0.06),'ti')); g.add(M(box(5.5,6.5,0.18,0.34,-DZ-0.08,-DZ-0.065),'black')); g.add(M(box(5.6,6.4,0.18,0.3,-DZ+0.06,-DZ+0.5),'flex')); },
+    {half:'R',stage:7,f:[.4,.98],path:[{o:new V3(0,0,-1.2),r:0},{o:new V3(0,0.6,-1.6),r:0}]});
+  add('battery',g=>{ g.add(M(slab(rr(-4.3,2.8,6.5,3.5,0.3),0.07,0.37,8),'battery')); g.add(M(slab(rr(-4.3,2.8,5.6,2.6,0.2),0.37,0.375,6),'label')); g.add(M(box(-1.4,-0.95,0.28,0.31,1.4,1.9),'flex')); },{half:'L',off:new V3(0,LY[3],0),stage:8,f:[.05,.7]});
+  add('battery',g=>{ g.add(M(slab(rr(4.2,0.95,6.7,7.6,0.35),0.07,0.37,8),'battery')); g.add(M(slab(rr(4.2,0.95,5.7,6.6,0.2),0.37,0.375,6),'label')); g.add(M(box(1.2,1.6,0.27,0.3,-3.0,-2.7),'flex')); },{half:'R',off:new V3(0,LY[3],0),stage:8,f:[.3,.95]});
+  add('board',g=>{ g.add(M(slab(poly([[-5.0,-5.3],[-1.1,-5.3],[-1.1,0.6],[-5.0,0.6]]),0.15,0.25,4),'pcb'));
+    g.add(M(box(-3.9,-2.0,0.25,0.34,-4.7,-2.5),'shield')); g.add(M(box(-3.4,-2.5,0.34,0.355,-4.2,-3.0),'dark'));
+    g.add(M(box(-4.8,-2.9,0.25,0.32,-2.0,0.2),'shield')); g.add(M(box(-2.4,-1.2,0.25,0.31,-0.65,0.45),'black'));
+    g.add(M(box(-4.9,-1.2,0.1,0.15,-5.2,0.5),'copper')); },{half:'L',off:new V3(0,LY[2],0),stage:9,f:[.05,.7]});
+  add('ioboard',g=>{ g.add(M(box(0.8,5.4,0.15,0.22,-4.45,-3.2),'pcb')); g.add(M(box(3.0,4.2,0.22,0.27,-4.3,-3.4),'shield')); g.add(M(box(1.0,2.5,0.22,0.24,-4.35,-3.3),'black')); },{half:'R',off:new V3(0,LY[2],0),stage:9,f:[.2,.8]});
+  const flexHalf=(g,side)=>{ const s=side==='L'?-1:1;
+    g.add(M(box(Math.min(s*1.35,s*0.02),Math.max(s*1.35,s*0.02),0.07,0.1,-0.5,0.5),'flex'));
+    for(let i=0;i<3;i++){ const x=s*(0.12+i*0.13); g.add(M(box(x-0.02,x+0.02,0.1,0.2,-0.5,0.5),'flex')); } };
+  add('hflex',g=>flexHalf(g,'L'),{half:'L',off:new V3(0,3.3,0),stage:9,f:[.35,.92]});
+  add('hflex',g=>flexHalf(g,'R'),{half:'R',off:new V3(0,3.3,0),stage:9,f:[.4,.97]});
+  add('hinge',(g,inst)=>{
+    for(let i=0;i<10;i++){ const z0=-5.5+i*1.1; g.add(M(box(-0.42,0.42,0.07,0.33,z0+0.05,z0+1.0),i%2?'ti':'steel')); }
+    [-5.65,5.65].forEach(z=>{ [-0.17,0.17].forEach(x=>g.add(M(cylZ(x,0.2,0.13,z-0.1,z+0.1,14),'shield'))); });
+    const cover=new THREE.Group(); const s=new THREE.Shape(); s.absarc(0,0,0.57,Math.PI,TAU,false); s.absarc(0,0,0.51,TAU,Math.PI,true); s.closePath();
+    const cg=new THREE.ExtrudeGeometry(s,{depth:11.4,bevelEnabled:false,curveSegments:20}); cg.translate(PIV.x,PIV.y,-5.7); cover.add(M(crease(cg),'ti'));
+    g.add(cover); inst.cover=cover;
+  },{half:'H',off:new V3(0,LY[1],0),stage:10,f:[.05,.7]});
+  add('port',g=>{ g.add(M(box(-4.8,-3.4,0.12,0.38,4.75,5.86),'steel')); g.add(M(box(-4.55,-3.65,0.18,0.32,5.86,5.91),'black')); g.add(M(box(-6.0,-1.2,0.06,0.09,4.55,4.75),'flex')); },{half:'L',off:new V3(0,LY[1],0),stage:10,f:[.2,.8]});
+  add('coil',g=>{ g.add(M(ringY(-3.0,-0.9,1.95,1.1,0.05,0.075),'copper')); magnetRing(g,-3.0,-0.9,2.45,2.15,0.05,0.085); },{half:'L',off:new V3(0,LY[1],0),stage:10,f:[.35,.97]});
+}
+const DUO={
+  key:'duo', label:'아이폰 듀오', fig:'그림 2 · 아이폰 듀오 · 펼침 164.6 × 117.8 × 5.2 mm', idle:'접힌 상태', fold:true, base:'frame',
+  viewDir:new V3(0.16,0.82,1).normalize(), arrW:32,
+  frame(t,NST){ const u=ease(clamp(t*NST/0.95,0,1)), e=ease(clamp((t-1/NST)/(1-1/NST)*1.12,0,1));
+    const c=new V3(lerp(-4.1,0,u),lerp(0.7,0.3,u),0).lerp(new V3(0,7.2,4.6),e);
+    return {c,hw:lerp(lerp(4.7,8.7,u),9.0,e),hh:lerp(lerp(4.6,4.3,u),13.2,e)}; },
+  rows:[['frame','pscrew','outer'],['trim','battery'],['inner','hinge','board','ioboard'],['bracket','bscrew','rearcam','selfie','speaker','taptic','touchid'],['hflex','port','coil']],
+  anchor:{frame:[-7.2,0.4,5.0],inner:[-5.2,0.2,3.2],trim:[5.0,0,4.4],outer:[1.6,0,3.0],hinge:[0,0.2,4.2],board:[0.6,0,1.4],coil:[0,0,1.3]},
+  build:buildDuo,
+  DIS:[null,
+    {name:'펼치기',hint:'책처럼 펼쳐 평평하게 놓습니다. 분해는 펼친 상태에서 합니다.'},
+    {name:'하단 나사 풀기',hint:'아래쪽 모서리의 별 모양 나사 4개를 풉니다. 일반 아이폰보다 두 배 많습니다.'},
+    {name:'외부 화면 떼기',hint:'오른쪽 반쪽 뒤의 외부 화면을 클립에서 빼내, 깨지지 않게 틀째로 떼어 냅니다.'},
+    {name:'화면 테두리 벗기기',hint:'안쪽 화면 가장자리를 누르고 있던 얇은 테두리를 주걱으로 들어 벗깁니다.'},
+    {name:'안쪽 화면 떼기',hint:'접히는 안쪽 화면을 두 반쪽에서 천천히 떼어 냅니다.',warn:'가장 조심해야 하는 단계입니다. 접히는 가운데가 쉽게 깨지고, 수리비가 가장 비쌉니다.'},
+    {name:'배터리 연결 끊기',hint:'양쪽 브래킷의 나사 4개를 풀고, 배터리 커넥터 두 개를 분리합니다.',warn:'다른 케이블보다 먼저 합니다. 배터리가 두 개라 연결도 두 군데입니다.'},
+    {name:'카메라·스피커·버튼 빼기',hint:'후면 카메라, 외부 화면 카메라, 위아래 스피커, 탭틱 엔진, 터치 ID 버튼을 빼냅니다.'},
+    {name:'배터리 2개 빼기',hint:'전기를 흘리면 떨어지는 접착제를 써서, 양쪽 배터리를 깨끗하게 떼어 냅니다.'},
+    {name:'기판·힌지 케이블 빼기',hint:'메인보드와 입출력 보드, 두 반쪽을 잇는 주름진 케이블을 빼냅니다.'},
+    {name:'힌지·포트·코일 빼기',hint:'두 반쪽을 잇는 힌지를 풀고, 충전 포트와 무선 충전 코일을 떼어 냅니다. 프레임만 남습니다.'}],
+  ASM:[null,
+    {name:'접기',hint:'책처럼 접어 닫습니다. 바깥에서 외부 화면이 보입니다. 조립이 끝납니다.'},
+    {name:'하단 나사 조이기',hint:'아래쪽 모서리의 별 모양 나사 4개를 조입니다.'},
+    {name:'외부 화면 붙이기',hint:'외부 화면을 오른쪽 반쪽 뒤에 맞추고, 클립에 끼워 고정합니다.'},
+    {name:'화면 테두리 끼우기',hint:'안쪽 화면 가장자리에 테두리를 눌러 끼웁니다.'},
+    {name:'안쪽 화면 붙이기',hint:'안쪽 화면을 두 반쪽에 걸쳐 맞추고, 가운데가 힌지 위에 오도록 붙입니다.',warn:'접히는 가운데를 누르지 않습니다.'},
+    {name:'배터리 연결하기',hint:'배터리 커넥터 두 개를 꽂고, 브래킷을 덮어 나사 4개로 고정합니다.',warn:'배터리는 맨 나중에 연결합니다.'},
+    {name:'카메라·스피커·버튼 넣기',hint:'후면 카메라, 외부 화면 카메라, 스피커, 탭틱 엔진, 터치 ID 버튼을 제자리에 넣습니다.'},
+    {name:'배터리 2개 붙이기',hint:'양쪽 반쪽에 배터리를 하나씩 붙입니다. 커넥터는 아직 꽂지 않습니다.'},
+    {name:'기판·힌지 케이블 넣기',hint:'메인보드와 입출력 보드를 놓고, 주름진 케이블을 힌지 틈으로 지나가게 합니다.'},
+    {name:'힌지·포트·코일 넣기',hint:'두 반쪽 사이에 힌지를 끼우고, 충전 포트와 무선 충전 코일을 붙입니다.'}],
+  TYPES:[
+   {id:'frame',no:1,name:'티타늄 프레임·후면 유리',short:'프레임',roles:['frame','comm'],stage:0,
+    role:'두 반쪽의 뼈대입니다. 테두리는 티타늄(Grade 5)으로 만들었습니다. 왼쪽 반쪽 뒤는 유리이고, 오른쪽 반쪽 뒤는 외부 화면이 차지합니다.',
+    look:'펼치면 두께가 <b>5.2 mm</b>로 아이폰 가운데 가장 얇습니다. 접으면 11.3 mm입니다.'},
+   {id:'pscrew',no:2,name:'하단 나사(별 모양)',short:'하단 나사',qty:4,roles:['frame'],stage:2,
+    role:'두 반쪽의 아래쪽 모서리를 고정하는 별 모양 나사입니다.',
+    look:'일반 아이폰은 <b>2개</b>, 듀오는 <b>4개</b>입니다. 반쪽마다 2개씩 있습니다.'},
+   {id:'outer',no:3,name:'외부 화면(5.4형)',short:'외부 화면',roles:['output','input'],stage:3,
+    role:'접었을 때 쓰는 화면입니다. 안쪽 화면과 가로세로 비율(약 1.41 : 1)이 같아서, 접고 펴도 앱 배치가 그대로입니다.',
+    look:'클립과 나사로 고정되어, <b>깨지지 않고 틀째로</b> 떼어 낼 수 있습니다. 위쪽 구멍으로 전면 카메라가 봅니다.'},
+   {id:'trim',no:4,name:'안쪽 화면 테두리',short:'화면 테두리',roles:['frame'],stage:4,
+    role:'안쪽 화면 가장자리를 덮어 눌러 주는 얇은 테두리입니다.',
+    look:'힌지 쪽은 비어 있습니다. 화면이 접힐 때 <b>가운데가 자유롭게 휘도록</b> 하기 위해서입니다.'},
+   {id:'inner',no:5,name:'안쪽 접이식 화면(7.6형)',short:'안쪽 화면',roles:['output','input'],stage:5,
+    role:'펼치면 7.6형이 되는 접히는 OLED 화면입니다. 10겹이 넘는 아주 얇은 층이 접착층 사이로 미끄러지며 접힙니다.',
+    look:'화면 아래에 <b>카메라가 숨어</b> 있습니다. 접히는 가운데가 가장 약해서 수리비가 가장 비쌉니다.'},
+   {id:'bracket',no:6,name:'커넥터 브래킷',short:'브래킷',qty:2,roles:['frame'],stage:6,
+    role:'기판 위 커넥터를 덮어 눌러 주는 얇은 금속판입니다. 반쪽마다 하나씩 있습니다.',
+    look:'브래킷 밑에 <b>배터리 커넥터</b>가 있습니다. 배터리가 두 개라 커넥터도 두 개입니다.'},
+   {id:'bscrew',no:7,name:'브래킷 나사',short:'브래킷 나사',qty:4,roles:['frame'],stage:6,
+    role:'브래킷을 기판에 고정하는 아주 작은 나사입니다.',
+    look:'듀오를 열려면 드라이버가 <b>다섯 종류</b>나 필요합니다.'},
+   {id:'rearcam',no:8,name:'후면 카메라(48MP × 2)',short:'후면 카메라',roles:['input'],stage:7,
+    role:'4800만 화소 메인 카메라와 초광각 카메라입니다. 왼쪽 반쪽 뒤 위쪽 모서리에 있습니다.',
+    look:'얇은 몸체에 넣으려고 카메라 모듈을 <b>표면 가까이</b> 붙이고, 위를 브래킷으로 눌렀습니다.'},
+   {id:'selfie',no:9,name:'외부 화면 카메라(12MP)',short:'외부 카메라',roles:['input'],stage:7,
+    role:'접었을 때 쓰는 1200만 화소 전면 카메라입니다. 외부 화면 위쪽 구멍으로 바깥을 봅니다.',
+    look:'펼쳤을 때는 안쪽 화면 <b>아래에 숨은 카메라</b>를 씁니다.'},
+   {id:'speaker',no:10,name:'스피커',short:'스피커',qty:2,roles:['output'],stage:7,
+    role:'위쪽과 아래쪽에 하나씩 있어 스테레오 소리를 냅니다.',
+    look:'한쪽은 <b>왼쪽 반쪽 아래</b>, 다른 한쪽은 <b>오른쪽 반쪽 위</b>에 있습니다.'},
+   {id:'taptic',no:11,name:'탭틱 엔진(진동 모터)',short:'탭틱 엔진',roles:['output'],stage:7,
+    role:'추를 전자석으로 흔들어 진동을 만드는 작은 모터입니다.',
+    look:'전기 에너지를 <b>운동 에너지</b>로 바꿉니다.'},
+   {id:'touchid',no:12,name:'터치 ID 측면 버튼',short:'터치 ID',roles:['input'],stage:7,
+    role:'지문을 읽는 측면 버튼입니다. 듀오에는 얼굴 인식(Face ID) 대신 터치 ID가 들어갑니다.',
+    look:'접었을 때도, 펼쳤을 때도 <b>같은 버튼</b>으로 잠금을 풉니다.'},
+   {id:'battery',no:13,name:'배터리 2개',short:'배터리',qty:2,roles:['power'],stage:8,
+    role:'반쪽마다 하나씩, 두 개의 배터리(7.5 Wh + 11.6 Wh)가 합쳐 19.1 Wh를 냅니다.',
+    look:'<b>전기를 흘리면 떨어지는 접착제</b>로 붙어 있어 깨끗하게 떼어 낼 수 있습니다. 어느 쪽이 큰지는 학습용 추정입니다.'},
+   {id:'board',no:14,name:'메인보드(A20 Pro)',short:'메인보드',roles:['process','comm'],stage:9,
+    role:'A20 Pro 칩과 12 GB 메모리, C2 모뎀이 있는 기판입니다. 베이퍼 챔버로 칩의 열을 넓게 퍼뜨립니다.',
+    look:'얇게 만들려고 <b>한 겹짜리 기판</b>을 썼습니다. SIM 트레이가 없는 eSIM 전용입니다.'},
+   {id:'ioboard',no:15,name:'입출력 보드',short:'입출력 보드',roles:['process'],stage:9,
+    role:'메인보드의 일부 기능을 넘겨받은 한 겹짜리 작은 기판입니다. 오른쪽 반쪽 부품을 묶어 줍니다.',
+    look:'기판을 <b>두 반쪽에 나누어</b> 무게와 두께를 고르게 했습니다.'},
+   {id:'hflex',no:16,name:'힌지 연결 케이블',short:'힌지 케이블',roles:['power','comm'],stage:9,
+    role:'힌지 틈으로 지나가며 두 반쪽 사이에 데이터와 전기를 함께 나르는 케이블입니다.',
+    look:'<b>아코디언처럼 주름</b>이 잡혀 있어, 접었다 펼 때 늘었다 줄었다 합니다.'},
+   {id:'hinge',no:17,name:'힌지(동기화 기어·링크)',short:'힌지',roles:['frame'],stage:10,
+    role:'시계줄처럼 이어진 금속 마디가 동기화 기어와 스프링으로 움직입니다. 두 반쪽이 늘 같은 각도로 열립니다.',
+    look:'휘어진 안내 홈 덕분에 마디가 <b>화면 속 한 점을 중심으로</b> 도는 것처럼 접힙니다. 덮개는 티타늄입니다.'},
+   {id:'port',no:18,name:'USB-C 포트',short:'충전 포트',roles:['power','input'],stage:10,
+    role:'충전과 데이터 전송(최대 10 Gb/s), 외부 모니터 연결을 하는 단자입니다.',
+    look:'충전 회로는 <b>한쪽 반쪽</b>에만 있고, 다른 쪽 배터리는 힌지 케이블로 충전합니다.'},
+   {id:'coil',no:19,name:'무선 충전 코일·자석',short:'충전 코일',roles:['power'],stage:10,
+    role:'구리선 코일이 충전기와 전자기 유도로 전기를 주고받습니다. 둘레의 자석이 충전기를 붙잡습니다(최대 25 W).',
+    look:'자기장이 지나가도록 <b>왼쪽 반쪽의 후면 유리</b> 바로 안쪽에 있습니다.'}]
+};
+const MODELS={std:STD,duo:DUO};
+
+/* ================= model state ================= */
+let MOD=STD, TYPES, TYPE, NST, DIS, ASM;
+let instances=[], instOf=new Map(), byType={}, pickables=[], arrBounds=null;
+const stageTypes=s=>TYPES.filter(tp=>tp.stage===s).map(tp=>tp.id);
+let t=0, target=null, sT=0, mode='dis', auto=false, slow=true, fast=false, waitT=0;
+let tab='steps', selected=null, roleSel=null, solo=false, showNames=false;
+let arr=0, arrTarget=0, pendingStage=null;
+const XAX=new V3(1,0,0), YAX=new V3(0,1,0), ZAX=new V3(0,0,1);
+
+function disposeModel(){ instances.forEach(i=>{ scene.remove(i.group); i.group.traverse(o=>{ if(o.geometry) o.geometry.dispose(); if(o.material){ if(o.material.map) o.material.map.dispose(); o.material.dispose(); } }); }); instances=[]; instOf=new Map(); byType={}; }
+function loadModel(key){
+  disposeModel(); clearGhosts();
+  MOD=MODELS[key]; TYPES=MOD.TYPES; TYPE=Object.fromEntries(TYPES.map(x=>[x.id,x])); NST=MOD.DIS.length-1; DIS=MOD.DIS; ASM=MOD.ASM;
+  MOD.build((type,build,o)=>{
+    o=o||{}; const g=new THREE.Group();
+    const stage=o.stage||0, f=o.f||[.05,.95];
+    const inst={type,group:g,home:new V3(),half:o.half||'L',meshes:[],edges:[],rotAxis:o.rotAxis||'x',
+      path:o.path || [{o:(o.off||new V3()).clone(),r:0}],
+      w: stage ? [(stage-1)/NST+f[0]/NST,(stage-1)/NST+f[1]/NST] : [0,0]};
+    build(g,inst);
+    g.traverse(x=>{ if(x.isMesh){ instOf.set(x,inst); inst.meshes.push(x);
+      if(!x.userData.noEdge){ const e=new THREE.LineSegments(new THREE.EdgesGeometry(x.geometry,28),new THREE.LineBasicMaterial({color:EDGE_COLOR,transparent:true,opacity:.5})); e.raycast=()=>{}; x.add(e); inst.edges.push(e); } } });
+    g.updateMatrixWorld(true);
+    const bb=new THREE.Box3().setFromObject(g); inst.box=bb; inst.lc=bb.getCenter(new V3()); inst.size=bb.getSize(new V3()).length();
+    scene.add(g); instances.push(inst);
+  });
+  instances.forEach(i=>(byType[i.type]=byType[i.type]||[]).push(i));
+  pickables=instances.flatMap(i=>i.meshes);
+  layoutArranged();
+  t=0; target=null; sT=0; mode='dis'; arr=0; arrTarget=0; pendingStage=null; selected=null; roleSel=null; solo=false; focused=false; camAnim=null; partView='role';
+  stopAuto(); buildDots(); paintKey=''; lastT=-1;
+  $('figLabel').textContent=MOD.fig;
+  document.querySelectorAll('#modelSeg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===key)));
+  applyPose(); render(); paint(true); resetView(false);
+}
+
+/* arranged layout: rows from back (-z) to front (+z), stage order inside rows; then shifted so the base frame stays where it is */
+function layoutArranged(){
+  const GAP=1.1, IG=0.35; let z=0; const placed=[]; let x0=1e9,x1=-1e9;
+  for(const row of MOD.rows){
+    const items=row.filter(ty=>byType[ty]).map(ty=>{ const list=byType[ty]; const ws=list.map(i=>i.box.max.x-i.box.min.x), ds=list.map(i=>i.box.max.z-i.box.min.z);
+      return {ty,list,ws,w:ws.reduce((a,b)=>a+b,0)+IG*(list.length-1),d:Math.max(...ds)}; });
+    const W=items.reduce((a,it)=>a+it.w,0)+GAP*(items.length-1), D=Math.max(...items.map(it=>it.d));
+    const zc=z+D/2; let x=-W/2;
+    for(const it of items){ let xi=x;
+      const groupBase = it.ty===MOD.base;
+      it.list.forEach((inst,k)=>{ const cx = groupBase ? null : xi+it.ws[k]/2; placed.push({inst,cx,cz:zc,base:groupBase,bx:x+it.w/2}); xi+=it.ws[k]+IG; });
+      x+=it.w+GAP; }
+    x0=Math.min(x0,-W/2); x1=Math.max(x1,W/2); z+=D+GAP;
+  }
+  const baseP=placed.find(p=>p.base); const bl=byType[MOD.base]; const bb=new THREE.Box3(); bl.forEach(i=>bb.union(i.box)); const bc=bb.getCenter(new V3());
+  const sx=bc.x-baseP.bx, sz=bc.z-baseP.cz;
+  for(const p of placed){ const i=p.inst;
+    if(p.base){ i.arr=new V3(); continue; }
+    i.arr=new V3(p.cx+sx-i.lc.x,-i.box.min.y,p.cz+sz-i.lc.z); }
+  arrBounds={x0:x0+sx,x1:x1+sx,z0:sz,z1:z-GAP+sz};
+  instances.forEach((inst,k)=>{ inst.arrDelay=0.3*k/instances.length; });
+}
+
+/* ================= pose ================= */
+const qT=new THREE.Quaternion(), qF=new THREE.Quaternion(), vT=new V3(), vB=new V3(), vC=new V3();
+function foldAngle(){ if(!MOD.fold) return 0; const u=ease(clamp((t*NST-0.03)/0.94,0,1)); return Math.PI*(1-u); }
+function pathAt(inst,p,outO){ const P=inst.path, n=P.length; if(p<=0){ outO.set(0,0,0); return 0; }
+  const s=Math.min(n-1,Math.floor(p*n)), k=p*n-s; const a=s?P[s-1]:{o:new V3(),r:0}, b=P[s];
+  outO.lerpVectors(a.o,b.o,clamp(k,0,1)); return lerp(a.r,b.r,clamp(k,0,1)); }
+function applyPose(){
+  const th=foldAngle();
+  for(const inst of instances){ const [s,e]=inst.w; const p=e>s?ease(clamp((t-s)/(e-s),0,1)):0;
+    const r=pathAt(inst,p,vT);
+    vB.copy(inst.home).add(vT);
+    if(arr>0 && inst.arr){ const q=ease(clamp((arr-inst.arrDelay)/0.7,0,1)); vB.lerp(inst.arr,q); vB.y+=Math.sin(Math.PI*q)*1.4*(inst.type===MOD.base?0:1); }
+    qT.setFromAxisAngle(inst.rotAxis==='z'?ZAX:XAX,r);
+    vC.copy(inst.lc).applyQuaternion(qT); vB.add(inst.lc).sub(vC);
+    if(th>0 && inst.half==='R'){ qF.setFromAxisAngle(ZAX,th); qT.premultiply(qF); vB.sub(PIV).applyQuaternion(qF).add(PIV); }
+    inst.group.quaternion.copy(qT); inst.group.position.copy(vB);
+    if(inst.cover){ qF.setFromAxisAngle(ZAX,th/2); inst.cover.quaternion.copy(qF); inst.cover.position.copy(PIV).sub(PIV.clone().applyQuaternion(qF)); }
+  }
+}
+const centerOf=(inst,out)=>out.copy(inst.lc).applyQuaternion(inst.group.quaternion).add(inst.group.position);
+const homeCenterOf=(inst,out)=>out.copy(inst.lc).applyQuaternion(inst.group.quaternion).add(inst.home);
+
+/* ================= camera ================= */
+const view={w:1,h:1,key:''};
+let lastT=-1, lastKey='', camAnim=null, focused=false;
+function fitDist(f){ const tv=Math.tan(FOV*D2R/2), th=tv*(view.w/view.h); return Math.max(f.hh/tv,f.hw/th)+3; }
+const frameAt=tt=>MOD.frame(tt,NST);
+function animCam(t1,c1,dur){ camAnim={p:0,d:dur||.75,t0:controls.target.clone(),t1:t1.clone(),c0:camera.position.clone(),c1:c1.clone()}; }
+const ARR_DIR=new V3(0.06,1,0.52).normalize();
+function arrangedPose(){ const c=new V3((arrBounds.x0+arrBounds.x1)/2,0,(arrBounds.z0+arrBounds.z1)/2); const f={hw:(arrBounds.x1-arrBounds.x0)/2+0.6,hh:(arrBounds.z1-arrBounds.z0)/2*0.88+0.9}; return {t:c,c:c.clone().addScaledVector(ARR_DIR,fitDist(f))}; }
+function overviewPose(){ if(arrTarget>0) return arrangedPose(); const f=frameAt(t); return {t:f.c, c:f.c.clone().addScaledVector(MOD.viewDir,fitDist(f))}; }
+function resetView(smooth){ const p=overviewPose(); if(smooth) animCam(p.t,p.c); else { controls.target.copy(p.t); camera.position.copy(p.c); controls.update(); } lastT=t; lastKey=view.key; }
+function autoFrame(){
+  if(lastT<0){ resetView(false); return; }
+  if(focused || solo || arr>0){ lastT=t; lastKey=view.key; return; }
+  if(t===lastT && lastKey===view.key) return;
+  const f0=frameAt(lastT),f1=frameAt(t), off=camera.position.clone().sub(controls.target);
+  controls.target.add(f1.c.clone().sub(f0.c));
+  if(lastKey===view.key) off.multiplyScalar(fitDist(f1)/fitDist(f0));
+  camera.position.copy(controls.target).add(off); lastT=t; lastKey=view.key;
+}
+function focusTypes(types,dist){
+  const bb=new THREE.Box3(), b=new THREE.Box3();
+  types.forEach(ty=>byType[ty].forEach(i=>{ b.setFromObject(i.group); bb.union(b); }));
+  const c=bb.getCenter(new V3()), sz=bb.getSize(new V3());
+  const r=Math.max(sz.x*0.5, sz.z*0.45, sz.y*0.7, 0.6);
+  const tv=Math.tan(FOV*D2R/2), th=tv*(view.w/view.h);
+  const d=dist || clamp(r/Math.min(tv,th)*1.35+1.2, 3, 70);
+  const dir=camera.position.clone().sub(controls.target).normalize();
+  if(dir.y<0.35){ dir.y=0.55; dir.normalize(); }
+  animCam(c,c.clone().addScaledVector(dir,d)); focused=true;
+}
+
+/* ================= highlight & ghosts ================= */
+const SIG=new THREE.Color('#d9661c'), BLACK=new THREE.Color(0), EDGE=new THREE.Color(EDGE_COLOR), EDGE_SIG=new THREE.Color('#b4510f');
+const ghostMat=new THREE.MeshBasicMaterial({color:SIG,transparent:true,opacity:.12,depthWrite:false});
+const ghostLine=new THREE.LineDashedMaterial({color:SIG,dashSize:.1,gapSize:.08,transparent:true,opacity:.9,depthWrite:false});
+const linkLine=new THREE.LineDashedMaterial({color:SIG,dashSize:.25,gapSize:.18,transparent:true,opacity:.85,depthTest:false});
+let ghosts=[], ghostKey='';
+function clearGhosts(){ ghosts.forEach(g=>{ scene.remove(g.mesh); scene.remove(g.line); g.line.geometry.dispose(); }); ghosts=[]; ghostKey=''; }
+function setGhosts(types){
+  const key=MOD.key+types.join(','); if(key===ghostKey) return; clearGhosts(); ghostKey=key;
+  for(const ty of types) for(const inst of byType[ty]){
+    const mesh=inst.group.clone(true);
+    mesh.traverse(o=>{ if(o.isLineSegments){ o.material=ghostLine; o.computeLineDistances(); o.renderOrder=3; } else if(o.isMesh){ o.material=ghostMat; o.renderOrder=2; o.raycast=()=>{}; } });
+    mesh.position.copy(inst.home); mesh.quaternion.identity(); scene.add(mesh);
+    const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new V3(),new V3()]),linkLine); line.renderOrder=4; line.frustumCulled=false; scene.add(line);
+    ghosts.push({inst,mesh,line});
+  }
+}
+function updateGhosts(){ const a=new V3(),b=new V3();
+  for(const g of ghosts){ const vis=!solo && foldAngle()===0 && g.inst.group.position.distanceTo(g.inst.home)>0.25; g.mesh.visible=vis; g.line.visible=vis;
+    if(vis){ a.copy(g.inst.lc).add(g.inst.home); centerOf(g.inst,b); const p=g.line.geometry.attributes.position; p.setXYZ(0,a.x,a.y,a.z); p.setXYZ(1,b.x,b.y,b.z); p.needsUpdate=true; g.line.geometry.computeBoundingSphere(); g.line.computeLineDistances(); } } }
+function cardStage(){ return mode==='dis' ? (sT>0?sT:0) : (sT<NST?sT+1:0); }
+function litInfo(){
+  if(selected) return {set:new Set([selected]),dim:.07,kind:'sel'};
+  if(tab==='roles' && roleSel) return {set:new Set(TYPES.filter(tp=>tp.roles.includes(roleSel)).map(tp=>tp.id)),dim:.12,kind:'role'};
+  if(tab==='steps' && arrTarget===0 && arr===0){ const cs=cardStage(); const st=cs?stageTypes(cs):[]; if(st.length) return {set:new Set(st),dim:.32,kind:'stage'}; }
+  return null;
+}
+let paintKey='';
+function paint(force){
+  const li=litInfo(); const key=MOD.key+(li?li.kind+[...li.set].join(','):'none')+'|'+solo+'|'+arrTarget;
+  if(key===paintKey && !force) return; paintKey=key;
+  for(const inst of instances){
+    const on=li && li.set.has(inst.type), dim=li && !on;
+    inst.group.visible = !(solo && !on);
+    for(const m of inst.meshes){ const mt=m.material;
+      mt.transparent=!!dim || !!mt.alphaTest; mt.opacity=dim?li.dim:1; mt.depthWrite=!dim;
+      if(!m.userData.screen){ mt.emissive.copy(on?SIG:BLACK); mt.emissiveIntensity=on?(li.kind==='stage'?.22:.3):0; }
+      mt.needsUpdate=true; }
+    for(const e of inst.edges){ e.material.color.copy(on?EDGE_SIG:EDGE); e.material.opacity=dim?li.dim*.5:(on?.95:.5); }
+  }
+  if(li && (li.kind==='sel' || li.kind==='stage')) setGhosts([...li.set]); else clearGhosts();
+}
+
+/* ================= callouts & name tags ================= */
+const overlay=$('overlay'), svg=$('co-svg'), NS='http://www.w3.org/2000/svg';
+function anchorOf(inst,out){ centerOf(inst,out); const a=MOD.anchor[inst.type]; if(a && arr<0.5 && foldAngle()===0) out.add(vT.set(a[0],a[1],a[2])); return out; }
+function project(v){ const p=v.clone().project(camera); return {x:(p.x+1)/2*view.w,y:(1-p.y)/2*view.h,ok:p.z<1&&p.z>-1}; }
+const coPool=[];
+function getCo(i){ if(!coPool[i]){ const line=document.createElementNS(NS,'line'), dot=document.createElementNS(NS,'circle'); dot.setAttribute('r','3.5'); svg.append(line,dot);
+  const tag=document.createElement('button'); tag.className='co'; tag.type='button'; overlay.appendChild(tag); tag.addEventListener('click',e=>{ e.stopPropagation(); if(tag.dataset.id) select(tag.dataset.id); });
+  coPool[i]={line,dot,tag,w:0}; } return coPool[i]; }
+let ntPool={};
+const ntLinks={};
+function ntLink(id,seg){ let L=ntLinks[id]; if(!seg){ if(L){ L.l.style.display='none'; L.d.style.display='none'; } return; }
+  if(!L){ const l=document.createElementNS(NS,'line'), d=document.createElementNS(NS,'circle'); l.setAttribute('class','ntl'); d.setAttribute('class','ntd'); d.setAttribute('r','2.2'); svg.prepend(l,d); L=ntLinks[id]={l,d}; }
+  L.l.style.display=''; L.d.style.display=''; L.l.setAttribute('x1',seg[0].toFixed(1)); L.l.setAttribute('y1',seg[1].toFixed(1)); L.l.setAttribute('x2',seg[2].toFixed(1)); L.l.setAttribute('y2',seg[3].toFixed(1)); L.d.setAttribute('cx',seg[0].toFixed(1)); L.d.setAttribute('cy',seg[1].toFixed(1)); }
+function buildNameTags(){ Object.values(ntPool).forEach(b=>b.remove()); ntPool={}; Object.keys(ntLinks).forEach(k=>{ ntLinks[k].l.remove(); ntLinks[k].d.remove(); delete ntLinks[k]; });
+  TYPES.forEach(tp=>{ const b=document.createElement('button'); b.className='nt'; b.type='button'; b.textContent=tp.short; b.hidden=true; b.addEventListener('click',e=>{ e.stopPropagation(); select(tp.id); }); overlay.appendChild(b); ntPool[tp.id]=b; }); }
+const ghostTag=document.createElement('div'); ghostTag.className='ghosttag'; ghostTag.textContent='원래 자리'; ghostTag.hidden=true; overlay.appendChild(ghostTag);
+const cV=new V3();
+function updateOverlay(){
+  const li=litInfo(); let n=0;
+  const list = li && (li.kind==='sel'||li.kind==='stage') ? [...li.set] : [];
+  list.forEach((ty,idx)=>{
+    const inst=byType[ty][0]; const p=project(anchorOf(inst,cV)); if(!p.ok) return;
+    const co=getCo(n++); const tp=TYPE[ty];
+    const label=tp.short+(tp.qty?' ×'+tp.qty:'');
+    if(co.tag.textContent!==label){ co.tag.textContent=label; co.w=0; }
+    co.tag.dataset.id=ty; co.tag.classList.toggle('soft',li.kind==='stage'); co.tag.hidden=false;
+    if(!co.w) co.w=co.tag.offsetWidth||80;
+    const right = idx%2===0 ? p.x < view.w*0.62 : p.x < view.w*0.38;
+    const dx = right ? 34 : -34, dy = -30 - (idx>>1)*26;
+    let ty2=p.y+dy, left = right ? p.x+dx : p.x+dx-co.w; left=clamp(left,6,view.w-co.w-6); ty2=clamp(ty2,32,view.h-30);
+    const ex = right ? left : left+co.w;
+    co.tag.style.transform='translate('+left.toFixed(1)+'px,'+(ty2-10).toFixed(1)+'px)';
+    co.line.setAttribute('x1',p.x.toFixed(1)); co.line.setAttribute('y1',p.y.toFixed(1)); co.line.setAttribute('x2',ex.toFixed(1)); co.line.setAttribute('y2',ty2.toFixed(1));
+    co.dot.setAttribute('cx',p.x.toFixed(1)); co.dot.setAttribute('cy',p.y.toFixed(1));
+    co.line.style.display=''; co.dot.style.display=''; co.rect={x:left,y:ty2-10,w:co.w,h:20};
+  });
+  for(let i=n;i<coPool.length;i++){ const co=coPool[i]; co.rect=null; co.tag.hidden=true; co.line.style.display='none'; co.dot.style.display='none'; }
+  const litSet=new Set(list), laid=arr>0.98;
+  const occ=[]; for(let k=0;k<n;k++){ const r=coPool[k].rect; if(r) occ.push(r); }
+  const items=[];
+  for(const tp of TYPES){ const b=ntPool[tp.id]; if(!b) continue;
+    if(!(showNames||laid) || solo || litSet.has(tp.id) || (li && li.kind!=='stage' && !li.set.has(tp.id))){ b.hidden=true; ntLink(tp.id,null); continue; }
+    let p; const i0=byType[tp.id][0];
+    if(laid){ if(tp.id===MOD.base){ cV.set(0,0,byType[MOD.base].reduce((m,i)=>Math.max(m,i.box.max.z),-1e9)+0.3); }
+      else { centerOf(i0,cV); cV.z+=(i0.box.max.z-i0.box.min.z)/2+0.45; } p=project(cV); }
+    else p=project(anchorOf(i0,cV));
+    if(!p.ok){ b.hidden=true; ntLink(tp.id,null); continue; }
+    const txt=laid?tp.short+(tp.qty?' ×'+tp.qty:''):tp.short; if(b.textContent!==txt){ b.textContent=txt; b._w=0; }
+    b.hidden=false; if(!b._w) b._w=b.offsetWidth||60;
+    items.push({id:tp.id,b,x:p.x,y:p.y,w:b._w,h:18});
+  }
+  items.sort((a,b)=>a.y-b.y||a.x-b.x);
+  const hit=r=>occ.some(o=>r.x<o.x+o.w+4 && r.x+r.w+4>o.x && r.y<o.y+o.h+3 && r.y+r.h+3>o.y);
+  const mkR=(it,dx,dy)=>({x:clamp(it.x-it.w/2+dx,4,view.w-it.w-4),y:clamp(it.y-it.h/2+dy,30,view.h-it.h-30),w:it.w,h:it.h});
+  const STEPS=[0,-1,1,-2,2,-3,3,-4,4,-5,5,-6,6];
+  for(const it of items){ let best=null;
+    for(const k of STEPS){ const r=mkR(it,0,k*21); if(!hit(r)){ best=r; break; } }
+    if(!best) outer: for(const k of STEPS) for(const sd of [-1,1]){ const r=mkR(it,sd*(it.w*0.55+10),k*21); if(!hit(r)){ best=r; break outer; } }
+    if(!best) best=mkR(it,0,0);
+    occ.push(best);
+    it.b.style.transform='translate('+best.x.toFixed(1)+'px,'+best.y.toFixed(1)+'px)';
+    const cx=best.x+best.w/2, cy=best.y+best.h/2;
+    ntLink(it.id, Math.hypot(cx-it.x,cy-it.y)>11 ? [it.x,it.y,cx,cy] : null);
+  }
+  const g0=ghosts[0];
+  if(g0 && g0.mesh.visible && li && li.kind==='sel'){ cV.copy(g0.inst.lc).add(g0.inst.home); const p=project(cV); ghostTag.hidden=!p.ok; ghostTag.style.transform='translate('+p.x.toFixed(1)+'px,'+p.y.toFixed(1)+'px) translate(-50%,-150%)'; }
+  else ghostTag.hidden=true;
+}
+
+/* ================= steps panel ================= */
+const dotsEl=$('dots'); let dotEls=[];
+function buildDots(){ dotsEl.innerHTML=''; dotsEl.style.gridTemplateColumns='repeat('+NST+',1fr)';
+  for(let i=1;i<=NST;i++){ const b=document.createElement('button'); b.className='dot'; b.textContent=i; b.setAttribute('aria-label',i+'단계로 가기'); b.dataset.i=i; dotsEl.appendChild(b); }
+  dotEls=[...dotsEl.children]; buildNameTags(); }
+dotsEl.addEventListener('click',e=>{ const b=e.target.closest('.dot'); if(!b) return; const i=+b.dataset.i; jumpTo(mode==='dis' ? i : NST-i); });
+function speed(){ return fast ? 1/NST/0.35 : (slow?1/NST/2.6:1/NST/1.4); }
+function setStage(n,isFast){ n=clamp(n,0,NST); if(arr>0||arrTarget>0){ if(n===NST) return; pendingStage=[n,isFast]; setArrange(false); return; } if(n===sT && target==null) return;
+  sT=n; target=sT/NST; fast=!!isFast;
+  if(selected){ selected=null; solo=false; } if(focused){ focused=false; resetView(true); } render(); }
+function step(dir){ setStage(sT + (mode==='dis'?dir:-dir), false); waitT=0; }
+function jumpTo(n){ stopAuto(); setStage(n,true); }
+const PLAY_HTML='<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2v12l10-6z"/></svg>재생', PAUSE_HTML='<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 2h4v12H3zM9 2h4v12H9z"/></svg>멈춤';
+function stopAuto(){ auto=false; $('pAuto').setAttribute('aria-pressed','false'); $('pAuto').innerHTML=PLAY_HTML; }
+$('bNext').onclick=()=>{ stopAuto(); step(1); };
+$('bPrev').onclick=()=>{ stopAuto(); step(-1); };
+$('mDis').onclick=()=>{ mode='dis'; stopAuto(); render(); };
+$('mAsm').onclick=()=>{ mode='asm'; stopAuto(); render(); };
+const atEnd=()=>mode==='dis'?sT>=NST:sT<=0;
+const atStart=()=>mode==='dis'?sT<=0:sT>=NST;
+$('pAuto').onclick=()=>{ if(auto){ stopAuto(); return; } if(atEnd()) return; auto=true; waitT=99; $('pAuto').setAttribute('aria-pressed','true'); $('pAuto').innerHTML=PAUSE_HTML; };
+
+const arrDur=()=>slow?2.0:1.2;
+function setArrange(on){ if(on && !(sT===NST && target==null)) return; arrTarget=on?1:0; stopAuto(); if(selected){ selected=null; solo=false; } focused=false;
+  let p; if(on) p=arrangedPose(); else { const f=frameAt(1); p={t:f.c,c:f.c.clone().addScaledVector(MOD.viewDir,fitDist(f))}; } animCam(p.t,p.c,arrDur()); render(); }
+function renderSteps(){
+  $('mDis').setAttribute('aria-pressed',String(mode==='dis')); $('mAsm').setAttribute('aria-pressed',String(mode==='asm'));
+  const done = mode==='dis' ? sT : NST-sT;
+  dotEls.forEach((d,i)=>{ const k=i+1; d.classList.toggle('done',k<done); d.classList.toggle('now',k===done); });
+  const card=$('card');
+  if(done===0){
+    card.className='card idle';
+    if(mode==='dis') card.innerHTML='<div class="card-h"><span class="k">시작 전</span><b>'+MOD.idle+'</b></div><p>'+(MOD.fold?'다음 단계를 누르면 먼저 펼친 뒤,<br>한 단계씩 분해합니다.':'다음 단계를 누르면<br>한 단계씩 분해합니다.')+'</p><p class="hint">재생을 누르면 단계마다 잠시 멈추며 넘어갑니다.</p>';
+    else card.innerHTML='<div class="card-h"><span class="k">시작 전</span><b>완전히 분해된 상태</b></div><p>다음 단계를 누르면<br>분해의 역순으로 조립합니다.</p>';
+  } else {
+    const disIdx=mode==='dis'?done:NST-done+1, st=mode==='dis'?DIS[done]:ASM[disIdx];
+    const chips=stageTypes(disIdx);
+    card.className='card';
+    card.innerHTML='<div class="card-h"><span class="k">'+(mode==='dis'?'분해':'조립')+' '+done+' / '+NST+'</span><b>'+st.name+'</b></div><p>'+st.hint+'</p>'+(st.warn?'<p class="warn">'+st.warn+'</p>':'')+
+      (chips.length?'<div class="mini">'+chips.map(id=>'<button class="mchip" data-id="'+id+'">'+TYPE[id].short+'</button>').join('')+'</div>':'')+
+      (mode==='dis'&&sT===NST?'<button class="btn btn-main" data-a="arr">'+(arrTarget>0?'다시 쌓아 보기':'부품 펼쳐 놓기')+'</button>':'');
+  }
+  $('bNext').disabled=atEnd(); $('bPrev').disabled=atStart();
+  const ta=$('tArr'); ta.hidden=!(sT===NST && mode==='dis'); ta.textContent=arrTarget>0?'다시 쌓기':'펼쳐 놓기';
+  if(arrTarget>0){ $('readout').innerHTML='분해 '+NST+'/'+NST+' · <em>부품 펼쳐 놓음</em>'; return; }
+  const lbl=mode==='dis'?'분해':'조립';
+  $('readout').innerHTML=lbl+' '+done+'/'+NST+' · <em>'+(done===0?(sT===0?MOD.idle:'완전 분해'):(mode==='dis'?DIS[done]:ASM[NST-done+1]).name)+'</em>';
+}
+$('card').addEventListener('click',e=>{ const a=e.target.closest('[data-a="arr"]'); if(a){ setArrange(arrTarget===0); return; } const b=e.target.closest('.mchip'); if(b) select(b.dataset.id); });
+$('tArr').onclick=()=>setArrange(arrTarget===0);
+
+/* ================= parts panel ================= */
+let partView='role';
+function renderParts(){
+  const el=$('pan-parts');
+  if(!selected){
+    el.innerHTML='<p class="hint">부품을 고르면 그 부품을 크게 보여 줍니다.</p><div class="pgrid'+(TYPES.length>15?' many':'')+'">'+TYPES.map(tp=>'<button class="pbtn" data-id="'+tp.id+'"><i>'+tp.no+'</i>'+tp.short+'</button>').join('')+'</div>';
+    return;
+  }
+  const tp=TYPE[selected];
+  el.innerHTML='<div class="ph"><button class="back" data-a="back">← 목록</button><h2>'+tp.name+'</h2></div>'+
+    '<div class="tags">'+tp.roles.map(r=>'<span class="tag">'+ROLES[r]+'</span>').join('')+(tp.qty?'<span class="tag">'+tp.qty+'개</span>':'')+'<span class="tag sig">'+(tp.stage?'분해 '+tp.stage+'단계에서 빠짐':'끝까지 남는 기준 부품')+'</span></div>'+
+    '<div class="seg" role="group" aria-label="설명 종류"><button data-v="role" aria-pressed="'+(partView==='role')+'">하는 일</button><button data-v="look" aria-pressed="'+(partView==='look')+'">관찰 포인트</button></div>'+
+    '<p class="ptext">'+(partView==='role'?tp.role:tp.look)+'</p>'+
+    '<div class="acts"><button class="btn'+(solo?' btn-main':'')+'" data-a="solo">'+(solo?'다른 부품도 보기':'이 부품만 보기')+'</button>'+(tp.stage?'<button class="btn" data-a="jump">빠지는 단계 보기</button>':'')+'</div>';
+}
+$('pan-parts').addEventListener('click',e=>{
+  const p=e.target.closest('.pbtn'); if(p){ select(p.dataset.id); return; }
+  const v=e.target.closest('[data-v]'); if(v){ partView=v.dataset.v; renderParts(); return; }
+  const a=e.target.closest('[data-a]'); if(!a) return;
+  if(a.dataset.a==='back') select(null);
+  if(a.dataset.a==='solo') setSolo(!solo);
+  if(a.dataset.a==='jump'){ const s=TYPE[selected].stage; mode='dis'; jumpTo(s); showTab('steps'); }
+});
+
+/* ================= roles panel ================= */
+document.querySelectorAll('.role').forEach(btn=>btn.addEventListener('click',()=>{ const r=btn.dataset.role; roleSel=roleSel===r?null:r; if(selected) select(null); render(); }));
+function renderRoles(){
+  document.querySelectorAll('.role').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.role===roleSel)));
+  const el=$('rres');
+  if(!roleSel){ el.className='rres'; el.innerHTML='묶음을 누르면<br>해당 부품만 주황색으로 보입니다.'; return; }
+  const list=TYPES.filter(tp=>tp.roles.includes(roleSel));
+  el.className='rres on'; el.innerHTML='<b>'+ROLES[roleSel]+' '+list.length+'종</b><br>'+list.map(tp=>tp.short).join(' · ')+
+    (roleSel==='input'||roleSel==='output'?'<br>화면은 출력이면서 터치를 읽는 입력입니다.':'')+(roleSel==='comm'?'<br>메인보드의 모뎀 칩과 금속 테두리 안테나가 함께 일합니다.':'')+
+    (roleSel==='power'&&MOD.fold?'<br>배터리가 두 개라 힌지 케이블로 전기를 나눠 보냅니다.':'');
+}
+
+/* ================= selection ================= */
+function select(type){
+  selected=type; if(!type){ solo=false; }
+  if(type){ roleSel=null; showTab('parts',true); focusTypes([type]); }
+  else { focused=false; resetView(true); }
+  render();
+}
+function setSolo(on){ solo=on && !!selected; if(selected) focusTypes([selected]); render(); }
+$('tSolo').onclick=()=>setSolo(!solo);
+$('tNames').onclick=()=>{ showNames=!showNames; $('tNames').setAttribute('aria-pressed',String(showNames)); };
+$('tView').onclick=()=>{ if(solo) solo=false; focused=false; resetView(true); render(); };
+document.querySelectorAll('#modelSeg button').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.m!==MOD.key){ loadModel(b.dataset.m); showTab('steps'); } }));
+
+/* ================= tabs ================= */
+const tabs=[...document.querySelectorAll('.tabs button')];
+function showTab(name,silent){ tab=name; tabs.forEach(b=>{ const on=b.dataset.tab===name; b.setAttribute('aria-selected',String(on)); b.tabIndex=on?0:-1; $('pan-'+b.dataset.tab).hidden=!on; }); if(!silent) render(); }
+tabs.forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.tab!=='parts' && selected){ selected=null; solo=false; focused=false; resetView(true); } showTab(b.dataset.tab); }));
+document.querySelector('.tabs').addEventListener('keydown',e=>{ const i=tabs.findIndex(b=>b.getAttribute('aria-selected')==='true'); let j;
+  if(e.key==='ArrowRight') j=(i+1)%tabs.length; else if(e.key==='ArrowLeft') j=(i+tabs.length-1)%tabs.length; else return; tabs[j].click(); tabs[j].focus(); e.preventDefault(); });
+
+function render(){ renderSteps(); renderParts(); renderRoles(); $('tSolo').hidden=!selected; $('tSolo').setAttribute('aria-pressed',String(solo)); $('tSolo').classList.toggle('sig',solo); paint(); }
+
+/* ================= picking ================= */
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2(); let down=null;
+renderer.domElement.addEventListener('pointerdown',e=>{ down={x:e.clientX,y:e.clientY,t:performance.now()}; });
+renderer.domElement.addEventListener('pointerup',e=>{
+  if(!down) return; const moved=Math.hypot(e.clientX-down.x,e.clientY-down.y), dt=performance.now()-down.t; down=null; if(moved>8||dt>500) return;
+  const r=renderer.domElement.getBoundingClientRect(); ndc.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(ndc,camera); const hits=ray.intersectObjects(pickables.filter(m=>instOf.get(m).group.visible),false);
+  const li=litInfo(); const hit=hits.find(h=>!li || li.set.has(instOf.get(h.object).type) || h.object.material.opacity>.5) || hits[0];
+  if(hit){ const ty=instOf.get(hit.object).type; if(ty!==selected) select(ty); } else if(selected && !solo) select(null);
+});
+controls.addEventListener('start',()=>{ camAnim=null; });
+host.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'){ stopAuto(); step(1); e.preventDefault(); } if(e.key==='ArrowLeft'){ stopAuto(); step(-1); e.preventDefault(); } if(e.key==='Escape') select(null); });
+
+/* ================= sizing ================= */
+function measure(){ const w=host.clientWidth||300, h=host.clientHeight||300; view.w=w; view.h=h; view.key=w+'x'+h; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+new ResizeObserver(measure).observe(host); measure();
+document.addEventListener('gesturestart',e=>e.preventDefault());
+
+/* ================= loop ================= */
+const clock=new THREE.Clock();
+function loop(){
+  const dt=Math.min(clock.getDelta(),.05);
+  if(target!=null){ const dir=Math.sign(target-t); t+=dir*(reduceMotion?10:speed())*dt;
+    if(dir===0||(dir>0&&t>=target)||(dir<0&&t<=target)){ t=target; target=null; fast=false; waitT=0; } }
+  if(arr!==arrTarget){ const sp=1/arrDur()*(reduceMotion?10:1); arr=arrTarget>arr?Math.min(arrTarget,arr+sp*dt):Math.max(arrTarget,arr-sp*dt);
+    if(arr===0 && arrTarget===0 && pendingStage){ const ps=pendingStage; pendingStage=null; setStage(ps[0],ps[1]); } else if(arr===arrTarget) render(); }
+  if(target==null && auto){ waitT+=dt; if(waitT>(slow?1.6:1.0)){ if(atEnd()) stopAuto(); else step(1); } }
+  applyPose();
+  if(camAnim){ camAnim.p=Math.min(1,camAnim.p+dt/camAnim.d); const e=ease(camAnim.p);
+    controls.target.lerpVectors(camAnim.t0,camAnim.t1,e); camera.position.lerpVectors(camAnim.c0,camAnim.c1,e);
+    if(camAnim.p>=1) camAnim=null; lastT=t; lastKey=view.key; }
+  else autoFrame();
+  controls.autoRotate=solo && !camAnim;
+  controls.update();
+  if(selected){ const pulse=.24+.1*Math.sin(performance.now()/280); for(const i of byType[selected]) for(const m of i.meshes) if(!m.userData.screen) m.material.emissiveIntensity=pulse; }
+  updateGhosts(); updateOverlay();
+  renderer.render(scene,camera);
+  requestAnimationFrame(loop);
+}
+const THEMES={dark:{edge:0x7d8a98,exp:1.18,sky:0xdfeaf5,gnd:0x3a4450,hi:.9,rim:.6},paper:{edge:0x3e3e43,exp:1.08,sky:0xffffff,gnd:0xa6a6a0,hi:.75,rim:0}};
+function setTheme(name){ const th=THEMES[name]?name:'dark', c=THEMES[th];
+  document.documentElement.dataset.theme=th==='paper'?'paper':'dark';
+  EDGE.set(c.edge); renderer.toneMappingExposure=c.exp; hemi.color.set(c.sky); hemi.groundColor.set(c.gnd); hemi.intensity=c.hi; rimL.intensity=c.rim;
+  curTheme=th; const tb=$('themeBtn');
+  tb.innerHTML = th==='dark'
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg>';
+  tb.setAttribute('aria-label', th==='dark' ? '밝은 테마로 바꾸기' : '어두운 테마로 바꾸기');
+  try{ localStorage.setItem('rev-theme',th); }catch(e){}
+  if(instances.length) paint(true); }
+let curTheme='dark';
+$('themeBtn').addEventListener('click',()=>setTheme(curTheme==='dark'?'paper':'dark'));
+let savedTheme='dark'; try{ savedTheme=localStorage.getItem('rev-theme')||'dark'; }catch(e){}
+clearTimeout(window.__bootTimer);
+setTheme(savedTheme);
+loadModel('std');
+requestAnimationFrame(loop);
+
+</script>
+
+</body></html>
