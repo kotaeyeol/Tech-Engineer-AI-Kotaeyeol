@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>.sfxbtn{margin-left:auto}.sfxbtn+.themebtn{margin-left:6px}.sfxbtn .x{display:none}.sfxbtn[aria-pressed="false"] .x{display:inline}.sfxbtn[aria-pressed="false"] .w1,.sfxbtn[aria-pressed="false"] .w2{display:none}.sfxbtn[aria-pressed="false"]{opacity:.6}</style></head><body>
 <title>아이폰 리버스 엔지니어링</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com/">
@@ -180,7 +180,7 @@ button:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
       <button data-m="std" aria-pressed="true">일반 아이폰</button>
       <button data-m="duo" aria-pressed="false">아이폰 듀오</button>
     </div>
-    <button class="themebtn" id="themeBtn" type="button" aria-label="밝은 테마로 바꾸기" title="테마 바꾸기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"></path></svg></button>
+    <button class="themebtn sfxbtn" id="sfxBtn" type="button" aria-label="효과음 끄기" aria-pressed="true" title="효과음 켜기/끄기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="w1" d="M15.5 9a4 4 0 0 1 0 6"/><path class="w2" d="M18.3 6.5a7.5 7.5 0 0 1 0 11"/><path class="x" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button><button class="themebtn" id="themeBtn" type="button" aria-label="밝은 테마로 바꾸기" title="테마 바꾸기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"></path></svg></button>
     <span class="kicker">기술·가정 · 정보통신 기술 수업 자료</span>
   </header>
 
@@ -249,6 +249,54 @@ button:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
 window.__bootTimer=setTimeout(function(){if(!window.__booted){var e=document.getElementById('err');if(e)e.hidden=false;}},15000);
 </script>
 <script type="module">
+/* ================= sound effects (Web Audio, no files) ================= */
+const SFX=(()=>{let ctx=null,out=null,noiseBuf=null,on=true;try{on=localStorage.getItem('re-sfx')!=='off'}catch(e){}
+ function init(){if(ctx)return true;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+  ctx=new AC();out=ctx.createGain();out.gain.value=.55;const comp=ctx.createDynamicsCompressor();out.connect(comp);comp.connect(ctx.destination);
+  noiseBuf=ctx.createBuffer(1,ctx.sampleRate*1.5,ctx.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return true}
+ function ready(){if(!on||!init())return false;if(ctx.state!=='running')ctx.resume();return true}
+ const T=()=>ctx.currentTime;
+ function tone(f,t,dur,{type='sine',vol=.2,a=.004,f2=null,q=null}={}){const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(out);o.start(t);o.stop(t+dur+.05);return o}
+ function noise(t,dur,{vol=.2,f=2000,f2=null,q=1,type='bandpass',a=.004}={}){const n=ctx.createBufferSource(),bq=ctx.createBiquadFilter(),g=ctx.createGain();n.buffer=noiseBuf;bq.type=type;bq.Q.value=q;bq.frequency.setValueAtTime(f,t);if(f2)bq.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+dur);n.connect(bq);bq.connect(g);g.connect(out);n.start(t,Math.random()*.5);n.stop(t+dur+.05)}
+ const click=(t,f=3200,v=.35)=>{noise(t,.035,{vol:v,f,q:3});tone(f/4,t,.03,{type:'triangle',vol:v*.25})};
+ /* step sounds by keyword in the step name */
+ const S={
+  screw(t,tight){for(let i=0;i<7;i++)click(t+i*.075,(tight?2400+i*160:3400-i*140),.28);tone(tight?520:700,t+.56,.12,{type:'triangle',vol:.12,f2:tight?760:420})},
+  sim(t,inn){noise(t,.22,{vol:.18,f:inn?1800:4200,f2:inn?4200:1800,q:2});click(t+(inn?.22:0),2600,.3)},
+  screen(t,close){if(close){noise(t,.25,{vol:.16,f:600,f2:1600,q:1});tone(140,t+.22,.18,{vol:.35,f2:70});click(t+.24,1800,.25)}else{noise(t,.35,{vol:.2,f:500,f2:2600,q:.8});tone(220,t+.3,.14,{vol:.25,f2:520});click(t+.32,4200,.2)}},
+  connector(t,plug){click(t,plug?2200:4000,.4);click(t+.06,plug?1600:3000,.25);tone(plug?880:660,t+.08,.12,{type:'square',vol:.05,f2:plug?1320:440})},
+  sensor(t,inn){[0,1,2].forEach(i=>tone((inn?[1568,1319,1760]:[1760,1319,1568])[i],t+i*.07,.18,{type:'sine',vol:.12}))},
+  camera(t){click(t,5200,.45);noise(t+.02,.06,{vol:.25,f:2500,q:1.5});click(t+.11,3800,.35);tone(1200,t+.14,.08,{type:'sine',vol:.06})},
+  buzz(t){const o=tone(130,t,.5,{type:'sawtooth',vol:.14,a:.02});const lfo=ctx.createOscillator(),lg=ctx.createGain();lfo.frequency.value=34;lg.gain.value=60;lfo.connect(lg);lg.connect(o.frequency);lfo.start(t);lfo.stop(t+.55)},
+  peel(t,stick){if(stick){noise(t,.18,{vol:.22,f:900,f2:300,q:1.2});tone(90,t+.15,.15,{vol:.3,f2:60})}else{for(let i=0;i<5;i++)noise(t+i*.06,.09,{vol:.16,f:1200+i*500,q:2.5});noise(t+.3,.25,{vol:.2,f:5000,f2:1500,q:1})}},
+  board(t,inn){const ns=inn?[523,659,784,1047]:[1047,784,659,523];ns.forEach((f,i)=>tone(f*2,t+i*.06,.07,{type:'square',vol:.045}));tone(inn?1568:392,t+.26,.16,{type:'triangle',vol:.1})},
+  coil(t,inn){tone(inn?110:330,t,.45,{vol:.25,f2:inn?330:110,a:.03});tone(inn?220:660,t,.4,{type:'triangle',vol:.06,f2:inn?660:220})},
+  generic(t,inn){click(t,inn?2000:3200,.35);tone(inn?440:660,t+.05,.12,{type:'triangle',vol:.12,f2:inn?660:440})}
+ };
+ function kindOf(name){name=name||'';if(/나사/.test(name))return'screw';if(/SIM/.test(name))return'sim';if(/화면/.test(name))return'screen';if(/배터리 연결/.test(name))return'connector';if(/센서/.test(name))return'sensor';if(/카메라/.test(name))return'camera';if(/진동|스피커/.test(name))return'buzz';if(/배터리|접착/.test(name))return'peel';if(/메인보드|보드/.test(name))return'board';if(/코일|포트|무선/.test(name))return'coil';return'generic'}
+ const api={
+  unlock(){if(on)ready()},
+  isOn:()=>on,
+  toggle(){on=!on;try{localStorage.setItem('re-sfx',on?'on':'off')}catch(e){}if(on&&ready())api.tick();return on},
+  tick(){if(!ready())return;click(T(),2800,.18)},
+  tab(){if(!ready())return;const t=T();tone(1400,t,.05,{type:'triangle',vol:.08});tone(1900,t+.03,.05,{type:'triangle',vol:.06})},
+  select(i){if(!ready())return;const t=T(),f=[523,587,659,784,880,988,1047,1175,1319,1397,1568][(i||0)%11];tone(f,t,.22,{vol:.16});tone(f*2,t+.03,.18,{vol:.05})},
+  deselect(){if(!ready())return;const t=T();tone(660,t,.12,{vol:.1,f2:440})},
+  model(){if(!ready())return;const t=T();noise(t,.4,{vol:.14,f:400,f2:3000,q:.7});[523,659,784,1047].forEach((f,i)=>tone(f,t+.18+i*.05,.25,{vol:.08}))},
+  arrange(on2){if(!ready())return;const t=T();for(let i=0;i<9;i++)click(t+i*.045,on2?1800+i*220:3600-i*220,.16);tone(on2?660:990,t+.42,.18,{vol:.1,f2:on2?990:660})},
+  play(start){if(!ready())return;const t=T();tone(start?660:880,t,.1,{type:'triangle',vol:.14});tone(start?990:587,t+.07,.14,{type:'triangle',vol:.12})},
+  done(dis){if(!ready())return;const t=T()+.15;(dis?[523,659,784,1047,1319]:[392,523,659,784,1047]).forEach((f,i)=>{tone(f,t+i*.08,.5,{vol:.12});tone(f*2,t+i*.08,.3,{vol:.03})})},
+  stage(a,b,list,nst){if(a===b||!ready())return;const t=T(),dis=b>a,n=Math.abs(b-a);
+   if(n>1){noise(t,.28,{vol:.16,f:dis?600:3000,f2:dis?3000:600,q:.8});}
+   const idx=Math.max(a,b),name=list&&list[idx]&&list[idx].name,k=kindOf(name),st=t+(n>1?.2:0),inn=!dis;
+   const fn=S[k];fn(st,inn);
+   if((dis&&b===nst)||(!dis&&b===0))api.done(dis)}
+ };
+ ['pointerdown','touchend','keydown'].forEach(ev=>window.addEventListener(ev,()=>api.unlock(),{capture:true,passive:true}));
+ return api})();
+
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -875,7 +923,7 @@ function buildDots(){ dotsEl.innerHTML=''; dotsEl.style.gridTemplateColumns='rep
 dotsEl.addEventListener('click',e=>{ const b=e.target.closest('.dot'); if(!b) return; const i=+b.dataset.i; jumpTo(mode==='dis' ? i : NST-i); });
 function speed(){ return fast ? 1/NST/0.35 : (slow?1/NST/2.6:1/NST/1.4); }
 function setStage(n,isFast){ n=clamp(n,0,NST); if(arr>0||arrTarget>0){ if(n===NST) return; pendingStage=[n,isFast]; setArrange(false); return; } if(n===sT && target==null) return;
-  sT=n; target=sT/NST; fast=!!isFast;
+  { const _from=sT; sT=n; SFX.stage(_from,n,(mode==='dis'?DIS:DIS),NST); } target=sT/NST; fast=!!isFast;
   if(selected){ selected=null; solo=false; } if(focused){ focused=false; resetView(true); } render(); }
 function step(dir){ setStage(sT + (mode==='dis'?dir:-dir), false); waitT=0; }
 function jumpTo(n){ stopAuto(); setStage(n,true); }
@@ -883,11 +931,11 @@ const PLAY_HTML='<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"
 function stopAuto(){ auto=false; $('pAuto').setAttribute('aria-pressed','false'); $('pAuto').innerHTML=PLAY_HTML; }
 $('bNext').onclick=()=>{ stopAuto(); step(1); };
 $('bPrev').onclick=()=>{ stopAuto(); step(-1); };
-$('mDis').onclick=()=>{ mode='dis'; stopAuto(); render(); };
-$('mAsm').onclick=()=>{ mode='asm'; stopAuto(); render(); };
+$('mDis').onclick=()=>{ SFX.tab(); mode='dis'; stopAuto(); render(); };
+$('mAsm').onclick=()=>{ SFX.tab(); mode='asm'; stopAuto(); render(); };
 const atEnd=()=>mode==='dis'?sT>=NST:sT<=0;
 const atStart=()=>mode==='dis'?sT<=0:sT>=NST;
-$('pAuto').onclick=()=>{ if(auto){ stopAuto(); return; } if(atEnd()) return; auto=true; waitT=99; $('pAuto').setAttribute('aria-pressed','true'); $('pAuto').innerHTML=PAUSE_HTML; };
+$('pAuto').onclick=()=>{ SFX.play(!auto&&!atEnd()); if(auto){ stopAuto(); return; } if(atEnd()) return; auto=true; waitT=99; $('pAuto').setAttribute('aria-pressed','true'); $('pAuto').innerHTML=PAUSE_HTML; };
 
 const arrDur=()=>slow?2.0:1.2;
 function setArrange(on){ if(on && !(sT===NST && target==null)) return; arrTarget=on?1:0; stopAuto(); if(selected){ selected=null; solo=false; } focused=false;
@@ -916,7 +964,7 @@ function renderSteps(){
   $('readout').innerHTML=lbl+' '+done+'/'+NST+' · <em>'+(done===0?(sT===0?MOD.idle:'완전 분해'):(mode==='dis'?DIS[done]:ASM[NST-done+1]).name)+'</em>';
 }
 $('card').addEventListener('click',e=>{ const a=e.target.closest('[data-a="arr"]'); if(a){ setArrange(arrTarget===0); return; } const b=e.target.closest('.mchip'); if(b) select(b.dataset.id); });
-$('tArr').onclick=()=>setArrange(arrTarget===0);
+$('tArr').onclick=()=>{ SFX.arrange(arrTarget===0); setArrange(arrTarget===0); };
 
 /* ================= parts panel ================= */
 let partView='role';
@@ -955,22 +1003,22 @@ function renderRoles(){
 }
 
 /* ================= selection ================= */
-function select(type){
+function select(type){ if(type!==selected){ if(type) SFX.select(TYPES.findIndex(x=>x.id===type)); else SFX.deselect(); }
   selected=type; if(!type){ solo=false; }
   if(type){ roleSel=null; showTab('parts',true); focusTypes([type]); }
   else { focused=false; resetView(true); }
   render();
 }
 function setSolo(on){ solo=on && !!selected; if(selected) focusTypes([selected]); render(); }
-$('tSolo').onclick=()=>setSolo(!solo);
-$('tNames').onclick=()=>{ showNames=!showNames; $('tNames').setAttribute('aria-pressed',String(showNames)); };
-$('tView').onclick=()=>{ if(solo) solo=false; focused=false; resetView(true); render(); };
-document.querySelectorAll('#modelSeg button').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.m!==MOD.key){ loadModel(b.dataset.m); showTab('steps'); } }));
+$('tSolo').onclick=()=>{ SFX.tick(); setSolo(!solo); };
+$('tNames').onclick=()=>{ SFX.tick(); showNames=!showNames; $('tNames').setAttribute('aria-pressed',String(showNames)); };
+$('tView').onclick=()=>{ SFX.tick(); if(solo) solo=false; focused=false; resetView(true); render(); };
+document.querySelectorAll('#modelSeg button').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.m!==MOD.key){ SFX.model(); loadModel(b.dataset.m); showTab('steps'); } }));
 
 /* ================= tabs ================= */
 const tabs=[...document.querySelectorAll('.tabs button')];
 function showTab(name,silent){ tab=name; tabs.forEach(b=>{ const on=b.dataset.tab===name; b.setAttribute('aria-selected',String(on)); b.tabIndex=on?0:-1; $('pan-'+b.dataset.tab).hidden=!on; }); if(!silent) render(); }
-tabs.forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.tab!=='parts' && selected){ selected=null; solo=false; focused=false; resetView(true); } showTab(b.dataset.tab); }));
+tabs.forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.tab!=='parts' && selected){ selected=null; solo=false; focused=false; resetView(true); } SFX.tab(); showTab(b.dataset.tab); }));
 document.querySelector('.tabs').addEventListener('keydown',e=>{ const i=tabs.findIndex(b=>b.getAttribute('aria-selected')==='true'); let j;
   if(e.key==='ArrowRight') j=(i+1)%tabs.length; else if(e.key==='ArrowLeft') j=(i+tabs.length-1)%tabs.length; else return; tabs[j].click(); tabs[j].focus(); e.preventDefault(); });
 
@@ -1027,7 +1075,7 @@ function setTheme(name){ const th=THEMES[name]?name:'dark', c=THEMES[th];
   try{ localStorage.setItem('rev-theme',th); }catch(e){}
   if(instances.length) paint(true); }
 let curTheme='dark';
-$('themeBtn').addEventListener('click',()=>setTheme(curTheme==='dark'?'paper':'dark'));
+$('themeBtn').addEventListener('click',()=>{ SFX.tick(); }); const sfxUI=()=>{const o=SFX.isOn(),b=$('sfxBtn');b.setAttribute('aria-pressed',String(o));b.setAttribute('aria-label',o?'효과음 끄기':'효과음 켜기')}; $('sfxBtn').addEventListener('click',()=>{SFX.toggle();sfxUI()}); sfxUI(); $('themeBtn').addEventListener('click',()=>setTheme(curTheme==='dark'?'paper':'dark'));
 let savedTheme='dark'; try{ savedTheme=localStorage.getItem('rev-theme')||'dark'; }catch(e){}
 clearTimeout(window.__bootTimer);
 setTheme(savedTheme);
