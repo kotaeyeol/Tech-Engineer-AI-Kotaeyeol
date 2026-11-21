@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>코파일럿 프롬프트 활동지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 차분한 공학 노트, AI에게 정확히 말하는 법을 한 단계씩 연습
+   IDEA: 부품을 조립하듯 프롬프트 6요소를 끼워 맞추는 프롬프트 조립대
+   PICTURE: 왼쪽 입력 칸, 오른쪽 실시간으로 완성되는 프롬프트 카드(요소별 색 띠 없이 색 라벨)
+   COLOUR and TYPE: 흰 종이, 청사진 파랑 #1f4fa3, 마이크로비트 LED 빨강 / IBM Plex Sans KR + Plex Mono
+   LAYOUT: 왼쪽 단계 목차, 오른쪽 카드 흐름, 조립대는 넓은 화면에서 두 칸 */
+:root{color-scheme:light dark;--bg:light-dark(#f4f6fa,#10141c);--paper:light-dark(#ffffff,#171c26);--ink:light-dark(#1a2030,#e9edf4);--sub:light-dark(#5b6577,#a2abbb);--line:light-dark(#e1e6ee,#2a3242);--soft:light-dark(#f2f5fa,#202838);--blue:light-dark(#1f4fa3,#7ea6ef);--blueSoft:light-dark(#e8effb,#1b2944);--led:#e8312f;--ok:light-dark(#1d7a46,#6fd39a);--okSoft:light-dark(#e6f4ec,#183424);--badSoft:light-dark(#fdeceb,#3a1d1d);
+--c1:light-dark(#6a3fb5,#b79cf0);--c2:light-dark(#1f4fa3,#7ea6ef);--c3:light-dark(#0f7d8c,#6fd0dc);--c4:light-dark(#b26a00,#f0b85a);--c5:light-dark(#c0362c,#ff8a80);--c6:light-dark(#2e7d32,#80d48a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 'IBM Plex Sans KR',system-ui,sans-serif;overflow-x:clip}
+html{scroll-padding-top:24px}
+.wrap{max-width:1200px;margin:0 auto;padding:clamp(20px,3vw,40px) max(4vw,14px) 80px;display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px}
+header.top{grid-column:1/-1}
+h1{font-size:clamp(28px,3.6vw,40px);line-height:1.1;margin:0 0 8px;font-weight:700;text-wrap:balance}
+.top p{margin:0;color:var(--sub);max-width:68ch}
+nav.steps{position:sticky;top:20px;align-self:start;display:flex;flex-direction:column;gap:2px}
+nav.steps a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;color:var(--ink);text-decoration:none;font-size:15px}
+nav.steps a:hover{background:var(--paper)}
+.dot{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--paper);border:1.5px solid var(--line);color:var(--sub)}
+main{display:flex;flex-direction:column;gap:20px}
+section{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,2.6vw,30px)}
+section>h2{display:flex;align-items:center;gap:12px;font-size:23px;line-height:1.2;margin:0 0 4px}
+.num{width:34px;height:34px;border-radius:10px;background:var(--blueSoft);color:var(--blue);display:grid;place-items:center;font-size:16px;flex:none}
+.why{margin:0 0 18px;color:var(--sub);font-size:15px}
+.f{margin-bottom:16px}
+.f>label,.f>.lb{display:block;font-weight:600;font-size:15px;margin-bottom:6px}
+.tip{display:block;font-weight:400;color:var(--sub);font-size:14px}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--soft);border:1.5px solid transparent;border-radius:12px;padding:10px 13px;min-height:46px}
+textarea{min-height:84px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);background:var(--paper)}
+button:focus-visible,.chip:focus-within,a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative;display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);cursor:pointer;font-size:15px;user-select:none}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip:has(input:checked){background:var(--blue);border-color:var(--blue);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--sub);min-height:36px;padding:0 8px;font-weight:500}
+.btn.sm{min-height:38px;font-size:14px;padding:0 12px}
+/* 흐름 */
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:22px;counter-reset:f}
+.flow span{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:var(--soft);font-size:14px;font-weight:600}
+.flow span::before{counter-increment:f;content:counter(f);display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px}
+.flow i{color:var(--sub);font-style:normal}
+.vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.vs>div{border-radius:16px;padding:16px}
+.vs .bad{background:var(--badSoft)}.vs .good{background:var(--okSoft)}
+.vs h3{margin:0 0 8px;font-size:16px}
+.vs q{display:block;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:13.5px;line-height:1.7;quotes:none;white-space:pre-wrap;background:var(--paper);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.vs p{margin:0;font-size:14px}
+/* 6요소 */
+.six{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.six>div{border:1.5px solid var(--line);border-radius:14px;padding:14px}
+.six b{display:flex;align-items:center;gap:8px;font-size:16px;margin-bottom:4px}
+.six b em{font-style:normal;font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;color:#fff}
+.six p{margin:0 0 6px;font-size:14px;color:var(--sub)}
+.six code{font-family:'IBM Plex Mono',monospace;font-size:13px;background:var(--soft);padding:2px 6px;border-radius:6px;display:inline-block}
+.k1{background:var(--c1)}.k2{background:var(--c2)}.k3{background:var(--c3)}.k4{background:var(--c4)}.k5{background:var(--c5)}.k6{background:var(--c6)}
+/* 조립대 */
+.ex{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:18px;padding:12px 14px;border-radius:12px;background:var(--blueSoft);font-size:14px}
+.build{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;color:#fff;margin-right:6px;vertical-align:1px}
+.prow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:8px;margin-bottom:8px}
+.preview{position:sticky;top:20px;border:1.5px solid var(--ink);border-radius:16px;overflow:hidden;background:var(--paper)}
+.phead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px 10px 16px;background:var(--ink);color:var(--paper);font-weight:600;font-size:15px}
+.phead .btn{background:var(--paper);color:var(--ink);border:0}
+.ptext{margin:0;padding:16px;font:13.5px/1.75 'IBM Plex Mono','IBM Plex Sans KR',monospace;white-space:pre-wrap;word-break:break-word;max-height:62vh;overflow:auto}
+.ptext .h{font-weight:700}
+.pfoot{display:flex;justify-content:space-between;gap:8px;padding:8px 16px;border-top:1px solid var(--line);font-size:13px;color:var(--sub)}
+.toast{color:var(--ok);font-weight:600}
+/* 점검 */
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.checks li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--soft);font-size:15px}
+.checks .s{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--line);color:var(--sub)}
+.checks li.ok .s{background:var(--ok);color:#fff}
+.checks li.ok{background:var(--okSoft)}
+.checks label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;width:100%}
+.checks input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--blue)}
+.score{font-size:15px;margin:0 0 12px}.score b{font-size:22px;color:var(--blue)}
+/* 넣기 단계 */
+.how{counter-reset:h;list-style:none;margin:0 0 18px;padding:0;display:grid;gap:8px}
+.how li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px}
+.how li:has(input:checked){border-color:var(--ok);background:var(--okSoft)}
+.how input{width:20px;height:20px;margin-top:3px;accent-color:var(--ok)}
+.how b{display:block}.how span{font-size:14px;color:var(--sub)}
+.note{padding:12px 14px;border-radius:12px;background:var(--blueSoft);font-size:14px;margin-bottom:16px}
+.note b{color:var(--blue)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.out{display:none;margin-top:14px}.out.show{display:block}
+.out textarea{min-height:260px;font-size:14px;background:var(--soft)}
+.dlg{position:fixed;inset:0;background:rgba(10,15,25,.45);display:none;place-items:center;padding:16px;z-index:9}
+.dlg.show{display:grid}.dlg .box{background:var(--paper);border-radius:16px;padding:22px;max-width:380px}.dlg p{margin:0 0 16px}
+@media(max-width:1000px){.build{grid-template-columns:minmax(0,1fr)}.preview{position:static}.six{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}nav.steps{position:sticky;top:0;z-index:5;flex-direction:row;overflow-x:auto;background:var(--bg);margin:0 -14px;padding:8px 14px}nav.steps a{flex:none;padding:6px 8px}nav.steps .t{display:none}}
+@media(max-width:620px){.vs,.six{grid-template-columns:minmax(0,1fr)}.prow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.prow .btn{grid-column:1/-1;justify-self:end}}
+</style></head><body>
+<div class="wrap">
+<header class="top">
+  <h1>코파일럿에게 마이크로비트 코드 부탁하기</h1>
+  <p>AI는 내가 말한 만큼만 알아들어요. 프롬프트를 6가지 요소로 조립해 코파일럿에게 보내고, 받은 코드를 MakeCode에 넣어 시험한 뒤 다시 고쳐 달라고 묻는 과정을 연습합니다. 입력한 내용은 이 기기에 자동 저장됩니다.</p>
+</header>
+<nav class="steps" aria-label="활동 단계"><a href="#s1"><span class="dot">1</span><span class="t">전체 흐름</span></a><a href="#s2"><span class="dot">2</span><span class="t">프롬프트 6요소</span></a><a href="#s3"><span class="dot">3</span><span class="t">프롬프트 조립</span></a><a href="#s4"><span class="dot">4</span><span class="t">보내기 전 점검</span></a><a href="#s5"><span class="dot">5</span><span class="t">MakeCode에 넣기</span></a><a href="#s6"><span class="dot">6</span><span class="t">고쳐 달라고 묻기</span></a><a href="#s7"><span class="dot">7</span><span class="t">돌아보기</span></a></nav>
+<main>
+
+<section id="s1"><h2><span class="num">1</span>전체 흐름과 좋은 프롬프트</h2>
+<p class="why">설계 학습지에서 만든 ‘만약 ~이면’ 규칙이 프롬프트의 재료가 돼요.</p>
+<div class="flow"><span>설계 규칙 정리</span><i>→</i><span>프롬프트 조립</span><i>→</i><span>코파일럿에 보내기</span><i>→</i><span>MakeCode 자바스크립트에 붙여넣기</span><i>→</i><span>블록·시뮬레이터 확인</span><i>→</i><span>기기에서 시험</span><i>→</i><span>고쳐 달라고 다시 묻기</span></div>
+<div class="vs">
+<div class="bad"><h3>이렇게 물으면</h3><q>마이크로비트로 주차장 차단기 코드 만들어줘</q><p>파이썬으로 줄 수도 있고, 핀 번호와 각도를 마음대로 정해요. 우리 모형과 맞지 않는 코드가 나오기 쉬워요.</p></div>
+<div class="good"><h3>이렇게 물으면</h3><q>MakeCode for micro:bit 자바스크립트로 써 줘.
+초음파 센서(Trig P1, Echo P2), 서보모터(P0)를 쓴다.
+만약 거리가 10cm보다 가까우면 서보를 90도로 돌리고,
+3초 뒤 0도로 돌린다. 블록으로 바뀌는 문법만 써 줘.</q><p>환경, 부품, 핀, 규칙, 기준값이 분명해서 바로 붙여 넣어 시험할 수 있는 코드가 나와요.</p></div>
+</div>
+</section>
+
+<section id="s2"><h2><span class="num">2</span>프롬프트를 이루는 6요소</h2>
+<p class="why">아래 여섯 가지가 들어가면 AI가 짐작할 일이 줄어들어요.</p>
+<div class="six">
+<div><b><em class="k1">환경</em>어디서 쓸 코드인가</b><p>편집기와 언어를 꼭 밝혀요.</p><code>MakeCode for micro:bit 자바스크립트</code></div>
+<div><b><em class="k2">목표</em>무엇을 하는 장치인가</b><p>장치 이름과 하는 일을 한 문장으로.</p><code>차가 오면 열리는 주차장 차단기</code></div>
+<div><b><em class="k3">연결</em>어떤 부품을 어느 핀에</b><p>부품 이름과 핀 번호를 정확히.</p><code>서보모터 → P0</code></div>
+<div><b><em class="k4">규칙</em>만약 ~이면 ~한다</b><p>설계 학습지의 규칙 문장을 그대로.</p><code>거리 &lt; 10cm 이면 90도</code></div>
+<div><b><em class="k5">조건</em>지켜야 할 약속</b><p>블록 변환, 확장 이름, 주석 언어 등.</p><code>블록으로 바뀌는 문법만</code></div>
+<div><b><em class="k6">형식</em>어떻게 답해 줄까</b><p>코드 모양과 설명 길이를 정해요.</p><code>코드 한 덩어리 + 설명 3줄</code></div>
+</div>
+</section>
+
+<section id="s3"><h2><span class="num">3</span>프롬프트 조립하기</h2>
+<p class="why">칸을 채우면 오른쪽에 프롬프트가 완성돼요. 처음이라면 예시를 불러와 어떻게 바뀌는지 먼저 살펴보세요.</p>
+<div class="ex">예시 불러오기 <button class="btn sm" data-ex="park" type="button">스마트 주차장</button><button class="btn sm" data-ex="street" type="button">스마트 가로등</button><button class="btn sm" data-ex="farm" type="button">스마트 팜</button><button class="btn ghost" id="clearB" type="button">비우기</button></div>
+<div class="build">
+<div>
+<div class="f"><label for="dev"><span class="tag k2">목표</span>장치 이름</label><input type="text" id="dev" data-k placeholder="예: 스마트 주차장 차단기"></div>
+<div class="f"><label for="goal"><span class="tag k2">목표</span>이 장치가 하는 일</label><textarea id="goal" data-k placeholder="예: 차가 다가오면 차단기를 자동으로 열고 닫아 빈자리를 찾는 시간을 줄인다."></textarea></div>
+<div class="f"><span class="lb"><span class="tag k3">연결</span>부품과 핀 <span class="tip">내장 센서는 핀 칸에 ‘내장’이라고 써요.</span></span><div id="parts"></div><button class="btn sm" id="addPart" type="button">+ 부품 추가</button>
+<datalist id="plist"><option>초음파 센서</option><option>서보모터</option><option>DC 모터</option><option>LED 모듈</option><option>워터 펌프(릴레이)</option><option>토양 수분 센서</option><option>인체 감지(PIR) 센서</option><option>빗물 센서</option><option>부저</option><option>빛 센서(내장)</option><option>온도 센서(내장)</option><option>버튼 A·B(내장)</option><option>스피커(내장)</option><option>LED 화면(내장)</option></datalist></div>
+<div class="f"><label for="rule"><span class="tag k4">규칙</span>동작 규칙 <span class="tip">설계 학습지 4단계의 ‘만약 ~이면 ~한다’ 문장을 붙여 넣어요. 여러 개면 줄을 바꿔요.</span></label><textarea id="rule" data-k style="min-height:110px"></textarea></div>
+<div class="f"><label for="val"><span class="tag k4">규칙</span>기준값과 시간</label><input type="text" id="val" data-k placeholder="예: 거리 10cm, 열린 채 3초"></div>
+<div class="f"><span class="lb"><span class="tag k5">조건</span>지켜야 할 약속</span><div class="chips" id="condChips"></div></div>
+<div class="f"><span class="lb"><span class="tag k6">형식</span>답하는 방식</span><div class="chips" id="fmtChips"></div></div>
+</div>
+<div class="preview" aria-live="polite">
+<div class="phead"><span>완성된 프롬프트</span><button class="btn sm" id="copyP" type="button">복사하기</button></div>
+<pre class="ptext" id="ptext"></pre>
+<div class="pfoot"><span id="pcount"></span><span class="toast" id="ptoast"></span></div>
+</div>
+</div>
+</section>
+
+<section id="s4"><h2><span class="num">4</span>보내기 전 점검</h2>
+<p class="why">위쪽 여섯 개는 조립한 내용으로 자동 점검돼요. 아래 두 개는 스스로 확인하고 표시해요.</p>
+<p class="score"><b id="scoreN">0</b> / 8 통과</p>
+<ul class="checks" id="autoChecks"></ul>
+<ul class="checks" style="margin-top:8px">
+<li><label><input type="checkbox" id="m1" data-k>이름, 학번 같은 개인정보를 넣지 않았어요.</label></li>
+<li><label><input type="checkbox" id="m2" data-k>학교에서 허용한 계정과 도구로 코파일럿을 쓰고 있어요.</label></li>
+</ul>
+</section>
+
+<section id="s5"><h2><span class="num">5</span>MakeCode에 넣고 확인하기</h2>
+<p class="why">받은 코드는 바로 다운로드하지 말고 블록과 시뮬레이터로 먼저 확인해요. 한 단계씩 하고 체크하세요.</p>
+<ol class="how" id="how"></ol>
+<div class="note"><b>회색 블록이 보인다면?</b> AI가 블록으로 바꿀 수 없는 문법을 썼다는 뜻이에요. 실행은 될 수 있지만 고치기 어려우니, 6단계에서 ‘블록으로 안 바뀌어요’를 골라 다시 물어보세요.</div>
+<div class="f"><span class="lb">결과는 어땠나요?</span><div class="chips" id="resChips"></div></div>
+<div class="f"><label for="errMsg">나온 오류 메시지나 이상한 점 <span class="tip">오류 메시지는 그대로 복사해 두면 다시 물을 때 좋아요.</span></label><textarea id="errMsg" data-k></textarea></div>
+</section>
+
+<section id="s6"><h2><span class="num">6</span>고쳐 달라고 다시 묻기</h2>
+<p class="why">처음부터 다시 만들어 달라고 하기보다, 무엇이 어떻게 다른지 정확히 알려 줘야 좋은 답이 와요.</p>
+<div class="f"><span class="lb">어떤 상황인가요?</span><div class="chips" id="fixChips"></div></div>
+<div class="row">
+<div class="f"><label for="expect">원래 기대한 동작</label><textarea id="expect" data-k placeholder="예: 손을 10cm 앞에 대면 차단기가 열려야 한다."></textarea></div>
+<div class="f"><label for="actual">실제로 일어난 일</label><textarea id="actual" data-k placeholder="예: 손을 대도 서보가 움직이지 않는다."></textarea></div>
+</div>
+<div class="f"><label for="addFeat">추가하고 싶은 기능 <span class="tip">‘기능 추가’를 골랐을 때만 써요.</span></label><input type="text" id="addFeat" data-k placeholder="예: 차단기가 열리면 소리가 나게"></div>
+<div class="preview" style="position:static">
+<div class="phead"><span>다시 묻는 프롬프트</span><button class="btn sm" id="copyF" type="button">복사하기</button></div>
+<pre class="ptext" id="ftext"></pre>
+<div class="pfoot"><span>코파일럿 대화창에 이어서 보내세요. 지금 코드를 함께 붙여 넣으면 더 정확해요.</span><span class="toast" id="ftoast"></span></div>
+</div>
+</section>
+
+<section id="s7"><h2><span class="num">7</span>돌아보기</h2>
+<p class="why">AI가 만든 코드도 결국 내가 이해하고 책임지는 코드예요.</p>
+<div class="f"><label for="r1">코드에서 내가 이해한 부분과 아직 이해하지 못한 부분</label><textarea id="r1" data-k></textarea></div>
+<div class="f"><label for="r2">AI 코드에서 내가 직접 바꾼 부분 (예: 기준값, 핀 번호, 각도)</label><textarea id="r2" data-k></textarea></div>
+<div class="f"><label for="r3">프롬프트를 고치면서 알게 된 점</label><textarea id="r3" data-k></textarea></div>
+<div style="display:flex;flex-wrap:wrap;gap:10px"><button class="btn pri" id="make" type="button">활동 기록 만들기</button><button class="btn ghost" id="reset" type="button">활동지 초기화</button></div>
+<div class="out" id="out"><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><button class="btn pri" id="copyR" type="button">복사하기</button><span class="toast" id="rtoast"></span></div><textarea id="report" readonly aria-label="활동 기록"></textarea></div>
+</section>
+</main>
+</div>
+<div class="dlg" id="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgT"><div class="box"><p id="dlgT">활동지에 쓴 내용을 모두 지울까요? 되돌릴 수 없어요.</p><div style="display:flex;gap:10px"><button class="btn pri" id="dlgYes" type="button" style="background:var(--led);border-color:var(--led)">모두 지우기</button><button class="btn" id="dlgNo" type="button">취소</button></div></div></div>
+
+<script>
+{
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+const CONDS=[['js','MakeCode 자바스크립트로','Microsoft MakeCode for micro:bit의 자바스크립트(JavaScript) 편집기에 붙여 넣을 코드로 써 줘. 파이썬은 쓰지 마.'],
+['blk','블록으로 바뀌는 문법만','블록 편집기로 바꿨을 때 회색 블록이 생기지 않도록 MakeCode 기본 블록으로 바뀌는 문법(basic, input, pins, led, music, radio 등)만 써 줘.'],
+['ext','필요한 확장 이름 알려 주기','기본 블록에 없는 확장(예: sonar)이 필요하면 확장 이름과 추가 방법을 알려 줘.'],
+['kor','주석은 한국어로','코드의 중요한 줄마다 한국어 주석을 달아 줘.'],
+['var','알기 쉬운 변수 이름','변수 이름은 distance, isOpen처럼 뜻을 알 수 있게 지어 줘.'],
+['easy','중학생 수준으로 단순하게','중학생이 이해할 수 있게 최대한 단순하게 써 줘.']];
+const FMTS=[['one','코드는 한 덩어리로','코드는 하나의 코드 블록으로 전체를 한 번에 보여 줘.'],
+['three','설명은 3줄 이내','코드 아래에 작동 방식을 3줄 이내로 설명해 줘.'],
+['test','시험 방법도 알려 주기','시뮬레이터와 실제 기기에서 무엇을 해 보면 확인할 수 있는지 2가지 알려 줘.']];
+const RES=['한 번에 잘 됐어요','오류가 났어요','회색 블록이 생겼어요','시뮬레이터는 되는데 기기는 안 돼요','생각과 다르게 움직여요'];
+const FIX=[['err','오류가 나요'],['gray','블록으로 안 바뀌어요'],['diff','생각과 다르게 움직여요'],['dev','기기에서만 안 돼요'],['why','코드가 이해 안 돼요'],['add','기능을 추가하고 싶어요']];
+const HOW=[['새 프로젝트 만들기','makecode.microbit.org에서 ‘새 프로젝트’를 누르고 장치 이름으로 저장해요.'],
+['자바스크립트 탭으로 바꾸기','편집기 위쪽의 ‘블록 | 자바스크립트’ 중 자바스크립트를 눌러요.'],
+['원래 코드 지우고 붙여넣기','Ctrl+A로 모두 선택해 지운 뒤, 코파일럿 코드를 붙여 넣어요. 코드 밖의 설명 문장은 넣지 않아요.'],
+['필요한 확장 추가하기','빨간 밑줄이 생기고 sonar 같은 이름이 보이면, 톱니바퀴 메뉴의 ‘확장’에서 그 이름을 검색해 추가해요.'],
+['블록 탭으로 돌아가 확인하기','블록으로 바꿔 보고, 규칙대로 조립되어 있는지 눈으로 따라 읽어요.'],
+['시뮬레이터로 시험하기','왼쪽 시뮬레이터에서 버튼, 빛, 온도 값을 바꿔 보며 반응을 확인해요.'],
+['기기에 다운로드해 모형에서 시험하기','다운로드 후 실제 센서와 모터로 시험하고, 결과를 아래에 기록해요.']];
+const EX={
+park:{dev:'스마트 주차장 차단기',goal:'차가 다가오면 차단기를 자동으로 열고 닫아, 빈자리를 찾는 시간을 줄인다.',parts:[['초음파 센서','Trig P1, Echo P2'],['서보모터','P0'],['LED 화면(내장)','내장']],rule:'만약 초음파 센서로 잰 거리가 10cm보다 가까우면 서보모터를 90도로 돌려 차단기를 연다.\n차단기가 열려 있는 동안 LED 화면에 위쪽 화살표를 보여 준다.\n3초가 지나면 서보모터를 0도로 돌려 차단기를 닫고 LED 화면을 지운다.',val:'거리 10cm, 열린 채 3초, 서보 0도와 90도'},
+street:{dev:'스마트 가로등',goal:'주변이 어두워지면 가로등을 자동으로 켜서 필요할 때만 전기를 쓴다.',parts:[['빛 센서(내장)','내장'],['LED 모듈','P8'],['LED 화면(내장)','내장']],rule:'만약 빛 센서 값이 60보다 작으면 P8에 연결한 LED를 켜고 LED 화면에 달 모양을 보여 준다.\n아니면 LED를 끄고 해 모양을 보여 준다.\n1초마다 다시 확인한다.',val:'빛 센서 값 60, 1초마다 확인'},
+farm:{dev:'스마트 팜 온실',goal:'흙이 마르면 물을 주고 더우면 환기 팬을 돌려, 필요한 만큼만 물과 전기를 쓴다.',parts:[['토양 수분 센서','P1'],['워터 펌프(릴레이)','P12'],['DC 모터 환기 팬(릴레이)','P13'],['온도 센서(내장)','내장']],rule:'만약 토양 수분 센서 값이 400보다 작으면 P12의 펌프를 3초 켰다가 끈다.\n만약 온도가 28도보다 높으면 P13의 팬을 켜고, 아니면 끈다.\n5초마다 다시 확인한다.',val:'토양 수분 400, 펌프 3초, 온도 28도, 5초마다'}};
+
+const chips=(id,arr,key,type='checkbox')=>{$(id).innerHTML=arr.map(([v,t],i)=>`<label class="chip"><input type="${type}" name="${key}" value="${v}" data-k id="${key}_${v}">${esc(t)}</label>`).join('')};
+chips('#condChips',CONDS,'cond');chips('#fmtChips',FMTS,'fmt');chips('#fixChips',FIX,'fix','radio');
+$('#resChips').innerHTML=RES.map((t,i)=>`<label class="chip"><input type="radio" name="res" value="${esc(t)}" data-k id="res_${i}">${esc(t)}</label>`).join('');
+$('#how').innerHTML=HOW.map(([b,s],i)=>`<li><input type="checkbox" id="how_${i}" data-k aria-label="${esc(b)}"><label for="how_${i}"><b>${i+1}. ${esc(b)}</b><span>${esc(s)}</span></label></li>`).join('');
+
+const KEY='makecode-prompt-sheet-v1';
+const DEF=()=>({f:{cond_js:true,cond_blk:true,cond_ext:true,cond_kor:true,fmt_one:true,fmt_three:true},parts:[['','']]});
+let state=DEF();
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)state=Object.assign(DEF(),s)}catch(e){}
+let saveT;const save=()=>{clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}},300)};
+const readF=()=>$$('[data-k]').forEach(el=>{state.f[el.id]=el.type==='checkbox'||el.type==='radio'?el.checked:el.value});
+const writeF=()=>$$('[data-k]').forEach(el=>{const v=state.f[el.id];if(el.type==='checkbox'||el.type==='radio')el.checked=!!v;else el.value=v??''});
+
+function renderParts(){$('#parts').innerHTML=state.parts.map((p,i)=>`<div class="prow"><input type="text" list="plist" data-p="${i}" data-c="0" value="${esc(p[0])}" placeholder="부품 (예: 서보모터)" aria-label="부품 ${i+1}"><input type="text" data-p="${i}" data-c="1" value="${esc(p[1])}" placeholder="핀 (예: P0)" aria-label="부품 ${i+1}의 핀"><button class="btn ghost" type="button" data-delp="${i}" aria-label="부품 ${i+1} 삭제">삭제</button></div>`).join('')}
+$('#parts').addEventListener('input',e=>{const t=e.target;if(t.dataset.p===undefined)return;state.parts[+t.dataset.p][+t.dataset.c]=t.value;update()});
+$('#parts').addEventListener('click',e=>{const b=e.target.closest('[data-delp]');if(!b)return;state.parts.splice(+b.dataset.delp,1);if(!state.parts.length)state.parts.push(['','']);renderParts();update()});
+$('#addPart').addEventListener('click',()=>{state.parts.push(['','']);renderParts();update();$('#parts').lastElementChild.querySelector('input').focus()});
+
+const val=id=>($('#'+id).value||'').trim();
+const on=(k,v)=>$('#'+k+'_'+v)?.checked;
+function prompt(){const L=[];const parts=state.parts.filter(p=>p[0].trim());
+  L.push('너는 마이크로비트(micro:bit) 수업을 돕는 코딩 도우미야.','');
+  L.push('[환경]',on('cond','js')?'Microsoft MakeCode for micro:bit 자바스크립트 코드가 필요해.':'마이크로비트 코드가 필요해. (편집기와 언어를 아직 정하지 않았어요)','');
+  L.push('[목표]',`${val('dev')||'(장치 이름)'}: ${val('goal')||'(이 장치가 하는 일)'}`,'');
+  L.push('[부품과 연결]');parts.length?parts.forEach(p=>L.push(`- ${p[0].trim()}: ${p[1].trim()||'(핀 미정)'}`)):L.push('- (부품과 핀)');L.push('');
+  L.push('[동작 규칙]',...(val('rule')||'(만약 ~이면 ~한다)').split('\n').map(s=>s.trim()).filter(Boolean).map(s=>'- '+s));
+  if(val('val'))L.push(`- 기준값과 시간: ${val('val')}`);L.push('');
+  const c=CONDS.filter(([v])=>v!=='js'&&on('cond',v));if(c.length){L.push('[조건]');c.forEach(x=>L.push('- '+x[2]));L.push('')}
+  const f=FMTS.filter(([v])=>on('fmt',v));if(f.length){L.push('[답하는 방식]');f.forEach(x=>L.push('- '+x[2]))}
+  return L.join('\n').trim()}
+function renderPrompt(){const t=prompt();$('#ptext').innerHTML=esc(t).replace(/^(\[.+\])$/gm,'<span class="h">$1</span>');$('#pcount').textContent=`${t.length}자`}
+
+const AUTO=[['환경을 밝혔어요 (MakeCode 자바스크립트)',()=>on('cond','js')],['장치 이름과 하는 일을 썼어요',()=>val('dev')&&val('goal').length>=8],['부품과 핀 번호를 모두 적었어요',()=>{const p=state.parts.filter(x=>x[0].trim());return p.length&&p.every(x=>x[1].trim())}],['‘만약 ~이면’ 규칙이 있어요',()=>/만약|이면|면 /.test(val('rule'))],['기준값이나 시간을 숫자로 정했어요',()=>/\d/.test(val('val')+val('rule'))],['답하는 방식을 정했어요',()=>FMTS.some(([v])=>on('fmt',v))]];
+function renderChecks(){let n=0;$('#autoChecks').innerHTML=AUTO.map(([t,f])=>{const ok=!!f();if(ok)n++;return`<li class="${ok?'ok':''}"><span class="s">${ok?'✓':''}</span>${t}</li>`}).join('');
+  if($('#m1').checked)n++;if($('#m2').checked)n++;$('#scoreN').textContent=n}
+
+function fixPrompt(){const k=($('[name=fix]:checked')||{}).value;const err=val('errMsg'),ex=val('expect'),ac=val('actual');
+  const head='아래는 네가 만들어 준 MakeCode for micro:bit 자바스크립트 코드야.\n(여기에 지금 코드를 붙여 넣기)\n\n';
+  const map={
+  err:`MakeCode에 붙여 넣었더니 오류가 나.\n오류 메시지: ${err||'(오류 메시지를 그대로 복사)'}\n원인을 한 줄로 설명하고, 고친 전체 코드를 다시 보여 줘. 핀 번호와 기준값은 바꾸지 마.`,
+  gray:`블록 편집기로 바꾸면 회색 블록이 생겨.\nMakeCode 기본 블록으로 바뀌는 문법(basic.forever, input, pins, led, radio 등)만 써서 같은 동작을 하도록 다시 써 줘.`,
+  diff:`코드는 실행되는데 생각과 다르게 움직여.\n기대한 동작: ${ex||'(기대한 동작)'}\n실제로 일어난 일: ${ac||'(실제로 일어난 일)'}\n왜 다른지 추측되는 원인을 2가지 알려 주고, 고친 코드를 보여 줘.`,
+  dev:`시뮬레이터에서는 잘 되는데 실제 마이크로비트와 모형에서는 안 돼.\n실제로 일어난 일: ${ac||'(실제로 일어난 일)'}\n코드 문제인지, 배선·전원·센서 값 문제인지 확인할 방법을 순서대로 알려 줘.`,
+  why:`이 코드가 어떻게 작동하는지 중학생도 알 수 있게 한 덩어리씩 설명해 줘.\n특히 ${ac||'(이해가 안 되는 부분)'} 부분을 자세히 알려 줘. 코드는 고치지 마.`,
+  add:`지금 코드는 잘 작동해. 여기에 "${val('addFeat')||'(추가할 기능)'}" 기능만 추가해 줘.\n기존 기능, 핀 번호, 기준값은 그대로 두고, 바뀐 부분에 한국어 주석을 달아 줘.`};
+  return k?head+map[k]:'위에서 상황을 고르면 다시 묻는 프롬프트가 만들어져요.'}
+function renderFix(){$('#ftext').textContent=fixPrompt()}
+
+function update(){readF();renderPrompt();renderChecks();renderFix();save()}
+document.addEventListener('input',e=>{if(e.target.matches('[data-k]'))update()});
+document.addEventListener('change',e=>{if(e.target.matches('[data-k]'))update()});
+
+$$('[data-ex]').forEach(b=>b.addEventListener('click',()=>{const x=EX[b.dataset.ex];['dev','goal','rule','val'].forEach(k=>$('#'+k).value=x[k]);state.parts=x.parts.map(p=>[...p]);renderParts();update()}));
+$('#clearB').addEventListener('click',()=>{['dev','goal','rule','val'].forEach(k=>$('#'+k).value='');state.parts=[['','']];renderParts();update()});
+
+async function copy(text,toast){try{await navigator.clipboard.writeText(text);$(toast).textContent='복사했어요'}catch(e){$(toast).textContent='복사가 막혔어요. 글을 드래그해 복사하세요'}setTimeout(()=>$(toast).textContent='',2500)}
+$('#copyP').addEventListener('click',()=>copy(prompt(),'#ptoast'));
+$('#copyF').addEventListener('click',()=>copy(fixPrompt(),'#ftoast'));
+
+function report(){const res=($('[name=res]:checked')||{}).value||'(미작성)';const fx=FIX.find(([v])=>v===($('[name=fix]:checked')||{}).value);
+  const done=HOW.filter((_,i)=>$('#how_'+i).checked).length;
+  return ['[코파일럿 프롬프트 활동 기록]','','1. 내가 만든 프롬프트','-----',prompt(),'-----','',`2. 보내기 전 점검: ${$('#scoreN').textContent} / 8 통과`,'',`3. MakeCode 확인 단계: ${done} / ${HOW.length} 완료`,`- 결과: ${res}`,`- 오류 메시지·이상한 점: ${val('errMsg')||'(없음)'}`,'',`4. 다시 물은 상황: ${fx?fx[1]:'(없음)'}`,...(fx?['-----',fixPrompt(),'-----']:[]),'','5. 돌아보기',`- 이해한 부분과 못한 부분: ${val('r1')||'(미작성)'}`,`- 내가 직접 바꾼 부분: ${val('r2')||'(미작성)'}`,`- 알게 된 점: ${val('r3')||'(미작성)'}`].join('\n')}
+$('#make').addEventListener('click',()=>{$('#report').value=report();$('#out').classList.add('show')});
+$('#copyR').addEventListener('click',()=>copy($('#report').value,'#rtoast'));
+$('#reset').addEventListener('click',()=>{$('#dlg').classList.add('show');$('#dlgNo').focus()});
+$('#dlgNo').addEventListener('click',()=>$('#dlg').classList.remove('show'));
+$('#dlgYes').addEventListener('click',()=>{try{localStorage.removeItem(KEY)}catch(e){}state=DEF();writeF();renderParts();$('#out').classList.remove('show');$('#dlg').classList.remove('show');update()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#dlg').classList.remove('show')});
+
+writeF();renderParts();update();
+}
+</script>
+</body></html>
