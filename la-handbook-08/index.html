@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>학습분석 핸드북 읽기 8편 · 같이 해 보기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF3F6; --grid:rgba(27,43,74,.07); --ink:#1B2B4A; --ink-soft:#4A5A78;
+  --line:#C9D4DE; --card:#FFFFFF; --mark:#F2C230; --teal:#2E8C83; --red:#D64545;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --pen:"Nanum Pen Script","IBM Plex Sans KR",cursive;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#121B2B; --grid:rgba(200,215,235,.06); --ink:#E6ECF5; --ink-soft:#A7B4C9;
+    --line:#2C3A52; --card:#192439; --mark:#E8B923; --teal:#4FB3A8; --red:#EE6B6B;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121B2B; --grid:rgba(200,215,235,.06); --ink:#E6ECF5; --ink-soft:#A7B4C9;
+  --line:#2C3A52; --card:#192439; --mark:#E8B923; --teal:#4FB3A8; --red:#EE6B6B;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans);
+  font-size:17px; line-height:1.7;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:880px; margin:0 auto; padding:0 20px}
+h1,h2,h3{line-height:1.3; margin:0}
+h2{font-size:1.6rem; font-weight:700; margin-bottom:.4rem}
+p{margin:.4rem 0 1rem}
+.lead{color:var(--ink-soft); max-width:62ch}
+.pen{font-family:var(--pen); font-size:1.5rem; color:var(--teal); line-height:1.2}
+section{padding:56px 0; border-top:1px dashed var(--line)}
+button{font:inherit; color:inherit; cursor:pointer}
+button:focus-visible,.chip:focus-visible{outline:3px solid var(--mark); outline-offset:2px}
+
+body{word-break:keep-all; overflow-wrap:break-word; line-break:strict}
+h1,h2,h3,.lead,p,b,span,small{text-wrap:pretty}
+header{padding:48px 0 28px}
+.series{font-size:.95rem; color:var(--ink-soft); margin-bottom:12px}
+h1{font-size:clamp(2rem,6vw,3rem); font-weight:700; letter-spacing:-.02em; max-width:16ch}
+.card{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:20px}
+.btn{border:1.5px solid var(--ink); background:transparent; border-radius:4px; padding:9px 16px; font-weight:500}
+.btn:hover{background:var(--mark); color:#1B2B4A; border-color:var(--mark)}
+.btn.on{background:var(--ink); color:var(--paper)}
+.btn.good{background:var(--teal); border-color:var(--teal); color:#fff}
+.btn.bad{background:var(--red); border-color:var(--red); color:#fff}
+.btn:disabled{opacity:.4; cursor:default}
+.row{display:flex; gap:8px; flex-wrap:wrap}
+.how{display:flex; gap:6px; flex-wrap:wrap; margin:4px 0 14px; padding:0; list-style:none; font-size:.9rem}
+.how li{background:var(--card); border:1px solid var(--line); border-radius:999px; padding:3px 12px}
+.how li::before{content:attr(data-n); font-weight:700; margin-right:6px; color:var(--teal)}
+.hide{display:none}
+.step{font-weight:700; margin:18px 0 8px}
+/* keyword block */
+.kw{border-left:4px solid var(--ink); padding:4px 0 4px 14px; margin:10px 0}
+.kw .k{font-size:1.15rem; font-weight:700; display:block}
+.kw .m{display:block; color:var(--ink-soft)}
+.kw .e{display:block; font-size:.92rem; margin-top:4px}
+.kw .e::before{content:"예) "; font-weight:700; color:var(--teal)}
+.kw.good{border-color:var(--teal)} .kw.bad{border-color:var(--red)} .kw.mid{border-color:#B8860B}
+.q{font-family:var(--pen); font-size:1.45rem; color:var(--teal); line-height:1.25}
+/* words */
+.words{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.wcard{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:14px}
+.wcard .k{font-size:1.1rem; font-weight:700; display:block}
+.wcard .m{display:block; color:var(--ink-soft); font-size:.92rem; margin:2px 0 8px}
+.wcard .e{display:block; font-size:.88rem; border-top:1px dashed var(--line); padding-top:8px}
+.wcard .e::before{content:"예) "; font-weight:700; color:var(--teal)}
+/* dart explainer */
+.dart{display:grid; grid-template-columns:200px 1fr; gap:20px; align-items:center}
+.dart svg{width:100%; max-width:200px}
+.legend p{margin:6px 0}
+.dot{display:inline-block; width:14px; height:14px; border-radius:50%; vertical-align:-2px; margin-right:6px}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
+.two div{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:12px}
+.two b{font-size:1.05rem}
+.two span{display:block; color:var(--ink-soft); font-size:.9rem}
+.minis{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:16px}
+.toolgrid,.guessgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px}
+.tbtn{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; text-align:center; background:var(--card); border:1.5px solid var(--line); border-radius:6px; padding:12px 8px; min-height:92px}
+.tbtn:hover{border-color:var(--ink)}
+.tbtn .ic{font-size:1.5rem; line-height:1}
+.tbtn b{font-size:.95rem}
+.tbtn small{color:var(--ink-soft); font-size:.8rem}
+.tbtn.on{border-color:var(--ink); background:color-mix(in srgb,var(--mark) 16%,transparent)}
+.tbtn.good{border-color:var(--teal); background:color-mix(in srgb,var(--teal) 14%,transparent)}
+.tbtn.bad{border-color:var(--red); background:color-mix(in srgb,var(--red) 12%,transparent)}
+.tbtn:disabled{cursor:default}
+.tbtn svg{width:54px; height:54px}
+.ctrl{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.ctrl .btn{padding:9px 6px}
+.locked{opacity:.45}
+.mini{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:10px; text-align:center}
+.mini.on{border-color:var(--ink); background:color-mix(in srgb,var(--mark) 14%,transparent)}
+.mini svg{width:112px; height:112px}
+.mini .badges{margin-top:4px}
+.mini span{display:block; font-size:.88rem; font-weight:500}
+.badge{display:inline-block; font-size:.8rem; border-radius:999px; padding:1px 9px; margin:2px 2px 0 0; border:1px solid}
+.badge.o{color:var(--teal); border-color:var(--teal)} .badge.tri{color:#B8860B; border-color:#B8860B} .badge.x{color:var(--red); border-color:var(--red)}
+/* tools */
+.tgwrap{display:grid; grid-template-columns:230px 1fr; gap:20px; align-items:start}
+svg.tg{width:100%; max-width:230px; display:block}
+/* scatter */
+.chartbox{overflow-x:auto}
+svg.sc{width:100%; min-width:460px; height:auto; display:block}
+.sc text{font-family:var(--sans); font-size:12px; fill:var(--ink-soft)}
+.sc circle{transition:cx .9s ease, fill .4s}
+/* growth */
+.gpair{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.gstu{border:1px solid var(--line); border-radius:6px; padding:12px}
+.gstu b{display:block; margin-bottom:8px}
+.bar{position:relative; height:28px; background:color-mix(in srgb,var(--line) 50%,transparent); border-radius:4px; margin:6px 0; overflow:hidden}
+.bar i{position:absolute; left:0; top:0; bottom:0; border-radius:4px; transition:width .7s ease}
+.bar span{position:absolute; left:8px; top:3px; font-size:.85rem; font-weight:700; color:#1B2B4A}
+.bar.pre i{background:#C9D4DE} .bar.post i{background:var(--mark)}
+.grow{font-weight:700; color:var(--teal); min-height:1.5em}
+/* explanations */
+.datacard{border:1.5px dashed var(--ink); border-radius:6px; padding:12px 14px; margin:14px 0 10px; font-weight:500}
+.exps{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.exp{text-align:left; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:10px 12px}
+.exp.seen{border-color:var(--teal); background:color-mix(in srgb,var(--teal) 10%,transparent)}
+.exp.seen::after{content:" ✓ 말이 돼요"; color:var(--teal); font-size:.85rem; font-weight:700}
+.counter{margin-top:10px; font-weight:700}
+.result{margin-top:12px}
+footer{padding:36px 0 56px; border-top:1px dashed var(--line); font-size:.88rem; color:var(--ink-soft)}
+footer a{color:var(--teal)}
+@media (max-width:760px){.words,.minis,.toolgrid,.guessgrid{grid-template-columns:1fr 1fr}.dart,.tgwrap{grid-template-columns:1fr}.dart svg,svg.tg{margin:0 auto}.gpair,.exps,.two{grid-template-columns:1fr} body{font-size:16px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ep6 */
+:root{--hl-link:#FFCFE0; --hl-feel:#FFDDB0; --hl-word:#BDEBDD; --hl-len:#FFE89A; --hl-sent:#D6DEFF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hl-link:rgba(255,120,165,.36); --hl-feel:rgba(255,160,80,.40); --hl-word:rgba(80,210,170,.34); --hl-len:rgba(255,214,77,.38); --hl-sent:rgba(130,160,255,.36)}}
+:root[data-theme="dark"]{--hl-link:rgba(255,120,165,.36); --hl-feel:rgba(255,160,80,.40); --hl-word:rgba(80,210,170,.34); --hl-len:rgba(255,214,77,.38); --hl-sent:rgba(130,160,255,.36)}
+.btn.good:disabled,.btn.bad:disabled{opacity:1}
+.big{margin:14px 0 6px; padding:16px 18px; border-radius:10px; background:#1B2B4A; color:#fff}
+.big .t{display:block; font-size:clamp(1.25rem,3.6vw,1.6rem); font-weight:700; line-height:1.35}
+.big .t em{font-style:normal; color:var(--mark)}
+.big .s{display:block; margin-top:6px; color:#C9D4DE; font-size:.95rem}
+.guide{margin:0 0 14px; padding:12px 14px; border:1.5px dashed var(--line); border-radius:8px; background:var(--card)}
+.guide>b{display:block; margin-bottom:4px}
+.guide ol{margin:0; padding-left:1.2rem}
+.guide li{margin:3px 0}
+.analogy{margin:10px 0 14px; padding:12px 14px; border-radius:8px; background:color-mix(in srgb,var(--mark) 16%,transparent); font-size:.98rem; line-height:1.6}
+.analogy>b{display:block; margin-bottom:2px}
+.resetrow{display:flex; justify-content:flex-end; margin-top:12px}
+.reset{border:1.5px solid var(--line); background:var(--card); border-radius:999px; padding:7px 16px; font-weight:500; color:var(--ink-soft)}
+.reset:hover{border-color:var(--ink); color:var(--ink)}
+.words5{display:grid; grid-template-columns:repeat(5,1fr); gap:8px}
+.words5 .wcard{padding:12px}
+.words5 .sw{display:block; height:8px; border-radius:4px; margin-bottom:8px}
+.note{font-size:.86rem; color:var(--ink-soft); margin:8px 0 0}
+
+:root{--ev-p:#2E8C83; --ev-x:#B9C6D6; --ev-m:#D98B2B; --s1:#4F6FCB; --s2:#C94C76}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ev-p:#5FC2B6; --ev-x:#46566E; --ev-m:#F0B060; --s1:#8FA8F0; --s2:#F08BAE}}
+:root[data-theme="dark"]{--ev-p:#5FC2B6; --ev-x:#46566E; --ev-m:#F0B060; --s1:#8FA8F0; --s2:#F08BAE}
+.words2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.out{margin-top:12px}
+.seg2{display:flex; gap:6px; flex-wrap:wrap}
+.seg2 .btn{padding:8px 14px}
+/* ① week */
+.sum2{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px}
+.stu{background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:12px 14px}
+.stu .nm{font-weight:700; font-size:1.05rem; display:flex; align-items:center; gap:8px}
+.stu .nm i{width:12px; height:12px; border-radius:50%; display:inline-block}
+.tot{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px}
+.tot div{background:color-mix(in srgb,var(--paper) 60%,var(--card)); border:1px solid var(--line); border-radius:6px; padding:6px; text-align:center}
+.tot b{display:block; font-size:1.35rem; font-variant-numeric:tabular-nums}
+.tot span{font-size:.78rem; color:var(--ink-soft)}
+.week{display:grid; grid-template-columns:44px repeat(7,1fr); gap:4px; align-items:end; margin-top:10px}
+.week .dl{font-size:.78rem; color:var(--ink-soft); text-align:center}
+.week .rl{font-size:.82rem; font-weight:700}
+.week .col{display:flex; flex-direction:column-reverse; align-items:center; gap:3px; min-height:120px; justify-content:flex-start; border-bottom:2px solid var(--line); padding-bottom:3px}
+.week .col i{display:block; width:70%; max-width:26px; height:9px; border-radius:3px}
+.week .col.due{background:color-mix(in srgb,var(--red) 8%,transparent); border-radius:4px 4px 0 0}
+.rulers4{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:12px}
+.r4{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 10px}
+.r4 b{display:block; font-size:.9rem}
+.r4 .v{display:grid; grid-template-columns:auto 1fr; gap:2px 8px; font-size:.84rem; margin-top:4px}
+.r4 .v span:nth-child(odd){font-weight:700}
+.r4.same{opacity:.65}
+.r4.diff{border-color:var(--teal); border-width:2px}
+.r4 .tag{font-size:.72rem; font-weight:700; color:var(--teal)}
+/* ② timeline */
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:.86rem; color:var(--ink-soft); margin:8px 0}
+.legend i{display:inline-block; width:14px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px}
+.tlwrap{overflow-x:auto}
+.tlwrap svg{width:100%; height:auto; display:block}
+.readout{margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.readout div{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px}
+.readout b{display:block; font-size:.8rem; color:var(--ink-soft)}
+.readout span{font-size:1.05rem; font-weight:700}
+/* ③ patterns */
+.pats{display:grid; gap:10px}
+.pat{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px; display:grid; gap:8px}
+.pat .ctx{font-size:.95rem; font-weight:500}
+.pat .ctx i{font-style:normal; font-weight:700; color:var(--ink-soft); margin-right:6px}
+.dots{display:flex; gap:5px; flex-wrap:wrap}
+.dots span{width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-size:.72rem; font-weight:700; color:#fff}
+.pat .opts{display:grid; grid-template-columns:repeat(4,1fr); gap:6px}
+.pat .opts .btn{padding:6px 4px; font-size:.86rem}
+.pat .why{font-size:.88rem; color:var(--ink-soft); border-top:1px dashed var(--line); padding-top:6px}
+.code{font-family:ui-monospace,Menlo,monospace; letter-spacing:.08em; font-weight:700}
+/* ④ windows */
+.bars{display:flex; align-items:flex-end; gap:4px; height:140px; border-bottom:2px solid var(--line); padding:0 4px; margin-top:12px}
+.bars div{flex:1; background:var(--s1); border-radius:4px 4px 0 0; position:relative; min-height:2px; transition:height .4s}
+.bars div span{position:absolute; top:-18px; left:0; right:0; text-align:center; font-size:.72rem; font-weight:700}
+.bars div.zero{background:var(--line)}
+.blabels{display:flex; gap:4px; padding:0 4px; margin-top:4px}
+.blabels span{flex:1; text-align:center; font-size:.7rem; color:var(--ink-soft)}
+.verdict{margin-top:12px; padding:12px 14px; border-radius:8px; font-weight:700; font-size:1.02rem; background:color-mix(in srgb,var(--mark) 16%,transparent)}
+.qcard{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-top:14px}
+.qcard .qq{font-weight:700; margin-bottom:8px}
+.opts2{display:grid; grid-template-columns:1fr 1fr; gap:6px}
+.opts2 .btn{text-align:left; font-size:.92rem; padding:8px 10px}
+@media (max-width:760px){
+  .words2,.sum2,.readout,.opts2{grid-template-columns:1fr}
+  .rulers4{grid-template-columns:1fr 1fr}
+  .pat .opts{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="series">학습분석 핸드북 읽기 8편 · 같이 해 보기</div>
+  <h1>똑같이 10번, 그런데 다른 배움</h1>
+  <div class="kw"><span class="k">시간적 분석</span><span class="m">학습 활동이 언제, 얼마나 오래, 몇 번, 어떤 순서로 일어났는지 함께 보는 분석</span><span class="e">마감 직전에 몰아서 한 과제와 며칠에 나눠 한 과제를 구분하기</span></div>
+  <ul class="how"><li data-n="①">합계 vs 타임라인</li><li data-n="②">네 가지 자로 재 보기</li><li data-n="③">순서의 무늬 찾기</li><li data-n="④">시간을 어떻게 자를까</li></ul>
+</header>
+
+<section>
+  <h2>0. 시간을 보는 두 가지 눈</h2>
+  <div class="words2">
+    <div class="wcard"><span class="k">시간의 흐름</span><span class="m">한 종류의 일이 <b>언제, 얼마나 오래, 몇 번, 얼마나 자주</b> 일어났나</span><span class="e">계획을 3번, 모두 6분 동안 세웠다</span></div>
+    <div class="wcard"><span class="k">시간의 순서</span><span class="m">여러 종류의 일이 <b>서로 어떤 순서로</b> 이어졌나</span><span class="e">계획 → 실행 → 점검이 되풀이됐다</span></div>
+  </div>
+  <div class="big"><span class="t">배움은 한 순간이 아니라 <em>시간 속에서</em> 펼쳐진다</span><span class="s">"수업 전·후 점수"만 보면 시간을 두 점으로만 보는 셈이에요.</span></div>
+</section>
+
+<section id="s1">
+  <h2>① 합계로 볼 때와 타임라인으로 볼 때</h2>
+  <div class="big"><span class="t">합계가 같아도 <em>언제</em> 했는지는 전혀 다를 수 있다</span></div>
+  <div class="guide"><b>이렇게 해 보세요</b><ol>
+    <li>일주일 과제(마감 일요일)에 대한 두 학생의 기록이에요. 먼저 <b>📊 합계로 보기</b> 상태에서 비교해요.</li>
+    <li><b>📅 타임라인으로 펼치기</b>를 눌러 요일별 접속을 봐요.</li>
+    <li>아래 <b>네 가지 자</b> 중 두 학생의 차이가 드러나는 자를 확인해요.</li></ol></div>
+  <div class="card">
+    <div class="seg2" id="view1"><button class="btn on" data-v="sum">📊 합계로 보기</button><button class="btn" data-v="tl">📅 타임라인으로 펼치기</button></div>
+    <div class="sum2" id="stu1"></div>
+    <div id="rul1"></div>
+    <div id="out1" class="out" aria-live="polite"></div>
+    <div class="resetrow"><button class="reset" id="reset1">↺ 처음으로</button></div>
+  </div>
+</section>
+
+<section id="s2">
+  <h2>② 네 가지 자로 '계획 세우기'를 재 보세요</h2>
+  <div class="big"><span class="t">같은 기록도 <em>위치 · 지속시간 · 빈도 · 속도</em>로 재면 다른 이야기를 한다</span></div>
+  <div class="guide"><b>이렇게 해 보세요</b><ol>
+    <li>40분 동안 한 학생이 과제를 하며 남긴 기록이에요. 초록색이 <b>계획 세우기</b>예요.</li>
+    <li>자를 하나씩 눌러 보세요. 그림에 표시가 나타나고 아래에 값이 나와요.</li>
+    <li><b>절대 / 상대</b>를 바꿔 같은 자를 두 가지 방식으로 읽어 봐요.</li></ol></div>
+  <div class="card">
+    <div class="seg2" id="ruler2"></div>
+    <div class="seg2" id="mode2" style="margin-top:8px"><button class="btn on" data-m="abs">절대 (몇 분, 몇 번)</button><button class="btn" data-m="rel">상대 (몇 %, 몇 배)</button></div>
+    <div class="legend"><span><i style="background:var(--ev-p)"></i>계획 세우기</span><span><i style="background:var(--ev-x)"></i>자료 찾기·실행</span><span><i style="background:var(--ev-m)"></i>점검하기</span></div>
+    <div class="tlwrap"><svg id="tl2" viewBox="0 0 640 150" role="img" aria-label="40분 학습 기록 타임라인"></svg></div>
+    <div class="readout" id="read2"></div>
+    <div id="out2" class="out" aria-live="polite"></div>
+    <div class="resetrow"><button class="reset" id="reset2">↺ 처음으로</button></div>
+  </div>
+</section>
+
+<section id="s3">
+  <h2>③ 순서 속에서 무늬를 찾아보세요</h2>
+  <div class="big"><span class="t">여러 사건의 순서에는 <em>네 가지 무늬</em>가 있다</span></div>
+  <div class="analogy"><b>💬 숫자로 바꿔 보면 쉬워요</b><span class="code">1111111111</span> 같은 일이 계속 = <strong>일관성</strong> · <span class="code">1212121212</span> 일정하게 되풀이 = <strong>반복</strong> · <span class="code">1111222333</span> 한 단계씩 나아감 = <strong>비반복(성장)</strong> · <span class="code">4793283017</span> 무늬가 없음 = <strong>불규칙</strong></div>
+  <div class="guide"><b>이렇게 해 보세요</b><ol>
+    <li>네 가지 학습 기록을 색깔 점으로 나타냈어요.</li>
+    <li>각 기록이 어떤 무늬인지 골라요. 틀려도 다시 누를 수 있어요.</li></ol></div>
+  <div class="card">
+    <div class="pats" id="pats"></div>
+    <div id="out3" class="out" aria-live="polite"></div>
+    <div class="resetrow"><button class="reset" id="reset3">↺ 처음으로</button></div>
+  </div>
+</section>
+
+<section id="s4">
+  <h2>④ 시간을 어떻게 자르느냐가 결론을 바꾼다</h2>
+  <div class="big"><span class="t">같은 데이터도 <em>시간대(창)의 크기</em>에 따라 다르게 보인다</span><span class="s">그래서 저자들은 왜 그렇게 잘랐는지 분명히 밝히라고 말해요.</span></div>
+  <div class="guide"><b>이렇게 해 보세요</b><ol>
+    <li>한 학생의 2주간 과제 사이트 접속 기록이에요.</li>
+    <li><b>하루 단위</b>와 <b>일주일 단위</b>를 번갈아 눌러 보세요. 그래프와 결론이 함께 바뀌어요.</li>
+    <li>마지막으로 '언제 넣을까' 질문에 답해 봐요.</li></ol></div>
+  <div class="card">
+    <div class="seg2" id="win4"><button class="btn on" data-w="day">하루 단위</button><button class="btn" data-w="week">일주일 단위</button></div>
+    <div class="bars" id="bars4"></div>
+    <div class="blabels" id="lab4"></div>
+    <div class="verdict" id="ver4"></div>
+    <div class="qcard"><div class="qq">온라인 토론에서 '지금까지 나온 의견 요약하기'를 언제 넣으면 좋을까요?</div>
+      <div class="opts2" id="q4"><button class="btn" data-a="end">토론이 다 끝난 뒤에</button><button class="btn" data-a="mid">토론 중간에</button></div>
+      <div id="out4" class="out" aria-live="polite"></div></div>
+    <div class="resetrow"><button class="reset" id="reset4">↺ 처음으로</button></div>
+  </div>
+</section>
+
+<section>
+  <h2>오늘의 정리</h2>
+  <div class="card">
+    <div class="kw good"><span class="k">합계 뒤에 숨은 시간</span><span class="m">10번·60분이 같아도 언제 했는지에 따라 다른 배움이에요</span></div>
+    <div class="kw good"><span class="k">흐름의 네 가지 자</span><span class="m">위치, 지속시간, 빈도, 속도 · 절대와 상대로 함께 읽기</span></div>
+    <div class="kw good"><span class="k">순서의 네 가지 무늬</span><span class="m">일관성, 반복, 비반복(성장), 불규칙</span></div>
+    <div class="kw good"><span class="k">자르는 방식이 결론을 바꾼다</span><span class="m">시간대를 어떻게 잘랐는지 늘 밝히기</span></div>
+    <div class="kw good"><span class="k">같은 활동도 넣는 시점이 중요</span><span class="m">요약은 끝보다 중간에, 설명은 씨름한 뒤에</span></div>
+    <p class="q">'얼마나'만 보지 말고, '언제'와 '어떤 순서로'도 함께 볼 것.</p>
+  </div>
+</section>
+
+<footer>
+  <p>이 페이지는 『학습분석 핸드북』 7장을 읽고 개인 학습 목적으로 만든 자료이며, 원문을 대신하지 않습니다. 학생 이름과 기록은 설명을 위해 만든 가상의 예시입니다.</p>
+  <p>원문: Molenaar, I., &amp; Wise, A. F. (2022). Temporal aspects of learning analytics: Grounding analyses in concepts of time. In <i>Handbook of Learning Analytics</i> (2nd ed.). SoLAR. DOI: 10.18608/hla22.007 · <a href="https://www.solaresearch.org/publications/hla-22/" target="_blank" rel="noopener">SoLAR 공식 페이지</a><br>
+  번역본: 한국교육학술정보원 (2023). 『학습분석 핸드북』. 연구자료 IEI 2023-02.</p>
+  <p>공학하는 기술쌤</p>
+</footer>
+</div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const kw=(c,k,m)=>'<div class="kw '+c+'" style="margin-top:12px"><span class="k">'+k+'</span>'+(m?'<span class="m">'+m+'</span>':'')+'</div>';
+const sel=(box,attr,val)=>box.querySelectorAll('.btn').forEach(b=>b.classList.toggle('on',b.dataset[attr]===val));
+
+/* ---------- ① ---------- */
+const DAYS=['월','화','수','목','금','토','일'];
+const S1=[{n:'서윤',c:'var(--s1)',d:[2,1,2,1,2,1,1]},{n:'도현',c:'var(--s2)',d:[0,0,0,0,0,1,9]}];
+let v1='sum',seen1=false;
+function render1(){
+  sel($('view1'),'v',v1);
+  $('stu1').innerHTML=S1.map(s=>'<div class="stu"><div class="nm"><i style="background:'+s.c+'"></i>'+s.n+'</div>'+
+    '<div class="tot"><div><b>10번</b><span>접속 횟수</span></div><div><b>60분</b><span>머문 시간</span></div></div>'+
+    (v1==='tl'?'<div class="week"><span></span>'+DAYS.map(d=>'<span class="dl">'+d+'</span>').join('')+'<span class="rl">접속</span>'+
+      s.d.map((k,i)=>'<div class="col'+(i===6?' due':'')+'">'+Array.from({length:k},()=>'<i style="background:'+s.c+'"></i>').join('')+'</div>').join('')+'</div>':'')+'</div>').join('');
+  if(v1==='sum'){$('rul1').innerHTML='';$('out1').innerHTML=kw('mid','합계로는 두 학생이 똑같아요','둘 다 10번 들어왔고 60분 머물렀어요. 이제 📅 타임라인으로 펼쳐 보세요.');return}
+  seen1=true;
+  const R=[
+   ['위치','첫 접속',['월요일','토요일'],true],
+   ['지속시간','한 번에 평균',['6분','6분'],false],
+   ['빈도','접속 횟수',['10번','10번'],false],
+   ['속도','하루 최대 / 마감일(일) 비율',['2번 / 10%','9번 / 90%'],true]];
+  $('rul1').innerHTML='<div class="rulers4">'+R.map(r=>'<div class="r4 '+(r[3]?'diff':'same')+'"><b>'+r[0]+'</b><span class="tag">'+(r[3]?'차이가 보여요':'똑같아요')+'</span><div class="v"><span>'+S1[0].n+'</span><span>'+r[2][0]+'</span><span>'+S1[1].n+'</span><span>'+r[2][1]+'</span></div><small style="color:var(--ink-soft);font-size:.76rem">'+r[1]+'</small></div>').join('')+'</div>';
+  $('out1').innerHTML=kw('good','차이는 빈도가 아니라 위치와 속도에서 보여요','서윤이는 월요일부터 나눠서 했고, 도현이는 마감일에 9번을 몰아서 했어요.')+
+    kw('mid','그렇다고 도현이를 바로 "불성실"로 판단하진 마세요','주중에 다른 일정이 있었을 수도 있어요. 시간의 무늬는 판정이 아니라 "왜 그랬을까?" 물어볼 단서예요. 다음 과제에 중간 점검을 넣을 이유가 되기도 하고요.');
+}
+$('view1').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{v1=b.dataset.v;render1()});
+$('reset1').onclick=()=>{v1='sum';render1()};
+render1();
+
+/* ---------- ② ---------- */
+const EV=[['x',0,2],['p',2,4],['x',4,12],['m',12,13],['x',13,20],['p',20,23],['x',23,30],['m',30,31],['x',31,34],['p',34,35],['x',35,38],['m',38,40]];
+const P=EV.filter(e=>e[0]==='p'), M=EV.filter(e=>e[0]==='m');
+const T=40, X0=30, W=580, sx=m=>X0+m/T*W;
+const RU=[['loc','📍 위치'],['dur','⏱ 지속시간'],['freq','🔢 빈도'],['rate','🏃 속도']];
+let r2=null,m2='abs',used2=new Set();
+function render2(){
+  $('ruler2').innerHTML=RU.map(([k,n])=>'<button class="btn'+(r2===k?' on':'')+'" data-r="'+k+'">'+n+'</button>').join('');
+  $('ruler2').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{r2=b.dataset.r;used2.add(r2);render2()});
+  sel($('mode2'),'m',m2);
+  const col={p:'var(--ev-p)',x:'var(--ev-x)',m:'var(--ev-m)'};
+  let g='';
+  for(let t=0;t<=40;t+=5){g+='<line x1="'+sx(t)+'" y1="50" x2="'+sx(t)+'" y2="96" stroke="var(--line)" stroke-width="1"/><text x="'+sx(t)+'" y="112" text-anchor="middle" font-size="13" fill="var(--ink-soft)" font-family="sans-serif">'+t+'분</text>';}
+  EV.forEach(e=>{const hl=r2&&e[0]==='p';g+='<rect x="'+sx(e[1])+'" y="58" width="'+(sx(e[2])-sx(e[1]))+'" height="30" fill="'+col[e[0]]+'" opacity="'+(r2&&!hl?.45:1)+'" rx="2"/>';});
+  if(r2==='loc'){g+='<line x1="'+sx(2)+'" y1="30" x2="'+sx(2)+'" y2="96" stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 3"/><text x="'+sx(2)+'" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)" font-family="sans-serif">첫 계획</text>';}
+  if(r2==='dur'){P.forEach(e=>{g+='<text x="'+(sx(e[1])+sx(e[2]))/2+'" y="44" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ev-p)" font-family="sans-serif">'+(e[2]-e[1])+'분</text>'});}
+  if(r2==='freq'){P.forEach((e,i)=>{const cx=(sx(e[1])+sx(e[2]))/2;g+='<circle cx="'+cx+'" cy="36" r="11" fill="var(--ink)"/><text x="'+cx+'" y="40" text-anchor="middle" font-size="12" font-weight="700" fill="var(--paper)" font-family="sans-serif">'+(i+1)+'</text>'});}
+  if(r2==='rate'){for(let i=0;i<P.length-1;i++){const a=sx(P[i][1]),b=sx(P[i+1][1]);g+='<path d="M'+a+' 50 Q'+(a+b)/2+' 18 '+b+' 50" fill="none" stroke="var(--ink)" stroke-width="1.8"/><text x="'+(a+b)/2+'" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="var(--ink)" font-family="sans-serif">'+(P[i+1][1]-P[i][1])+'분 뒤</text>'}}
+  g+='<text x="'+X0+'" y="138" font-size="11" fill="var(--ink-soft)" font-family="sans-serif">시작</text><text x="'+(X0+W)+'" y="138" text-anchor="end" font-size="11" fill="var(--ink-soft)" font-family="sans-serif">40분</text>';
+  $('tl2').innerHTML=g;
+  const pd=P.reduce((a,e)=>a+e[2]-e[1],0), md=M.reduce((a,e)=>a+e[2]-e[1],0);
+  const V={
+   loc:{abs:['첫 계획','시작 2분 뒤'],rel:['첫 계획','전체 시간의 5%가 지난 뒤'],note:'과제 초반에 계획을 세웠어요. 계획은 보통 초반에 더 자주 나타난다는 연구가 있어요.'},
+   dur:{abs:['계획에 쓴 시간','모두 '+pd+'분'],rel:['전체 시간 중',''+Math.round(pd/T*100)+'% · 점검의 '+(pd/md).toFixed(1)+'배'],note:'절대값은 "계획을 꽤 했다", 상대값은 "전체에서 얼마나 차지했나"를 알려줘요. 둘을 함께 봐야 지나치게 매달렸는지도 보여요.'},
+   freq:{abs:['계획 횟수','3번'],rel:['전체 활동 12개 중','25%가 계획'],note:'빈도는 가장 많이 쓰이는 자예요. 하지만 몇 번인지만으로는 언제, 얼마나 오래였는지 알 수 없어요.'},
+   rate:{abs:['계획 간격','18분 뒤 → 14분 뒤'],rel:['속도 변화','후반으로 갈수록 조금 더 잦아짐'],note:'속도는 일이 얼마나 자주 이어지는지 보여줘요. 같은 3번이라도 몰려 있는지, 고르게 퍼졌는지가 달라요.'}
+  };
+  if(!r2){$('read2').innerHTML='<div><b>자를 골라 주세요</b><span>위에서 자 하나를 눌러요</span></div>';$('out2').innerHTML='';return}
+  const v=V[r2];$('read2').innerHTML='<div><b>'+v[m2][0]+'</b><span>'+v[m2][1]+'</span></div><div><b>읽는 법</b><span style="font-size:.92rem;font-weight:500">'+v.note+'</span></div>';
+  $('out2').innerHTML=used2.size===4?kw('good','네 가지 자를 모두 써 봤어요!','같은 "계획 세우기"도 위치·지속시간·빈도·속도에 따라 다른 이야기를 해요. 이 네 가지가 7장이 말하는 "시간의 흐름"의 자예요.'):'<p class="note">써 본 자 '+used2.size+' / 4</p>';
+}
+$('mode2').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{m2=b.dataset.m;render2()});
+$('reset2').onclick=()=>{r2=null;m2='abs';used2=new Set();render2()};
+render2();
+
+/* ---------- ③ ---------- */
+const K3={con:'일관성',rep:'반복',non:'비반복',irr:'불규칙'};
+const C3=[
+ {ctx:'모둠 토론 10분 동안 1분마다 기록한 말의 종류',seq:'AAAAAAAAAA',leg:{A:['아이디어 내기','var(--s1)']},a:'con',w:'같은 종류의 말이 계속 이어지는 안정된 구간이에요. 토론을 단계로 나누면 단계마다 이런 구간이 보여요.'},
+ {ctx:'혼자 과제를 하는 학생의 활동 순서',seq:'ABABABABAB',leg:{A:['계획','var(--ev-p)'],B:['실행','var(--s1)']},a:'rep',w:'계획과 실행이 일정하게 되풀이돼요. 이런 반복 순서가 성공한 학생과 그렇지 못한 학생에게서 다르게 나타나요.'},
+ {ctx:'한 학기 동안 글 읽기를 배우는 아이의 모습',seq:'AAAABBBCCC',leg:{A:['글자 하나씩','var(--ev-m)'],B:['단어로','var(--s1)'],C:['문장으로','var(--ev-p)']},a:'non',w:'한 번 다음 단계로 넘어가면 돌아가지 않는 성장의 흐름이에요. 7장의 문해력 예시와 같아요.'},
+ {ctx:'어느 학생의 하루 수업 중 기분 기록',seq:'ACBACCABCB',leg:{A:['좋음','var(--ev-p)'],B:['보통','var(--s1)'],C:['나쁨','var(--s2)']},a:'irr',w:'뚜렷한 무늬가 보이지 않아요. 설명하기 가장 어렵고, 학습분석에서 아직 덜 다뤄진 영역이에요.'}
+];
+let a3={};
+function render3(){
+  $('pats').innerHTML=C3.map((c,i)=>{const p=a3[i];
+    return '<div class="pat"><div class="ctx"><i>기록 '+(i+1)+'</i>'+c.ctx+'</div><div class="dots">'+c.seq.split('').map(ch=>'<span style="background:'+c.leg[ch][1]+'">'+(Object.keys(c.leg).indexOf(ch)+1)+'</span>').join('')+'</div>'+
+      '<div class="legend" style="margin:0">'+Object.entries(c.leg).map(([k,[n,cc]],j)=>'<span><i style="background:'+cc+'"></i>'+(j+1)+' '+n+'</span>').join('')+'</div>'+
+      '<div class="opts">'+Object.entries(K3).map(([k,n])=>{let cl='btn';if(p===k)cl+=(k===c.a?' good':' bad');return '<button class="'+cl+'" data-i="'+i+'" data-k="'+k+'">'+n+'</button>'}).join('')+'</div>'+
+      (p?'<div class="why">'+(p===c.a?'⭕ '+c.w:'다시 보세요. 같은 게 계속? 일정하게 되풀이? 한 방향으로 나아감? 무늬 없음?')+'</div>':'')+'</div>'}).join('');
+  $('pats').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{a3[b.dataset.i]=b.dataset.k;render3()});
+  const n=C3.filter((c,i)=>a3[i]===c.a).length;
+  $('out3').innerHTML=n===4?kw('good','네 가지 무늬를 모두 찾았어요!','흐름의 네 가지 자는 숫자 하나로 나와 평범한 통계로도 다룰 수 있어요. 하지만 순서의 무늬를 찾으려면 과정 채굴, 마르코프 모형 같은 더 복잡한 방법이 필요해요.'):'<p class="note">맞힌 기록 '+n+' / 4</p>';
+}
+$('reset3').onclick=()=>{a3={};render3()};
+render3();
+
+/* ---------- ④ ---------- */
+const D4=[3,0,0,0,4,0,0, 2,0,0,0,5,0,0];
+let w4='day',q4=null;
+function render4(){
+  sel($('win4'),'w',w4);
+  let vals,labs;
+  if(w4==='day'){vals=D4;labs=D4.map((_,i)=>(i+1)+'일')}
+  else{vals=[D4.slice(0,7).reduce((a,b)=>a+b),D4.slice(7).reduce((a,b)=>a+b)];labs=['1주차','2주차']}
+  const mx=Math.max(...vals);
+  $('bars4').innerHTML=vals.map(v=>'<div class="'+(v?'':'zero')+'" style="height:'+(v?v/mx*100:2)+'%"><span>'+v+'</span></div>').join('');
+  $('lab4').innerHTML=labs.map(l=>'<span>'+l+'</span>').join('');
+  $('ver4').innerHTML=w4==='day'?'📅 하루 단위로 보면: 14일 중 4일만 들어왔어요 → "들쭉날쭉하다"':'📅 일주일 단위로 보면: 매주 7번씩 들어왔어요 → "꾸준하다"';
+  const o=$('out4');
+  if(!q4){o.innerHTML='';return}
+  o.innerHTML=q4==='mid'?kw('good','중간에!','7장이 소개한 연구에서 토론 중간에 요약하게 했더니 더 높은 수준의 지식 구성에 도달하는 경우가 많았어요. 같은 활동도 넣는 시점에 따라 효과가 달라요.'):
+    kw('mid','끝에 요약해도 정리는 되지만…','7장이 소개한 연구에서는 중간에 요약하게 했을 때 토론이 더 높은 수준으로 나아갔어요. 중간 요약이 그다음 대화의 발판이 되기 때문이에요.');
+}
+$('win4').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{w4=b.dataset.w;render4()});
+$('q4').querySelectorAll('.btn').forEach(b=>b.onclick=()=>{q4=b.dataset.a;$('q4').querySelectorAll('.btn').forEach(x=>{x.classList.remove('good','bad');if(x===b)x.classList.add(q4==='mid'?'good':'bad')});render4()});
+$('reset4').onclick=()=>{w4='day';q4=null;$('q4').querySelectorAll('.btn').forEach(x=>x.classList.remove('good','bad'));render4()};
+render4();
+})();
+</script>
+</body>
+</html>
